@@ -44,10 +44,17 @@
      <Compile Include="Assets\Scripts\Combat\CombatantComponent.cs" />
      <Compile Include="Assets\Scripts\Combat\CombatState.cs" />
      <Folder Include="Assets" />
-     <Folder Include="Assets\Scenes" />
+     <Folder Include="Assets\Designs" />
+     <Folder Include="Assets\Scripts\Controllers" />
+     <Folder Include="Assets\Arts\Scenes" />
+     <Folder Include="Assets\Arts\Audios" />
+     <Folder Include="Assets\Arts\Prefabs" />
      <Folder Include="Assets\Arts" />
+     <Folder Include="Assets\Arts\Materials" />
      <Folder Include="Assets\Scripts" />
      <Folder Include="Assets\Scripts\Combat" />
+     <Folder Include="Assets\Arts\GUIs" />
+     <Folder Include="Assets\Arts\Textures" />
      <Reference Include="UnityEngine">
      <HintPath>G:\ides\Unity\Editors\2021.3.21f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -803,7 +810,6 @@
      </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Scripts\Controllers\.gitkeep" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
