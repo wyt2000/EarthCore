@@ -1,0 +1,9 @@
+﻿.*
+
+!.gitignore
+!.clang-format
+
+/Library/
+/Logs/
+/obj/
+/Temp/
