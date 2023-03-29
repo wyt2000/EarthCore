@@ -225,7 +225,7 @@ public class Effect {
         OnLeaveAttach();
     }
 
-    public void TurnStart() {
+    public void BeforeTurnStart() {
         OnBeforeTurnStart();
     }
 

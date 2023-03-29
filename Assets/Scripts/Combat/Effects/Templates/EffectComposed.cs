@@ -34,7 +34,7 @@ public sealed class EffectComposed : Effect {
 
     protected override void OnBeforeTurnStart() {
         base.OnBeforeTurnStart();
-        m_effects.ForEach(e => e.TurnStart());
+        m_effects.ForEach(e => e.BeforeTurnStart());
     }
 
     protected override void OnAfterTurnEnd() {
