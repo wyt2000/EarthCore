@@ -18,13 +18,17 @@ public class Effect {
     protected CombatantComponent Target;
 
     private Effect m_parent; // Todo 辅助实现复合效果
+    
+    // Todo 配置项命名规范:
+    // UI: U_
+    // 逻辑: L_
+    // 事件: On_
+    // 若子类新增,则按U1,U2,L1,L2,On1,On2等格式命名,数字取决于继承层级
+    // 所有配置项均为public,方便初始化
 
-
-#region 配置相关
+#region UI配置
 
     // Todo 完善UI/动画/粒子效果等配置
-
-    // Todo 效果唯一id
 
     // 效果名
     public string Name = "效果";
@@ -33,7 +37,16 @@ public class Effect {
     public string Description = "效果描述";
 
     // 效果图标路径
-    public string IconPath;
+    public string IconPath = "";
+
+    // 是否需要UI显示(例如立即伤害那种就不需要)
+    public bool NoUi = false;
+
+#endregion
+
+#region 逻辑配置
+
+    // Todo 效果唯一id自动生成
 
     // Todo 完善逻辑相关配置
 
@@ -94,6 +107,8 @@ public class Effect {
     // Todo 调用&重写事件接口
 
 #region 事件接口
+
+    // Todo 全改为Action/Func
 
     /*
     - 效果附着前
