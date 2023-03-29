@@ -62,6 +62,9 @@ public class Effect {
     // 叠加层数
     public int Overlay = 1;
 
+    // 结算优先级(越小越优先)
+    public int Priority = 0;
+
 #endregion
 
 #region 生命周期
