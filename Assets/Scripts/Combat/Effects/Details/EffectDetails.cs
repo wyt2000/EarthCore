@@ -6,6 +6,8 @@ using UnityEngine;
 namespace Combat.Effects.Details {
 // 本文件只填配置相关的信息,有关计算的都放到Templates里面去
 public class EffectDetails {
+#region 元素联动
+
     // 金+土：免疫：免疫下一次伤害
     private class EffectMetalEarth : Effect {
         private readonly EffectTrigger m_trigger;
@@ -25,6 +27,10 @@ public class EffectDetails {
             if (m_trigger.InValid) return reject;
             return reject && m_trigger.Trigger(!request.IsHeal);
         }
+    }
+
+    public static Effect Metal_Earth() {
+        return new EffectMetalEarth();
     }
 
 
@@ -108,7 +114,7 @@ public class EffectDetails {
             if (request.IsHeal) return;
 
             // 修改为火元素伤害
-            request.DamageParams.ElementType = ElementType.Fire;
+            request.DamageParams.Element = ElementType.Fire;
 
             Target.Attack(request.Causer, request);
 
@@ -162,6 +168,44 @@ public class EffectDetails {
     // Todo 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
 
     //Todo  金+木+水+火+土：净化：直接击碎全部敌方法印，斩杀生命值低于10%的敌人，不计入出牌次数。
+
+#endregion
+
+#region 通用性
+
+    // 物理护盾百分比提升
+    public static Effect AddPhysicalArmorPercent(float percent, int round) {
+        return new EffectTemporary {
+            Name        = "物理护盾提升",
+            Description = $"令自身物理护盾值增加{percent}%",
+            IconPath    = "", // Todo
+            AddState = {
+                PhysicalArmorPercent = percent
+            },
+            RemainingRounds = round,
+            Tags = new HashSet<EffectTag> {
+                EffectTag.Buff
+            }
+        };
+    }
+
+    // 物理护盾额外提升
+    public static Effect AddPhysicalArmorExtra(float extra, int round) {
+        return new EffectTemporary {
+            Name        = "物理护盾提升",
+            Description = $"令自身物理护盾值增加{extra}",
+            IconPath    = "", // Todo
+            AddState = {
+                PhysicalArmorExtra = extra
+            },
+            RemainingRounds = round,
+            Tags = new HashSet<EffectTag> {
+                EffectTag.Buff
+            }
+        };
+    }
+
+#endregion
 
     // Todo 策划填充更多
 }
