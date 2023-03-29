@@ -173,8 +173,8 @@ public class CombatState : CombatAddableState {
         request.Value = request.GetValue();
         var causer = request.Causer;
         var target = request.Target;
-        causer.Effects.ForEach(effect => effect.BeforeTakeHpChange(request));
-        if (target.Effects.Any(effect => effect.BeforeSelfHpChange(request))) return;
+        causer.BoardCast(effect => effect.BeforeTakeHpChange(request));
+        if (target.BoardCastAny(effect => effect.BeforeSelfHpChange(request))) return;
 
         var value = request.Value;
         if (!request.IsHeal) {

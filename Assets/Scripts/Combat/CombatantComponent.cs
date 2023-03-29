@@ -28,5 +28,14 @@ public class CombatantComponent : MonoBehaviour {
         request.IsHeal = true;
         Judge.EnqueueHealthTask(request);
     }
+
+    public void BoardCast(Action<Effect> action) {
+        // Todo 同优先级是否保持顺序?
+        Effects.OrderBy(v => v.Priority).ForEach(action);
+    }
+
+    public bool BoardCastAny(Func<Effect, bool> action) {
+        return Effects.OrderBy(v => v.Priority).Any(action);
+    }
 }
 }

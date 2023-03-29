@@ -44,9 +44,9 @@ public class Card {
 
     // 出牌的逻辑操作
     public void PlayCard(PlayCardRequest request) {
-        request.Causer.Effects.ForEach(e => e.BeforePlayCard(this));
+        request.Causer.BoardCast(e => e.BeforePlayCard(this));
         OnPlay(request);
-        request.Causer.Effects.ForEach(e => e.AfterPlayCard(this));
+        request.Causer.BoardCast(e => e.AfterPlayCard(this));
     }
 
 #endregion
