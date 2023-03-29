@@ -1,4 +1,6 @@
-﻿namespace Combat.Requests {
+﻿using System;
+
+namespace Combat.Requests {
 public enum DamageType {
     Physical, // 物理
     Magical,  // 魔法
@@ -18,7 +20,10 @@ public class DamageParams {
     public DamageType DamageType = DamageType.Physical;
 
     // 伤害附带元素
-    public ElementType? ElementType = null;
+    public ElementType? Element = null;
+
+    // 附带元素量
+    public int ElementCount = 1;
 }
 
 public class HealParams { }
@@ -34,13 +39,29 @@ public class HealthRequest {
     // 伤害/治疗值
     public float Value = 0;
 
+    // 动态伤害/治疗值
+    public Func<HealthRequest, float> ValueFunc = null;
+
     // 是否为治疗请求
     public bool IsHeal = false;
 
     // 伤害参数
-    public DamageParams DamageParams = new();
+    public readonly DamageParams DamageParams = new();
 
     // 治疗参数
-    public HealParams HealParams = new();
+    public readonly HealParams HealParams = new();
+
+    // 结束回调
+    public Action<HealthRequest> OnFinish = delegate { };
+
+    // Todo 添加控制ui动画时间的参数
+
+#region 公开函数
+
+    public float GetValue() {
+        return ValueFunc?.Invoke(this) ?? Value;
+    }
+
+#endregion
 }
 }
