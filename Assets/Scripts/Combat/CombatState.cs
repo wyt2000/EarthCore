@@ -30,7 +30,7 @@ where T : struct, IComparable, IConvertible, IEquatable<T>, IFormattable {
 
         foreach (var (key, value) in b) {
             if (result.ContainsKey(key)) {
-                result[key] = (dynamic)result[key] + value;
+                result[key] = DynamicOperator.ForceAdd(result[key], value);
             }
             else {
                 result[key] = value;
@@ -49,10 +49,10 @@ where T : struct, IComparable, IConvertible, IEquatable<T>, IFormattable {
 
         foreach (var (key, value) in b) {
             if (result.ContainsKey(key)) {
-                result[key] = (dynamic)result[key] - value;
+                result[key] = DynamicOperator.ForceSub(result[key], value);
             }
             else {
-                result[key] = (dynamic)default(T) - value;
+                result[key] = DynamicOperator.ForceSub(default, value);
             }
         }
 
@@ -101,15 +101,15 @@ public class CombatAddableState {
 
     public void Add(CombatAddableState state) {
         foreach (var field in AddableFields) {
-            var obj = (dynamic)field.GetValue(this) + (dynamic)field.GetValue(state);
-            field.SetValue(this, (object)obj);
+            var obj = DynamicOperator.ForceAdd(field.GetValue(this), field.GetValue(state));
+            field.SetValue(this, obj);
         }
     }
 
     public void Sub(CombatAddableState state) {
         foreach (var field in AddableFields) {
-            var obj = (dynamic)field.GetValue(this) - (dynamic)field.GetValue(state);
-            field.SetValue(this, (object)obj);
+            var obj = DynamicOperator.ForceSub(field.GetValue(this), field.GetValue(state));
+            field.SetValue(this, obj);
         }
     }
 
