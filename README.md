@@ -7,8 +7,6 @@
 ```text
 - Docs          # 文档相关,不直接参与项目构建
  - images       # 文档中使用的图片
- - design.md    # 系统框架设计文档
- - world.md     # 游戏世界观文档
 - Assets        # 参与构建的所有项目资源
   - Arts        # 艺术资源,程序和美术负责上传
     - Scenes    # 场景资源,程序和美术配合上传
@@ -22,9 +20,6 @@
 - README.md     # 项目说明文档
 - .gitignore    # git忽略文件列表
 - .clang-format # 代码格式化配置
-
-- Assembly-CSharp.csproj # C#项目配置文件
-- EarthCore.sln          # C#解决方案文件
 ```
 
 - 项目非强相关
@@ -61,11 +56,9 @@
 ## Git规范
 
 - 每个人都要有自己的分支,不要直接在master上开发
-
     - 策划 : design(瑞瓦肖幽灵)
     - 美术 : art1(飞屋闲鱼)/art2(mn)
     - 程序 : dev1(MnZn)/dev2(Sayaka)
-
 - 每日开发前 : 将远程最新master分支合并到自己的分支,解决冲突后再进行今日开发
 - 每日开发后 : 将自己分支的今日提交push到远程服务器上,等待统一合并到master
 - 不要动别人的分支
