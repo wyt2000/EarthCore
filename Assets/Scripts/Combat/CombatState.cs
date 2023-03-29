@@ -168,28 +168,43 @@ public class CombatState : CombatAddableState {
 
 #region 公开接口
 
+    // 在逻辑层处理生命修改请求
     public void ApplyHealthChange(HealthRequest request) {
+        request.Value = request.GetValue();
         var causer = request.Causer;
         var target = request.Target;
         causer.Effects.ForEach(effect => effect.BeforeTakeHpChange(request));
         if (target.Effects.Any(effect => effect.BeforeSelfHpChange(request))) return;
 
-        var damage = request.Value;
-        damage -= request.DamageParams.DamageType switch {
-            DamageType.Physical => PhysicalArmor,
-            DamageType.Magical  => MagicResistance,
+        var value = request.Value;
+        if (!request.IsHeal) {
+            value -= request.DamageParams.DamageType switch {
+                DamageType.Physical => PhysicalArmor,
+                DamageType.Magical  => MagicResistance,
 
-            _ => throw new ArgumentOutOfRangeException()
-        };
-        if (damage < 0) return;
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        value = Math.Max(0, value);
+
+        // Todo 处理元素击碎相关效果
 
         var old = Health;
-        Health -= damage;
+        if (request.IsHeal) {
+            Health += value;
+        }
+        else {
+            Health -= value;
+        }
+
         var change = Health - old;
 
-        request.Value = change;
+        request.Value = Math.Abs(change);
         target.Effects.ForEach(effect => effect.AfterSelfHpChange(request));
         causer.Effects.ForEach(effect => effect.AfterTakeHpChange(request));
+
+        request.OnFinish.Invoke(request);
     }
 
 #endregion
