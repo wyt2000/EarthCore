@@ -70,11 +70,17 @@ public class Effect {
 
     public void Attach(CombatantComponent target) {
         Target = target;
-        Target.Judge.EnqueueEffectTask(this, true);
+        Target.Judge.EnqueueEffectTask(new EffectRequest {
+            Effect = this,
+            Attach = true,
+        });
     }
 
     public void Remove() {
-        Target.Judge.EnqueueEffectTask(this, false);
+        Target.Judge.EnqueueEffectTask(new EffectRequest {
+            Effect = this,
+            Attach = false,
+        });
     }
 
 #endregion
