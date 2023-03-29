@@ -32,7 +32,6 @@
 ```text
 - ProjectSettings   # Unity项目设置
 - Packages          # Unity依赖包列表
-- UserSettings      # Unity用户设置
 ```
 
 # 项目规范
@@ -62,6 +61,7 @@
 ## Git规范
 
 - 每个人都要有自己的分支,不要直接在master上开发
+
     - 策划 : design(瑞瓦肖幽灵)
     - 美术 : art1(飞屋闲鱼)/art2(mn)
     - 程序 : dev1(MnZn)/dev2(Sayaka)
