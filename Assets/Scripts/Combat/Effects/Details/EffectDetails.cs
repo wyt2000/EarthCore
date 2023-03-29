@@ -34,7 +34,10 @@ public class EffectDetails {
     }
 
 
-    // 火+土：固定：令自身魔法护盾值增加20% 
+    /// <summary>
+    /// 火+土：固定：令自身魔法护盾值增加20% 
+    /// </summary>
+    /// <returns></returns>
     public static Effect Fire_Earth() {
         return new EffectTemporary() {
             Name        = "火土联动",

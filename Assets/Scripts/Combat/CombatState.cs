@@ -133,26 +133,30 @@ public class CombatState : CombatAddableState {
     // 玩家最大生命值
     public float HealthMax => HealthMaxBase * (1 + HealthMaxPercent / 100) + HealthMaxExtra;
 
-    // 玩家当前生命值
-    public float Health {
-        get => m_health;
-        private set => m_health = Math.Clamp(value, 0, HealthMax);
-    }
-
     // 玩家最大法力
     public float ManaMax => ManaMaxBase * (1 + ManaMaxPercent / 100) + ManaMaxExtra;
-
-    // 玩家当前法力
-    public float Mana {
-        get => m_mana;
-        set => m_mana = Math.Clamp(value, 0, ManaMax);
-    }
 
     // 玩家物理护甲
     public float PhysicalArmor => PhysicalArmorBase * (1 + PhysicalArmorPercent / 100) + PhysicalArmorExtra;
 
     // 玩家魔法抗性
     public float MagicResistance => MagicResistanceBase * (1 + MagicResistancePercent / 100) + MagicResistanceExtra;
+
+#endregion
+
+#region 区间约束字段
+
+    // 玩家当前生命值
+    public float Health {
+        get => m_health;
+        set => m_health = Math.Clamp(value, 0, HealthMax);
+    }
+
+    // 玩家当前法力
+    public float Mana {
+        get => m_mana;
+        set => m_mana = Math.Clamp(value, 0, ManaMax);
+    }
 
 #endregion
 
@@ -201,8 +205,8 @@ public class CombatState : CombatAddableState {
         var change = Health - old;
 
         request.Value = Math.Abs(change);
-        target.Effects.ForEach(effect => effect.AfterSelfHpChange(request));
-        causer.Effects.ForEach(effect => effect.AfterTakeHpChange(request));
+        target.BoardCast(effect => effect.AfterSelfHpChange(request));
+        causer.BoardCast(effect => effect.AfterTakeHpChange(request));
 
         request.OnFinish.Invoke(request);
     }

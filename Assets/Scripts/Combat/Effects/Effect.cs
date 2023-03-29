@@ -18,7 +18,7 @@ public class Effect {
     protected CombatantComponent Target;
 
     private Effect m_parent; // Todo 辅助实现复合效果
-    
+
     // Todo 配置项命名规范:
     // UI: U_
     // 逻辑: L_
@@ -73,14 +73,14 @@ public class Effect {
 
     public void Attach(CombatantComponent target) {
         Target = target;
-        Target.Judge.EnqueueEffectTask(new EffectRequest {
+        Target.Judge.AddEffectTask(new EffectRequest {
             Effect = this,
             Attach = true,
         });
     }
 
     public void Remove() {
-        Target.Judge.EnqueueEffectTask(new EffectRequest {
+        Target.Judge.AddEffectTask(new EffectRequest {
             Effect = this,
             Attach = false,
         });
