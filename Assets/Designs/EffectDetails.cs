@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Combat.Effects;
 using Combat.Effects.Templates;
 using Combat.Requests;
 using UnityEngine;
 
-namespace Combat.Effects.Details {
+namespace Designs {
 // 本文件只填配置相关的信息,有关计算的都放到Templates里面去
-public class EffectDetails {
+public static class EffectDetails {
 #region 元素联动
 
     // 金+土：免疫：免疫下一次伤害

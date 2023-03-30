@@ -1,7 +1,7 @@
-﻿using Combat.Effects.Details;
+﻿using Combat.Cards;
 using Combat.Requests;
 
-namespace Combat.Cards.Details {
+namespace Designs {
 public static class CardDetails {
     /*
     试探
