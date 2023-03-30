@@ -100,6 +100,15 @@ public class EffectDetails {
     }
 
     // Todo 水+木：宁静：本次出牌法力消耗减半
+    /*
+    protected override void OnBeforePlayCard(Card card) {
+        base.OnBeforePlayCard(card);
+
+        card.ManaCost /= 2;
+        
+        Remove();
+    }
+     */
 
     private class EffectFireWoodEarth : Effect {
         public EffectFireWoodEarth() {
@@ -169,6 +178,18 @@ public class EffectDetails {
     // Todo 火+土+金：淬炼：为敌方施加三层淬炼效果，每回合开始时消耗一层淬炼效果对敌方造成5%最大生命值物理伤害。
 
     // Todo 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
+    public static Effect JiSui() {
+        return new EffectTemporary() {
+            Name            = "水火木联动",
+            Description     = "",
+            IconPath        = "",
+            RemainingRounds = 3,
+            AddState = {
+                PhysicalArmorPercent   = -20,
+                MagicResistancePercent = -20,
+            }
+        };
+    }
 
     //Todo  金+木+水+火+土：净化：直接击碎全部敌方法印，斩杀生命值低于10%的敌人，不计入出牌次数。
 
