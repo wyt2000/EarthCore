@@ -17,6 +17,7 @@ public class CombatJudge : MonoBehaviour {
     /// 3.出牌请求
     /// 4.摸牌请求
     /// 5.过牌请求
+    /// 6.逻辑请求
     /// </summary>
     private class RequestTask {
         public RequestType     Type;
@@ -24,6 +25,7 @@ public class CombatJudge : MonoBehaviour {
         public HealthRequest   Health;
         public PlayCardRequest PlayCard;
         public GetCardRequest  GetCard;
+        public LogicRequest    Logic;
     }
 
     private enum RequestType {
@@ -41,6 +43,9 @@ public class CombatJudge : MonoBehaviour {
 
         [Description("过牌")]
         PassCard,
+
+        [Description("逻辑")]
+        Logic
     }
 
     [SerializeField]
@@ -191,9 +196,24 @@ public class CombatJudge : MonoBehaviour {
         });
     }
 
+    // 逻辑请求
+    public void AddLogicTask(Action action) {
+        if (action == null) {
+            Debug.LogWarning("Invalid logic request");
+            return;
+        }
+
+        m_taskQueue.Enqueue(new RequestTask {
+            Type = RequestType.Logic,
+            Logic = new LogicRequest {
+                Logic = action
+            }
+        });
+    }
+
 #endregion
 
-#region 请求系统具体逻辑
+#region 请求逻辑和UI
 
     private static void DealEffectTask(EffectRequest request) {
         var effect = request.Effect;
