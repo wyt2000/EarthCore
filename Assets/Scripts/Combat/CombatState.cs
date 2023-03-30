@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
 using Combat.Requests;
 using Utils;
@@ -86,6 +85,9 @@ public class CombatAddableState {
     public float MagicResistanceBase;
     public float MagicResistancePercent;
     public float MagicResistanceExtra;
+
+    // 玩家结束时最大手牌数
+    public int MaxCardCnt;
 
     // 自定义float表单
     public AddableDict<float> CustomFloats = new();

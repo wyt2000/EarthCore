@@ -11,5 +11,8 @@ public class PlayCardRequest {
 
     // 打出的牌
     public Card[] Cards;
+
+    // 即将打出的牌
+    public Card Current;
 }
 }

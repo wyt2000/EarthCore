@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Combat.Cards;
 using Combat.Requests;
 using Utils;
 
@@ -61,14 +60,14 @@ public sealed class EffectComposed : Effect {
         m_effects.ForEach(e => e.AfterTakeHpChange(request));
     }
 
-    protected override void OnBeforePlayCard(Card card) {
-        base.OnBeforePlayCard(card);
-        m_effects.ForEach(e => e.BeforePlayCard(card));
+    protected override void OnBeforePlayCard(PlayCardRequest request) {
+        base.OnBeforePlayCard(request);
+        m_effects.ForEach(e => e.BeforePlayCard(request));
     }
 
-    protected override void OnAfterPlayCard(Card card) {
-        base.OnAfterPlayCard(card);
-        m_effects.ForEach(e => e.AfterPlayCard(card));
+    protected override void OnAfterPlayCard(PlayCardRequest request) {
+        base.OnAfterPlayCard(request);
+        m_effects.ForEach(e => e.AfterPlayCard(request));
     }
 
 #endregion

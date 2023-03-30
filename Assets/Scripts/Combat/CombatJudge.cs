@@ -1,26 +1,48 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using Combat.Requests;
 using Designs;
 using UnityEngine;
 using Utils;
 
 namespace Combat {
-/// <summary>
-/// 请求任务(每种请求都有动画呈现),包括:
-/// 1.效果附着/消失请求
-/// 2.生命值变化请求
-/// 3.出牌请求
-/// 4.摸牌请求
-/// 5.过牌请求
-/// </summary>
-public class RequestTask {
-    public EffectRequest   Effect   = null;
-    public HealthRequest   Health   = null;
-    public PlayCardRequest PlayCard = null;
-}
-
 // 对局裁判,管理各种请求
 public class CombatJudge : MonoBehaviour {
+    /// <summary>
+    /// 请求任务(每种请求都有动画呈现),包括:
+    /// 1.效果附着/消失请求
+    /// 2.生命值变化请求
+    /// 3.出牌请求
+    /// 4.摸牌请求
+    /// 5.过牌请求
+    /// </summary>
+    private class RequestTask {
+        public RequestType     Type;
+        public EffectRequest   Effect;
+        public HealthRequest   Health;
+        public PlayCardRequest PlayCard;
+        public GetCardRequest  GetCard;
+    }
+
+    private enum RequestType {
+        [Description("效果")]
+        Effect,
+
+        [Description("生命")]
+        Health,
+
+        [Description("出牌")]
+        PlayCard,
+
+        [Description("摸牌")]
+        GetCard,
+
+        [Description("过牌")]
+        PassCard,
+    }
+
     [SerializeField]
     // 先手
     private CombatantComponent playerA;
@@ -33,7 +55,7 @@ public class CombatJudge : MonoBehaviour {
     private readonly CombatantComponent[] m_combatants = new CombatantComponent[2];
 
     // 当前回合
-    private int m_round = 0;
+    private int m_round;
 
     // 任务队列
     private readonly Queue<RequestTask> m_taskQueue = new();
@@ -85,20 +107,78 @@ public class CombatJudge : MonoBehaviour {
 
 #region 请求系统
 
+#region 公开接口
+
     // effect请求
     public void AddEffectTask(EffectRequest request) {
-        m_taskQueue.Enqueue(new RequestTask { Effect = request });
+        if (request.Effect == null || request.Effect.Target == null) {
+            Debug.LogWarning("Invalid effect request");
+            return;
+        }
+
+        m_taskQueue.Enqueue(new RequestTask {
+            Type   = RequestType.Effect,
+            Effect = request,
+        });
     }
 
     // health请求
     public void AddHealthTask(HealthRequest request) {
         if (request.Target == null || request.Causer == null || request.Value < 0) {
-            Debug.LogWarning($"Invalid request by {request.Causer.name}");
+            Debug.LogWarning("Invalid health request");
             return;
         }
 
-        m_taskQueue.Enqueue(new RequestTask { Health = request });
+        m_taskQueue.Enqueue(new RequestTask {
+            Type   = RequestType.Health,
+            Health = request,
+        });
     }
+
+    // playCard请求
+    public void AddPlayCardTask(PlayCardRequest request) {
+        if (m_taskQueue.Count > 0) {
+            Debug.LogWarning("Cannot play card when there are tasks in queue");
+            return;
+        }
+
+        if (request.Causer == null || request.Cards == null || request.Cards.Length == 0) {
+            Debug.LogWarning("Invalid card request");
+            return;
+        }
+
+        var manaCost = request.Cards.Sum(c => c.GetManaCost());
+        if (manaCost > request.Causer.State.Mana) {
+            Debug.LogWarning("Not enough mana");
+            return;
+        }
+
+        // 扣除法力值
+        request.Causer.State.Mana -= manaCost;
+
+        // 从手牌中移除
+        request.Cards.ForEach(v => request.Causer.Cards.Remove(v));
+
+        m_taskQueue.Enqueue(new RequestTask {
+            Type     = RequestType.PlayCard,
+            PlayCard = request,
+        });
+    }
+
+    // getCard请求
+    public void AddGetCardTask(GetCardRequest request) {
+        if (request.Causer == null) {
+            Debug.LogWarning("Invalid card request");
+            return;
+        }
+
+        m_taskQueue.Enqueue(new RequestTask {
+            Type    = RequestType.GetCard,
+            GetCard = request,
+        });
+    }
+
+#endregion
 
 #region 请求系统具体逻辑
 
@@ -117,27 +197,65 @@ public class CombatJudge : MonoBehaviour {
         request.Target.State.ApplyHealthChange(request);
     }
 
+    private static void DealPlayCardTask(PlayCardRequest request) {
+        var cards = request.Cards;
+        cards.ForEach(c => c.PlayCard(request));
+    }
+
+    // Todo 摸牌动画
+    private static void DealGetCardTask(GetCardRequest request) {
+        var owner = request.Causer;
+        var heap = owner.AllCards;
+        var cards = owner.Cards;
+        var count = request.Count;
+        var filter = request.Filter;
+        var selector = request.SelectIndex;
+        var valid = heap.Where(filter).ToList();
+        // Todo 优化摸牌算法到O(n)
+        while (count-- > 0) {
+            var index = selector(valid.Count);
+            index = Math.Clamp(0, index, valid.Count);
+            if (index == valid.Count) continue;
+            var card = valid[index];
+            card.Owner = owner;
+            cards.Add(card);
+            valid.RemoveAt(index);
+            heap.Remove(card);
+        }
+    }
+
     private void DealOneTask() {
         if (m_taskQueue.Count == 0) {
             return;
         }
 
         var task = m_taskQueue.Dequeue();
-        if (task.Effect != null) {
-            DealEffectTask(task.Effect);
-        }
-        else if (task.Health != null) {
-            DealHealthTask(task.Health);
-        }
-        else {
-            // Todo 添加其他逻辑
-            Debug.LogError("Invalid task");
+        switch (task.Type) {
+            case RequestType.Effect:
+                DealEffectTask(task.Effect);
+                break;
+            case RequestType.Health:
+                DealHealthTask(task.Health);
+                break;
+            case RequestType.PlayCard:
+                DealPlayCardTask(task.PlayCard);
+                break;
+            case RequestType.GetCard:
+                DealGetCardTask(task.GetCard);
+                break;
+            case RequestType.PassCard:
+                break;
+            default:
+                Debug.LogError("Invalid task");
+                break;
         }
     }
 
 #endregion
 
 #endregion
+
+    // Todo 加入摸牌出牌逻辑
 
 #region 脚本逻辑
 
@@ -155,17 +273,11 @@ public class CombatJudge : MonoBehaviour {
 
     private void Log() {
         var msg = "";
-        msg += "S开始游戏,F处理一帧,L刷新日志,空格下一回合,A攻击,H治疗,E效果\n";
-        msg += $"Current round: {m_round} \n";
-        msg += $"Current task count: {m_taskQueue.Count} \n";
-        foreach (var combatant in m_combatants) {
-            var str = $"{combatant.name} status : \n";
-            str += $"health : {combatant.State.Health} \n";
-            str += $"armor : {combatant.State.MagicResistance} \n";
-            str += $"effects : \n";
-            combatant.Effects.ForEach(e => str += $" - {e.UiName} , remain : {e.LgRemainingRounds} \n");
-            msg += str;
-        }
+        msg += "S开始,F一帧,L日志,空格切人,A攻击,H治疗,E效果,M摸牌,1~n出牌\n";
+        msg += $"当前轮次: {m_round / 2} , 轮到{CurrentComp.name} \n";
+        msg += $"剩余{m_taskQueue.Count}个task : ";
+        msg += string.Join(", ", m_taskQueue.Select(v => v.Type.ToDescription()));
+        m_combatants.ForEach(v => v.FreshUI());
 
         text.text = msg;
     }
@@ -200,7 +312,7 @@ public class CombatJudge : MonoBehaviour {
         }
 
         var current = CurrentComp;
-        var next    = NextComp;
+        var next = NextComp;
 
         // attack test
         if (Input.GetKeyDown(KeyCode.A)) {
@@ -224,6 +336,35 @@ public class CombatJudge : MonoBehaviour {
         // effect test
         if (Input.GetKeyDown(KeyCode.E)) {
             current.Attach(EffectDetails.Fire_Earth());
+            Log();
+        }
+
+        // get card test
+        if (Input.GetKeyDown(KeyCode.M)) {
+            current.GetCard(new GetCardRequest {
+                Count = 1,
+            });
+            Log();
+        }
+
+        // play card test
+        var keys = new[] {
+            KeyCode.Alpha1,
+            KeyCode.Alpha2,
+            KeyCode.Alpha3,
+            KeyCode.Alpha4,
+            KeyCode.Alpha5,
+            KeyCode.Alpha6,
+            KeyCode.Alpha7,
+            KeyCode.Alpha8,
+            KeyCode.Alpha9,
+        };
+        for (var i = 0; i < keys.Length; i++) {
+            if (i >= current.Cards.Count) continue;
+            if (!Input.GetKeyDown(keys[i])) continue;
+            current.PlayCard(next, new PlayCardRequest {
+                Cards = new[] { current.Cards[i] }
+            });
             Log();
         }
     }
