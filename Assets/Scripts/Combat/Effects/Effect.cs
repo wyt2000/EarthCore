@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Combat.Cards;
 using Combat.Requests;
 
 namespace Combat.Effects {
@@ -15,9 +14,9 @@ public enum EffectTag {
 public class Effect : IComparable<Effect> {
 #region 私有字段
 
-    private static int ms_stamp = 0;
+    private static int ms_stamp;
 
-    private int m_effectStamp = 0;
+    private int m_effectStamp;
 
 #endregion
 
@@ -79,56 +78,9 @@ public class Effect : IComparable<Effect> {
 
 #endregion
 
-#endregion
-
-#region 公开函数
-
-    public int CompareTo(Effect other) {
-        if (LgPriority == other.LgPriority) {
-            return m_effectStamp - other.m_effectStamp;
-        }
-
-        return LgPriority - other.LgPriority;
-    }
-
-    public void Attach(CombatantComponent target) {
-        Target = target;
-        Target.Judge.AddEffectTask(new EffectRequest {
-            Effect = this,
-            Attach = true,
-        });
-    }
-
-    public void Remove() {
-        Target.Judge.AddEffectTask(new EffectRequest {
-            Effect = this,
-            Attach = false,
-        });
-    }
-
-    public void DoAttach() {
-        var reject = Target.BoardCastAny(effect => effect.OnBeforeAttach(this));
-        if (reject) return;
-        m_effectStamp = ms_stamp++;
-        Target.Effects.Add(this);
-        OnAfterAttach();
-    }
-
-    public void DoRemove() {
-        OnLeaveAttach();
-        var cur = this;
-        while (cur.Parent != null)
-            cur = cur.Parent;
-        Target.Effects.Remove(cur);
-    }
-
-#endregion
-
-    // Todo 调用&重写事件接口
-
 #region 事件接口
 
-    // Todo 全改为Action/Func
+    // Todo 调用&重写事件接口
 
     /*
     - 效果附着前
@@ -142,8 +94,8 @@ public class Effect : IComparable<Effect> {
     - 受到伤害前
     - 受到伤害后
     - 造成伤害后
-    - Todo 出牌前
-    - Todo 出牌后
+    - 出牌前
+    - 出牌后
      */
 
     /// <summary>
@@ -209,19 +161,62 @@ public class Effect : IComparable<Effect> {
     /// <param name="request">伤害请求</param>
     protected virtual void OnAfterTakeHpChange(HealthRequest request) { }
 
-    // Todo 改成出牌请求
-
     /// <summary>
     /// 出牌前调用.已有的所有效果都触发
     /// </summary>
-    /// <param name="card"></param>
-    protected virtual void OnBeforePlayCard(Card card) { }
+    /// <param name="request">出牌请求</param>
+    protected virtual void OnBeforePlayCard(PlayCardRequest request) { }
 
     /// <summary>
     /// 出牌后调用.已有的所有效果都触发
     /// </summary>
-    /// <param name="card"></param>
-    protected virtual void OnAfterPlayCard(Card card) { }
+    /// <param name="request">出牌请求</param>
+    protected virtual void OnAfterPlayCard(PlayCardRequest request) { }
+
+#endregion
+
+#endregion
+
+#region 公开函数
+
+    public int CompareTo(Effect other) {
+        if (LgPriority == other.LgPriority) {
+            return m_effectStamp - other.m_effectStamp;
+        }
+
+        return LgPriority - other.LgPriority;
+    }
+
+    public void Attach(CombatantComponent target) {
+        Target = target;
+        Target.Judge.AddEffectTask(new EffectRequest {
+            Effect = this,
+            Attach = true,
+        });
+    }
+
+    public void Remove() {
+        Target.Judge.AddEffectTask(new EffectRequest {
+            Effect = this,
+            Attach = false,
+        });
+    }
+
+    public void DoAttach() {
+        var reject = Target.BoardCastAny(effect => effect.OnBeforeAttach(this));
+        if (reject) return;
+        m_effectStamp = ms_stamp++;
+        Target.Effects.Add(this);
+        OnAfterAttach();
+    }
+
+    public void DoRemove() {
+        OnLeaveAttach();
+        var cur = this;
+        while (cur.Parent != null)
+            cur = cur.Parent;
+        Target.Effects.Remove(cur);
+    }
 
 #endregion
 
@@ -264,12 +259,12 @@ public class Effect : IComparable<Effect> {
         OnAfterTakeHpChange(request);
     }
 
-    public void BeforePlayCard(Card card) {
-        OnBeforePlayCard(card);
+    public void BeforePlayCard(PlayCardRequest request) {
+        OnBeforePlayCard(request);
     }
 
-    public void AfterPlayCard(Card card) {
-        OnAfterPlayCard(card);
+    public void AfterPlayCard(PlayCardRequest request) {
+        OnAfterPlayCard(request);
     }
 
 #endregion
