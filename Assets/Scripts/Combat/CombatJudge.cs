@@ -147,7 +147,11 @@ public class CombatJudge : MonoBehaviour {
             return;
         }
 
-        var manaCost = request.Cards.Sum(c => c.GetManaCost());
+        request.Cards.ForEach(c => c.LgManaCost = c.GetManaCost());
+        request.ManaCost = request.Cards.Sum(c => c.LgManaCost);
+        request.Causer.BoardCast(e => e.BeforePlayCard(request));
+
+        var manaCost = request.ManaCost;
         if (manaCost > request.Causer.State.Mana) {
             Debug.LogWarning("Not enough mana");
             return;
@@ -156,13 +160,22 @@ public class CombatJudge : MonoBehaviour {
         // 扣除法力值
         request.Causer.State.Mana -= manaCost;
 
-        // 从手牌中移除
-        request.Cards.ForEach(v => request.Causer.Cards.Remove(v));
+        // Todo 计算元素联动
 
-        m_taskQueue.Enqueue(new RequestTask {
-            Type     = RequestType.PlayCard,
-            PlayCard = request,
-        });
+        foreach (var card in request.Cards) {
+            m_taskQueue.Enqueue(new RequestTask {
+                Type = RequestType.PlayCard,
+                PlayCard = new PlayCardRequest {
+                    Causer   = request.Causer,
+                    Target   = request.Target,
+                    Cards    = request.Cards,
+                    ManaCost = manaCost,
+                    Current  = card,
+                },
+            });
+        }
+
+        AddLogicTask(() => request.Causer.BoardCast(e => e.AfterPlayCard(request)));
     }
 
     // getCard请求
@@ -198,11 +211,9 @@ public class CombatJudge : MonoBehaviour {
     }
 
     private static void DealPlayCardTask(PlayCardRequest request) {
-        var cards = request.Cards;
-        cards.ForEach(c => c.PlayCard(request));
+        request.Current.PlayCard(request);
     }
 
-    // Todo 摸牌动画
     private static void DealGetCardTask(GetCardRequest request) {
         var owner = request.Causer;
         var heap = owner.AllCards;

@@ -52,10 +52,7 @@ public class Card {
 
     // 出牌的逻辑操作
     public void PlayCard(PlayCardRequest request) {
-        request.Current = this;
-        request.Causer.BoardCast(e => e.BeforePlayCard(request));
         OnPlay(request);
-        request.Causer.BoardCast(e => e.AfterPlayCard(request));
     }
 
 #endregion

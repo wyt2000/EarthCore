@@ -22,6 +22,9 @@ public class Effect : IComparable<Effect> {
 
 #region 元信息
 
+    // 效果创建者
+    public CombatantComponent Causer;
+
     // 附着的目标
     public CombatantComponent Target;
 
@@ -162,13 +165,13 @@ public class Effect : IComparable<Effect> {
     protected virtual void OnAfterTakeHpChange(HealthRequest request) { }
 
     /// <summary>
-    /// 出牌前调用.已有的所有效果都触发
+    /// 出牌前调用.已有的所有效果都触发,(多张牌也只调用一次)
     /// </summary>
     /// <param name="request">出牌请求</param>
     protected virtual void OnBeforePlayCard(PlayCardRequest request) { }
 
     /// <summary>
-    /// 出牌后调用.已有的所有效果都触发
+    /// 出牌后调用.已有的所有效果都触发,(多张牌也只调用一次)
     /// </summary>
     /// <param name="request">出牌请求</param>
     protected virtual void OnAfterPlayCard(PlayCardRequest request) { }
