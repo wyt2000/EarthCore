@@ -1,18 +1,31 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Combat.Requests {
 public enum DamageType {
-    Physical, // 物理
-    Magical,  // 魔法
+    [Description("物理")]
+    Physical,
+
+    [Description("魔法")]
+    Magical,
 }
 
 // 五行元素
 public enum ElementType {
-    Metal, // 金 
-    Wood,  // 木
-    Water, // 水
-    Fire,  // 火
-    Earth, // 土
+    [Description("金")]
+    Metal,
+
+    [Description("木")]
+    Wood,
+
+    [Description("水")]
+    Water,
+
+    [Description("火")]
+    Fire,
+
+    [Description("土")]
+    Earth,
 }
 
 public class DamageParams {
