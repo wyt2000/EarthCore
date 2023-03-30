@@ -230,6 +230,52 @@ public static class EffectDetails {
         };
     }
 
+    // 魔法护盾(魔法护盾都拥有反伤效果，没减少一点魔法护盾值，对敌方造成1点土属性伤害)
+    private class EffectMagicAntiArmor : Effect {
+        public float Lg1AntiRate = 1;
+
+        public EffectMagicAntiArmor() {
+            UiName        = "魔法护盾";
+            UiDescription = "令自身魔法护盾值增加1点，每减少1点魔法护盾值，对敌方造成1点土属性伤害";
+            UiIconPath    = ""; // Todo
+
+            LgTags = new HashSet<EffectTag> {
+                EffectTag.Buff
+            };
+            LgMaxOverlay = 1000000;
+            LgPriority   = 100;
+        }
+
+        protected override bool OnBeforeSelfHpChange(HealthRequest request) {
+            if (base.OnBeforeSelfHpChange(request)) return true;
+            if (request.IsHeal) return false;
+            if (request.DamageParams.DamageType != DamageType.Magical) return false;
+            if (request.Value <= 1) return false;
+            var value = Mathf.FloorToInt(Mathf.Min(request.Value, LgOverlay));
+            LgOverlay -= value;
+            var damage = value * Lg1AntiRate;
+            Target.Attack(request.Causer, new HealthRequest {
+                Value = damage,
+                DamageParams = {
+                    DamageType = DamageType.Magical,
+                    Element    = ElementType.Earth,
+                },
+            });
+            if (LgOverlay <= 0) {
+                Remove();
+            }
+
+            return false;
+        }
+    }
+
+    public static Effect MagicAntiArmor(int cnt, float rate = 1) {
+        return new EffectMagicAntiArmor {
+            LgOverlay   = cnt,
+            Lg1AntiRate = rate
+        };
+    }
+
 #endregion
 
     // Todo 策划填充更多
