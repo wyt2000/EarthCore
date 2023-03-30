@@ -5,6 +5,7 @@ using Combat.Requests;
 using UnityEngine;
 
 namespace Designs {
+// Todo 优化文档
 // 本文件只填配置相关的信息,有关计算的都放到Templates里面去
 public static class EffectDetails {
 #region 元素联动
@@ -100,16 +101,28 @@ public static class EffectDetails {
         return new EffectFireWood();
     }
 
-    // Todo 水+木：宁静：本次出牌法力消耗减半
-    /*
-    protected override void OnBeforePlayCard(Card card) {
-        base.OnBeforePlayCard(card);
+    private class EffectWaterWood : Effect {
+        public EffectWaterWood() {
+            UiName        = "水木联动";
+            UiDescription = "宁静：下次出牌法力消耗减半";
+            LgTags = new HashSet<EffectTag> {
+                EffectTag.Buff
+            };
+        }
 
-        card.ManaCost /= 2;
-        
-        Remove();
+        protected override void OnBeforePlayCard(PlayCardRequest request) {
+            base.OnBeforePlayCard(request);
+
+            request.ManaCost /= 2;
+
+            Remove();
+        }
     }
-     */
+
+    // 水+木：宁静：下次出牌法力消耗减半
+    public static Effect Water_Wood() {
+        return new EffectWaterWood();
+    }
 
     private class EffectFireWoodEarth : Effect {
         public EffectFireWoodEarth() {
@@ -174,15 +187,62 @@ public static class EffectDetails {
         return new EffectMetalEarthWater();
     }
 
-    // Todo 金+水+木：不竭：本次出牌法力消耗减半，抽一张牌
+    private class EffectMetalWaterWood : Effect {
+        public EffectMetalWaterWood() {
+            UiName        = "金水木联动";
+            UiDescription = "不竭：本次出牌法力消耗减半，抽一张牌";
+            LgTags = new HashSet<EffectTag> {
+                EffectTag.Buff
+            };
+        }
 
-    // Todo 火+土+金：淬炼：为敌方施加三层淬炼效果，每回合开始时消耗一层淬炼效果对敌方造成5%最大生命值物理伤害。
+        protected override void OnBeforePlayCard(PlayCardRequest request) {
+            base.OnBeforePlayCard(request);
 
-    // Todo 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
-    public static Effect JiSui() {
+            request.ManaCost /= 2;
+            Target.GetCard(1);
+
+            Remove();
+        }
+    }
+
+    // 金+水+木：不竭：本次出牌法力消耗减半，抽一张牌
+    public static Effect Metal_Water_Wood() {
+        return new EffectMetalWaterWood();
+    }
+
+    // 火+土+金：淬炼：为敌方施加三层淬炼效果，每回合开始时消耗一层淬炼效果对敌方造成5%最大生命值物理伤害。
+    private class EffectFireEarthMetal : Effect {
+        public EffectFireEarthMetal() {
+            UiName        = "火土金联动";
+            UiDescription = "淬炼：为敌方施加三层淬炼效果，每回合开始时消耗一层淬炼效果对敌方造成5%最大生命值物理伤害";
+            LgTags = new HashSet<EffectTag> {
+                EffectTag.DeBuff
+            };
+            LgRemainingRounds = 3;
+        }
+
+        protected override void OnBeforeTurnStart() {
+            base.OnBeforeTurnStart();
+
+            Causer.Attack(Target, new HealthRequest {
+                Value = 0.05f * Target.State.HealthMax,
+                DamageParams = {
+                    DamageType = DamageType.Physical,
+                }
+            });
+        }
+    }
+
+    public static Effect Fire_Earth_Metal() {
+        return new EffectFireEarthMetal();
+    }
+
+    // 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
+    public static Effect Water_Fire_Wood() {
         return new EffectTemporary() {
             UiName            = "水火木联动",
-            UiDescription     = "",
+            UiDescription     = "击碎：令敌方物理和魔法护盾值各减少20%",
             UiIconPath        = "",
             LgRemainingRounds = 3,
             LgAddState = {
@@ -193,6 +253,24 @@ public static class EffectDetails {
     }
 
     //Todo  金+木+水+火+土：净化：直接击碎全部敌方法印，斩杀生命值低于10%的敌人，不计入出牌次数。
+
+#endregion
+
+#region 元素击碎
+
+    // Todo 
+
+    /*
+金：枯竭：令对方造成的物理伤害降低20%（具体数值可能受卡牌效果影响）
+
+水：破魔：令对方受到的魔法伤害增加20%（具体数值可能受卡牌效果影响）
+
+木：粉碎：对对方造成10%当前生命值击碎卡牌类型的伤害（具体数值可能受卡牌效果影响）
+
+火：破甲：令对方受到的物理伤害增加20%（具体数值可能受卡牌效果影响）
+
+土：弱化：令对方造成的魔法伤害降低20%（具体数值可能受卡牌效果影响）
+     */
 
 #endregion
 
