@@ -1,5 +1,6 @@
 ﻿using Combat.Cards;
 using Combat.Requests;
+using UnityEngine;
 
 namespace Designs {
 public static class CardDetails {
@@ -15,11 +16,11 @@ public static class CardDetails {
      */
     public static Card Probing() {
         return new Card {
-            Name        = "试探",
-            Description = "为自身添加25物理护盾值",
-            ImagePath   = "", // Todo 
-            ManaCost    = 0,
-            Element     = ElementType.Metal,
+            UiName        = "试探",
+            UiDescription = "为自身添加25物理护盾值",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 0,
+            LgElement     = ElementType.Metal,
             OnPlay = req =>
             {
                 req.Causer.Attach(EffectDetails.AddPhysicalArmorExtra(25, 2));
@@ -47,11 +48,11 @@ public static class CardDetails {
      */
     public static Card ManaSurge() {
         return new Card {
-            Name         = "法力狂涌",
-            Description  = "50*（100%+50%当前法力值）",
-            ImagePath    = "", // Todo 
-            ManaCostFunc = req => req.Causer.State.Mana * 0.5f,
-            Element      = ElementType.Water,
+            UiName         = "法力狂涌",
+            UiDescription  = "50*（100%+50%当前法力值）",
+            UiImagePath    = "", // Todo 
+            LgManaCostFunc = card => card.Owner.State.Mana * 0.5f,
+            LgElement      = ElementType.Water,
             OnPlay = req =>
             {
                 req.Causer.Attack(req.Target, new HealthRequest {
@@ -77,11 +78,11 @@ public static class CardDetails {
      */
     public static Card Drain() {
         return new Card {
-            Name        = "汲取",
-            Description = "回复本次总伤害50%的生命值",
-            ImagePath   = "", // Todo 
-            ManaCost    = 10,
-            Element     = ElementType.Wood,
+            UiName        = "汲取",
+            UiDescription = "回复本次总伤害50%的生命值",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 10,
+            LgElement     = ElementType.Wood,
             OnPlay = req =>
             {
                 var realDamage = 0f;
@@ -112,12 +113,12 @@ public static class CardDetails {
      */
     public static Card Awakening() {
         return new Card {
-            Name        = "清醒",
-            Description = "恢复10点法力",
-            ImagePath   = "", // Todo 
-            ManaCost    = 0,
-            Element     = ElementType.Wood,
-            OnPlay      = req => { req.Causer.State.Mana += 10; }
+            UiName        = "清醒",
+            UiDescription = "恢复10点法力",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 0,
+            LgElement     = ElementType.Wood,
+            OnPlay        = req => { req.Causer.State.Mana += 10; }
         };
     }
 
@@ -133,16 +134,16 @@ public static class CardDetails {
      */
     public static Card FireSuppression() {
         return new Card {
-            Name        = "火力压制",
-            Description = "5*10",
-            ImagePath   = "", // Todo 
-            ManaCost    = 0,
-            Element     = ElementType.Fire,
+            UiName        = "火力压制",
+            UiDescription = "造成五次伤害,每次10点",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 0,
+            LgElement     = ElementType.Fire,
             OnPlay = req =>
             {
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < 5; i++) {
                     req.Causer.Attack(req.Target, new HealthRequest {
-                        Value = 5,
+                        Value = 10,
                         DamageParams = {
                             DamageType = DamageType.Physical,
                             Element    = ElementType.Fire,
@@ -165,14 +166,15 @@ public static class CardDetails {
      */
     public static Card MagicGuard() {
         return new Card {
-            Name        = "魔法守护",
-            Description = "浸染，获得50点魔法护盾",
-            ImagePath   = "", // Todo 
-            ManaCost    = 10,
-            Element     = ElementType.Earth,
+            UiName        = "魔法守护",
+            UiDescription = "浸染，获得50点魔法护盾",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 10,
+            LgElement     = ElementType.Earth,
             OnPlay = req =>
             {
-                // Todo 添加反甲buff
+                // 添加反甲buff Todo 浸染效果
+                req.Causer.Attach(EffectDetails.MagicAntiArmor(50));
             }
         };
     }
@@ -189,13 +191,16 @@ public static class CardDetails {
      */
     public static Card Thirst() {
         return new Card {
-            Name        = "渴望",
-            Description = "唯一，不计入出牌次数，抽两张牌",
-            ImagePath   = "", // Todo 
-            ManaCost    = 10,
+            UiName        = "渴望",
+            UiDescription = "唯一，不计入出牌次数，抽两张牌",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 10,
             OnPlay = req =>
             {
-                // Todo 发起摸牌请求
+                // 发起摸牌请求
+                req.Causer.GetCard(new GetCardRequest {
+                    Count = 2,
+                });
             }
         };
     }
@@ -212,13 +217,18 @@ public static class CardDetails {
     */
     public static Card FireSummon() {
         return new Card {
-            Name        = "火之召唤",
-            Description = "唯一，不计入出牌次数，从牌组随机抽一张火元素卡牌",
-            ImagePath   = "", // Todo 
-            ManaCost    = 10,
+            UiName        = "火之召唤",
+            UiDescription = "唯一，不计入出牌次数，从牌组随机抽一张火元素卡牌",
+            UiImagePath   = "", // Todo 
+            LgManaCost    = 10,
             OnPlay = req =>
             {
-                // Todo 发起摸牌请求
+                // 发起摸牌请求
+                req.Causer.GetCard(new GetCardRequest {
+                    Count       = 1,
+                    Filter      = c => c.LgElement == ElementType.Fire,
+                    SelectIndex = n => Random.Range(0, n)
+                });
             }
         };
     }
