@@ -73,7 +73,7 @@ public class CombatantComponent : MonoBehaviour {
             current +
             $" - [{c.LgElement?.ToDescription() ?? "无"}]{c.UiName}({c.GetManaCost()}) : {c.UiDescription} \n"
         );
-        str += $"当前牌堆 : {AllCards.Count} \n";
+        str += $"牌堆剩余卡牌 : {AllCards.Count} \n";
 
         statusBoard.text = str;
     }
@@ -87,7 +87,13 @@ public class CombatantComponent : MonoBehaviour {
     }
 
     public void Attach(Effect effect) {
-        effect.Attach(this);
+        AttachTo(effect, this);
+    }
+
+    public void AttachTo(Effect effect, CombatantComponent target) {
+        effect.Causer = this;
+        effect.Target = target;
+        effect.Attach(target);
     }
 
     public void Attack(CombatantComponent target, HealthRequest request) {
@@ -113,6 +119,12 @@ public class CombatantComponent : MonoBehaviour {
     public void GetCard(GetCardRequest request) {
         request.Causer = this;
         Judge.AddGetCardTask(request);
+    }
+
+    public void GetCard(int cnt) {
+        GetCard(new GetCardRequest {
+            Count = cnt
+        });
     }
 
     public void BoardCast(Action<Effect> action) {
