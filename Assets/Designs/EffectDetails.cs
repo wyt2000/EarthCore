@@ -14,9 +14,9 @@ public static class EffectDetails {
         private readonly EffectTrigger m_trigger;
 
         public EffectMetalEarth() {
-            Name        = "金土联动";
-            Description = "免疫：免疫下一次伤害";
-            Tags = new HashSet<EffectTag> {
+            UiName        = "金土联动";
+            UiDescription = "免疫：免疫下一次伤害";
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             };
             m_trigger = new EffectTrigger(this);
@@ -41,13 +41,13 @@ public static class EffectDetails {
     /// <returns></returns>
     public static Effect Fire_Earth() {
         return new EffectTemporary() {
-            Name        = "火土联动",
-            Description = "固定：令自身魔法护盾值增加20%",
-            AddState = {
+            UiName        = "火土联动",
+            UiDescription = "固定：令自身魔法护盾值增加20%",
+            LgAddState = {
                 MagicResistancePercent = 20
             },
-            RemainingRounds = 2,
-            Tags = new HashSet<EffectTag> {
+            LgRemainingRounds = 2,
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             }
         };
@@ -56,13 +56,13 @@ public static class EffectDetails {
     // 水+金：滋润：令自身物理护盾值增加20%
     public static Effect Water_Metal() {
         return new EffectTemporary() {
-            Name        = "水金联动",
-            Description = "滋润：令自身物理护盾值增加20%",
-            AddState = {
+            UiName        = "水金联动",
+            UiDescription = "滋润：令自身物理护盾值增加20%",
+            LgAddState = {
                 PhysicalArmorPercent = 20
             },
-            RemainingRounds = 2,
-            Tags = new HashSet<EffectTag> {
+            LgRemainingRounds = 2,
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             }
         };
@@ -72,9 +72,9 @@ public static class EffectDetails {
         private readonly EffectTrigger m_trigger;
 
         public EffectFireWood() {
-            Name        = "火木联动";
-            Description = "引燃：令敌方获得5层燃烧，每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害（额外伤害小于1时改为1）";
-            Tags = new HashSet<EffectTag> {
+            UiName        = "火木联动";
+            UiDescription = "引燃：令敌方获得5层燃烧，每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害（额外伤害小于1时改为1）";
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.DeBuff
             };
             m_trigger = new EffectTrigger(this) {
@@ -113,9 +113,9 @@ public static class EffectDetails {
 
     private class EffectFireWoodEarth : Effect {
         public EffectFireWoodEarth() {
-            Name        = "火木土联动";
-            Description = "自燃：下次受到的伤害时敌人受到等量火元素伤害";
-            Tags = new HashSet<EffectTag> {
+            UiName        = "火木土联动";
+            UiDescription = "自燃：下次受到的伤害时敌人受到等量火元素伤害";
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             };
         }
@@ -144,9 +144,9 @@ public static class EffectDetails {
         private readonly EffectTrigger m_trigger;
 
         public EffectMetalEarthWater() {
-            Name        = "金土水联动";
-            Description = "洞察：无效敌方下一次的伤害或控制效果";
-            Tags = new HashSet<EffectTag> {
+            UiName        = "金土水联动";
+            UiDescription = "洞察：无效敌方下一次的伤害或控制效果";
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             };
             m_trigger = new EffectTrigger(this) {
@@ -158,7 +158,7 @@ public static class EffectDetails {
         protected override bool OnBeforeAttach(Effect effect) {
             var reject = base.OnBeforeAttach(effect);
             if (m_trigger.InValid) return reject;
-            return reject && m_trigger.Trigger(effect.Tags.Contains(EffectTag.Control));
+            return reject && m_trigger.Trigger(effect.LgTags.Contains(EffectTag.Control));
         }
 
         // 免疫伤害效果 Todo 可以使用复合buff进行复用
@@ -181,11 +181,11 @@ public static class EffectDetails {
     // Todo 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
     public static Effect JiSui() {
         return new EffectTemporary() {
-            Name            = "水火木联动",
-            Description     = "",
-            IconPath        = "",
-            RemainingRounds = 3,
-            AddState = {
+            UiName            = "水火木联动",
+            UiDescription     = "",
+            UiIconPath        = "",
+            LgRemainingRounds = 3,
+            LgAddState = {
                 PhysicalArmorPercent   = -20,
                 MagicResistancePercent = -20,
             }
@@ -201,14 +201,14 @@ public static class EffectDetails {
     // 物理护盾百分比提升
     public static Effect AddPhysicalArmorPercent(float percent, int round) {
         return new EffectTemporary {
-            Name        = "物理护盾提升",
-            Description = $"令自身物理护盾值增加{percent}%",
-            IconPath    = "", // Todo
-            AddState = {
+            UiName        = "物理护盾提升",
+            UiDescription = $"令自身物理护盾值增加{percent}%",
+            UiIconPath    = "", // Todo
+            LgAddState = {
                 PhysicalArmorPercent = percent
             },
-            RemainingRounds = round,
-            Tags = new HashSet<EffectTag> {
+            LgRemainingRounds = round,
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             }
         };
@@ -217,14 +217,14 @@ public static class EffectDetails {
     // 物理护盾额外提升
     public static Effect AddPhysicalArmorExtra(float extra, int round) {
         return new EffectTemporary {
-            Name        = "物理护盾提升",
-            Description = $"令自身物理护盾值增加{extra}",
-            IconPath    = "", // Todo
-            AddState = {
+            UiName        = "物理护盾提升",
+            UiDescription = $"令自身物理护盾值增加{extra}",
+            UiIconPath    = "", // Todo
+            LgAddState = {
                 PhysicalArmorExtra = extra
             },
-            RemainingRounds = round,
-            Tags = new HashSet<EffectTag> {
+            LgRemainingRounds = round,
+            LgTags = new HashSet<EffectTag> {
                 EffectTag.Buff
             }
         };

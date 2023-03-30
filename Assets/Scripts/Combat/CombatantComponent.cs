@@ -30,7 +30,7 @@ public class CombatantComponent : MonoBehaviour {
         MagicResistanceExtra   = 0,
     };
 
-    public readonly IList<Effect> Effects = new List<Effect>();
+    public readonly ISet<Effect> Effects = new SortedSet<Effect>();
 
     private void Start() {
         State.Health = State.HealthMax;
@@ -56,12 +56,11 @@ public class CombatantComponent : MonoBehaviour {
     }
 
     public void BoardCast(Action<Effect> action) {
-        // Todo 同优先级是否保持顺序?
-        Effects.OrderBy(v => v.Priority).ForEach(action);
+        Effects.ForEach(action);
     }
 
     public bool BoardCastAny(Func<Effect, bool> action) {
-        return Effects.OrderBy(v => v.Priority).Any(action);
+        return Effects.Any(action);
     }
 }
 }

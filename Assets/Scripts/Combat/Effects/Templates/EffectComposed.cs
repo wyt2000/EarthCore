@@ -5,14 +5,14 @@ using Combat.Requests;
 using Utils;
 
 namespace Combat.Effects.Templates {
-// 复合buff效果
+// 复合buff效果(需要保证所有buff的生命周期一致)
 public sealed class EffectComposed : Effect {
     private readonly IList<Effect> m_effects;
 
     public EffectComposed(IEnumerable<Effect> effects) {
         m_effects = effects.ToList();
         foreach (var effect in m_effects) {
-            effect.SetParent(this);
+            effect.Parent = this;
         }
     }
 

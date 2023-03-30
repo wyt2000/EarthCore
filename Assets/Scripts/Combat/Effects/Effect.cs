@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using Combat.Cards;
 using Combat.Requests;
 
@@ -12,64 +12,84 @@ public enum EffectTag {
 }
 
 // 效果 基类
-public class Effect {
-    private static readonly IList<Effect> AllEffects = new List<Effect>();
+public class Effect : IComparable<Effect> {
+#region 私有字段
 
-    protected CombatantComponent Target;
+    private static int ms_stamp = 0;
 
-    private Effect m_parent; // Todo 辅助实现复合效果
+    private int m_effectStamp = 0;
 
-    // Todo 配置项命名规范:
-    // UI: U_
-    // 逻辑: L_
-    // 事件: On_
+#endregion
+
+#region 元信息
+
+    // 附着的目标
+    public CombatantComponent Target;
+
+    // 辅助实现复合效果
+    public Effect Parent;
+
+#endregion
+
+#region 配置项
+
+    // 配置项命名规范:
+    // UI: Ui
+    // 逻辑: Lg
+    // 事件: On
     // 若子类新增,则按U1,U2,L1,L2,On1,On2等格式命名,数字取决于继承层级
     // 所有配置项均为public,方便初始化
 
 #region UI配置
 
-    // Todo 完善UI/动画/粒子效果等配置
-
     // 效果名
-    public string Name = "效果";
+    public string UiName = "效果";
 
     // 效果描述(鼠标悬浮显示)
-    public string Description = "效果描述";
+    public string UiDescription = "效果描述";
 
     // 效果图标路径
-    public string IconPath = "";
+    public string UiIconPath = "";
 
-    // 是否需要UI显示(例如立即伤害那种就不需要)
-    public bool NoUi = false;
+    // 是否隐藏UI显示(例如立即伤害那种就不需要)
+    public bool UiHidde = false;
+
+    // Todo 完善UI/动画/粒子效果等配置
 
 #endregion
 
 #region 逻辑配置
 
-    // Todo 效果唯一id自动生成
-
     // Todo 完善逻辑相关配置
 
     // effect标签
-    public ISet<EffectTag> Tags = new HashSet<EffectTag>();
+    public ISet<EffectTag> LgTags = new HashSet<EffectTag>();
 
     // 剩余持续回合,为0时表示不限制回合次数
-    public int RemainingRounds;
+    public int LgRemainingRounds;
 
     // 最大叠加层数
-    public int MaxOverlay = 1;
+    public int LgMaxOverlay = 1;
 
     // 叠加层数
-    public int Overlay = 1;
+    public int LgOverlay = 1;
 
     // 结算优先级(越小越优先)
-    public int Priority = 0;
+    public int LgPriority = 0;
 
 #endregion
 
-#region 生命周期
+#endregion
 
-    // Todo 解决触发事件时增删effect可能导致非法操作的问题,如延迟一帧加入到集合中 
+#region 公开函数
+
+    public int CompareTo(Effect other) {
+        if (LgPriority == other.LgPriority) {
+            return m_effectStamp - other.m_effectStamp;
+        }
+
+        return LgPriority - other.LgPriority;
+    }
 
     public void Attach(CombatantComponent target) {
         Target = target;
@@ -86,18 +106,10 @@ public class Effect {
         });
     }
 
-#endregion
-
-#region 公开函数
-
-    public void SetParent(Effect parent) {
-        m_parent = parent;
-    }
-
     public void DoAttach() {
-        var reject = AllEffects.Any(effect => effect.OnBeforeAttach(this));
+        var reject = Target.BoardCastAny(effect => effect.OnBeforeAttach(this));
         if (reject) return;
-        AllEffects.Add(this);
+        m_effectStamp = ms_stamp++;
         Target.Effects.Add(this);
         OnAfterAttach();
     }
@@ -105,10 +117,9 @@ public class Effect {
     public void DoRemove() {
         OnLeaveAttach();
         var cur = this;
-        while (cur.m_parent != null)
-            cur = cur.m_parent;
+        while (cur.Parent != null)
+            cur = cur.Parent;
         Target.Effects.Remove(cur);
-        AllEffects.Remove(cur);
     }
 
 #endregion
@@ -234,7 +245,7 @@ public class Effect {
 
     public void AfterTurnEnd() {
         OnAfterTurnEnd();
-        if (--RemainingRounds == 0) Remove();
+        if (--LgRemainingRounds == 0) Remove();
     }
 
     public void BeforeTakeHpChange(HealthRequest request) {

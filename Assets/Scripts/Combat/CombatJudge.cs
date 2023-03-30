@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Combat.Effects.Details;
 using Combat.Requests;
+using Designs;
 using UnityEngine;
 using Utils;
 
@@ -163,7 +163,7 @@ public class CombatJudge : MonoBehaviour {
             str += $"health : {combatant.State.Health} \n";
             str += $"armor : {combatant.State.MagicResistance} \n";
             str += $"effects : \n";
-            combatant.Effects.ForEach(e => str += $" - {e.Name} , remain : {e.RemainingRounds} \n");
+            combatant.Effects.ForEach(e => str += $" - {e.UiName} , remain : {e.LgRemainingRounds} \n");
             msg += str;
         }
 
