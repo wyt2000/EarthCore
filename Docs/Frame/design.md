@@ -1,6 +1,6 @@
 ﻿# 游戏示意图
 
-![](images/demo.png)
+![](../Images/demo.png)
 
 # 游戏世界观
 
