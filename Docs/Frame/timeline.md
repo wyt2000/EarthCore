@@ -17,7 +17,7 @@ end
 graph TB
 subgraph "具体战斗流程(Effects表示玩家附着的所有效果,Effect表示新增/移除的效果)"
     A[战斗开始] --> B[初始摸牌请求x2]
-    B --> Effects.OnBeforeTurnStart --> C[回合开始]
+    B --> BC[Effects.OnBeforeTurnStart] --> C[回合开始]
     C --> 发起摸牌请求x1 --> F
     D --> |主动结束| E[等待玩家弃牌]
     D --> |等待超时| E
@@ -25,7 +25,7 @@ subgraph "具体战斗流程(Effects表示玩家附着的所有效果,Effect表�
     E --> |等待超时| G[弃牌并回合结束]
     E --> |弃牌请求| G
     F --> |结算完毕| D[出牌阶段]
-    G --> Effects.OnAfterTurnEnd --> |切换玩家| C
+    G --> Effects.OnAfterTurnEnd --> |切换玩家| BC
     收到新增效果请求 --> Effects.OnBeforeAttach --> |全都返回false| 附着效果 --> Effect.OnAfterAttach
     收到移除效果请求 --> 移除效果 --> Effect.OnLeaveAttach
     收到生命值修改请求 --> Effects.OnBeforeTakeHpChange --> Effects.OnBeforeSelfHpChange --> |全都返回false| 修改生命值 --> OnAfterSelfHpChange --> Effects.OnAfterTakeHpChange
