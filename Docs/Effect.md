@@ -1,71 +1,63 @@
-```mermaid
-graph TD
+| 免疫                 |                             |
+| -------------------- | --------------------------- |
+| OnBeforeSelfHpChange | 即将到来的伤害置0，移除自身 |
+|                      |                             |
+|                      |                             |
 
-%%S0[回合开始]
-S1[OnBeforeTurnStart]
+| 固定             |                             |
+| ---------------- | --------------------------- |
+| OnBeforePlayCard | 令附着目标魔法护盾值增加20% |
+| OnAfterPlayCard  | 移除自身                    |
+|                  |                             |
 
-%%S2[回合结束]
-S3[OnAfterTurnEnd]
+| 滋润             |                             |
+| ---------------- | --------------------------- |
+| OnBeforePlayCard | 令附着目标物理护盾值增加20% |
+| OnAfterPlayCard  | 移除自身                    |
+|                  |                             |
 
-%%S4[上buff]
-S5[OnBeforeAttach]
-S6[OnAfterAttach]
+| 引燃                |                                                      |
+| ------------------- | ---------------------------------------------------- |
+| OnAfterTakeHpChange | 对敌人造成2%当前生命值的物理火属性伤害，削减一层自身 |
+|                     |                                                      |
+|                     |                                                      |
 
-%%S7[下buff]
-S8[OnLeaveAttach]
+| 自燃                |                                        |
+| ------------------- | -------------------------------------- |
+| OnAfterTakeHpChange | 对敌人造成等量火属性物理伤害，移除自身 |
+|                     |                                        |
+|                     |                                        |
 
-%%S9[生命修改]
-S10[OnBeforeTakeHpChange]
-S11[OnBeforeSelfHpChange]
-%%S12[元素击碎]
-S13[OnAfterSelfHpChange]
-S14[OnAfterTakeHpChange]
+|      |      |
+| ---- | ---- |
 
-%%S15[出牌]
-S16[OnBeforePlayBatchCard]
-%%S17[元素联动]
-S18[每张卡的OnExecute]
-S19[OnAfterPlayBatchCard]
+| 洞察                 |                                  |
+| -------------------- | -------------------------------- |
+| OnBeforeAttach       | 移除即将附着的负面效果，移除自身 |
+| OnBeforeSelfHpChange | 即将到来的伤害置0，移除自身      |
+|                      |                                  |
 
-%%S20[预览法力消耗]
-%%S21[计算卡片动态法力消耗]
-S22[OnPostDealManaCost]
+| 不竭             |              |
+| ---------------- | ------------ |
+| OnBeforePlayCard | 法力消耗减半 |
+|                  |              |
+|                  |              |
 
-%%S23[上buff]
-S24[OnBeforeAttach]
-S25[OnAfterAttach]
+| 淬炼              |                                                          |
+| ----------------- | -------------------------------------------------------- |
+| OnBeforeTurnStart | 对敌方造成一次5%最大生命值的火属性物理伤害，削减一层自身 |
+|                   |                                                          |
+|                   |                                                          |
 
-%%S26[下buff]
-S27[OnLeaveAttach]
+| 击碎                 |                               |
+| -------------------- | ----------------------------- |
+| OnBeforeTakeHpChange | 令敌方物理和魔法护盾各减少20% |
+|                      |                               |
+|                      |                               |
 
-%%S29[生命修改]
-S30[OnBeforeTakeHpChange]
-S31[OnBeforeSelfHpChange]
-%%S32[元素击碎]
-S33[OnAfterSelfHpChange]
-S34[OnAfterTakeHpChange]
-
-%%S44[上buff]
-S45[OnBeforeAttach]
-S46[OnAfterAttach]
-
-%%S47[下buff]
-S48[OnLeaveAttach]
-
-%%S49[生命修改]
-S50[OnBeforeTakeHpChange]
-S51[OnBeforeSelfHpChange]
-%%S52[元素击碎]
-S53[OnAfterSelfHpChange]
-S54[OnAfterTakeHpChange]
-subgraph 回合开始阶段
-S1--回合开始-->S5-->S6--上buff-->S8--下buff-->S10-->S11--元素击碎-->S13-->S14
-end
-subgraph 出牌
-S14--生命修改-->S22--预览法力消耗--计算卡牌动态法力消耗-->S16--出牌--元素联动-->S18-->S19-->S24-->S25--上buff-->S27--下buff-->S30-->S31--元素击碎-->S33-->S34--生命修改-->S22
-end
-subgraph 回合结束阶段
-S34--弃牌-->S3-->S45-->S46--上buff-->S48--下buff-->S50-->S51--元素击碎-->S53-->S54
-end
-```
+| 清算            |                                                |
+| --------------- | ---------------------------------------------- |
+| OnAfterPlayCard | 对敌方造成等于清算值的水属性魔法伤害，移除自身 |
+|                 |                                                |
+|                 |                                                |
 
