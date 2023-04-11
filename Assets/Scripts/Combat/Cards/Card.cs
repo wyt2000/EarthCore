@@ -32,6 +32,12 @@ public class Card {
     // 动态法力消耗
     public Func<Card, float> LgManaCostFunc = null;
 
+    // 卡牌伤害
+    public float LgDamage;
+
+    // 动态卡牌伤害
+    public Func<Card, float> LgDamageFunc = null;
+
     // 卡牌本身的元素类型(仅用于触发元素联动,不一定造成伤害)
     public ElementType? LgElement = null;
 
