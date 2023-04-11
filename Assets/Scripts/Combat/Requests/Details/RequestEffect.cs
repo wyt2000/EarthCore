@@ -1,4 +1,5 @@
-﻿using Combat.Effects;
+﻿using System.Collections;
+using Combat.Effects;
 using UnityEngine;
 
 namespace Combat.Requests.Details {
@@ -11,24 +12,26 @@ public class RequestEffect : CombatRequest {
 
 #endregion
 
-    public override bool PreCheckValid() {
+    public override bool CanEnqueue() {
         if (Effect != null && Effect.Target != null) return true;
         Debug.LogWarning("Invalid effect request");
         return false;
     }
 
-    public override void ExecuteLogic() {
+    public override IEnumerator Execute() {
         var effect = Effect;
         var attach = Attach;
         if (attach) {
             effect.DoAttach();
+            if (!effect.UiHidde) yield return Effect.Target.effectList.AddEffect(effect);
         }
         else {
             effect.DoRemove();
+            if (!effect.UiHidde) yield return Effect.Target.effectList.RemoveEffect(effect);
         }
     }
 
-    public override string ToString() {
+    public override string Description() {
         return $"{(Attach ? "附着" : "脱离")} {Effect.UiName}";
     }
 }

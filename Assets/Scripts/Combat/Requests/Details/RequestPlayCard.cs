@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System.Collections;
 using Combat.Cards;
+using UnityEngine;
 
 namespace Combat.Requests.Details {
 // 批量出牌请求指派的单个出牌请求
@@ -14,17 +15,28 @@ public class RequestPlayCard : CombatRequest {
 
 #endregion
 
-    public override bool PreCheckValid() {
-        throw new NotImplementedException();
+    public override bool CanEnqueue() {
+        if (Batch != null && Current != null) return true;
+        Debug.LogError($"批量出牌请求指派的单个出牌请求的Batch或Current为空");
+        return false;
     }
 
-    public override void ExecuteLogic() {
-        // request.Current.PlayCard(request);
-        throw new NotImplementedException();
+    // Todo 加动画
+    public override IEnumerator Execute() {
+        Current.OnExecute(this);
+        yield break;
     }
 
-    public override string ToString() {
-        return $"出牌";
+    public override string Description() {
+        return $"出牌:{Current.UiName}";
     }
+
+#region 公开函数
+
+    public void TakeDamage() {
+        Current.TakeDamage(this);
+    }
+
+#endregion
 }
 }

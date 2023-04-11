@@ -1,24 +1,24 @@
 ﻿using System;
 
 namespace Combat.Requests.Details {
-// 用来做延迟调用
-public sealed class RequestLogic : CombatRequest {
+// 后处理逻辑(所有请求执行完毕后执行)
+public class RequestPostLogic : CombatRequest {
 #region 配置项
 
-    public Action Logic;
+    public Action OnFinish;
 
 #endregion
 
     public override bool CanEnqueue() {
-        return Logic != null;
+        return OnFinish != null;
     }
 
     protected override void ExecuteNoCross() {
-        Logic.Invoke();
+        OnFinish.Invoke();
     }
 
     public override string ToString() {
-        return "自定义逻辑";
+        return "后处理逻辑";
     }
 }
 }

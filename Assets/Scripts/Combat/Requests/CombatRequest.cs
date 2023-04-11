@@ -1,7 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Combat.Requests {
 public abstract class CombatRequest {
+#region 配置项
+
     // 所处上下文
     public CombatJudge Judge;
 
@@ -11,20 +14,65 @@ public abstract class CombatRequest {
     // 用于拦截请求
     public bool Reject;
 
-    // 检查请求是否合法
-    public abstract bool PreCheckValid();
+    // 结点
+    public LinkedListNode<CombatRequest> Node;
 
-    // 修改逻辑状态前的动画
-    public virtual IEnumerable PlayPreAnimation() {
+#endregion
+
+#region 虚函数
+
+    // 检查请求是否能入队列
+    public abstract bool CanEnqueue();
+
+    // 真正执行请求(可以多帧执行)
+    public virtual IEnumerator Execute() {
+        ExecuteNoCross();
         yield break;
     }
 
-    // 修改逻辑状态的代码
-    public abstract void ExecuteLogic();
-
-    // 修改逻辑状态后的动画
-    public virtual IEnumerable PlayPostAnimation() {
-        yield break;
+    // 真正执行请求(无跨帧)
+    protected virtual void ExecuteNoCross() {
+        throw new System.NotImplementedException();
     }
+
+    // 任务描述
+    public virtual string Description() {
+        return null;
+    }
+
+    public override string ToString() {
+        return Description() ?? base.ToString();
+    }
+
+#endregion
+
+#region 辅助函数
+
+    protected void Add(CombatRequest request) {
+        request.Causer ??= Causer;
+        Judge.Requests.Add(request);
+    }
+
+    protected void AddFirst(CombatRequest request) {
+        request.Causer ??= Causer;
+        Judge.Requests.AddFirst(request);
+    }
+
+    protected void AddLast(CombatRequest request) {
+        request.Causer ??= Causer;
+        Judge.Requests.AddLast(request);
+    }
+
+    protected void AddBefore(CombatRequest request) {
+        request.Causer ??= Causer;
+        Judge.Requests.AddBefore(this, request);
+    }
+
+    protected void AddAfter(CombatRequest request) {
+        request.Causer ??= Causer;
+        Judge.Requests.AddAfter(this, request);
+    }
+
+#endregion
 }
 }

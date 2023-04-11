@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using Combat.Cards;
 using UnityEngine;
@@ -19,34 +20,19 @@ public class RequestGetCard : CombatRequest {
 
 #endregion
 
-    public override bool PreCheckValid() {
+    public override bool CanEnqueue() {
         if (Causer != null && Count > 0) return true;
         Debug.LogWarning("Invalid card request");
         return false;
     }
 
-    public override void ExecuteLogic() {
-        var owner = Causer;
-        var heap = owner.AllCards;
-        var cards = owner.Cards;
-        var count = Count;
-        var filter = Filter;
-        var selector = SelectIndex;
-        var valid = heap.Where(filter).ToList();
-        // Todo 优化摸牌算法到O(n)
-        while (count-- > 0) {
-            var index = selector(valid.Count);
-            index = Math.Clamp(0, index, valid.Count);
-            if (index == valid.Count) continue;
-            var card = valid[index];
-            card.Owner = owner;
-            cards.Add(card);
-            valid.RemoveAt(index);
-            heap.Remove(card);
-        }
+    public override IEnumerator Execute() {
+        var cards = Causer.Heap.GetCards(this);
+        Causer.Cards.AddRange(cards);
+        return cards.Select(card => Causer.cardSlot.AddCard(card)).GetEnumerator();
     }
 
-    public override string ToString() {
+    public override string Description() {
         return $"{Causer.name}摸{Count}张牌";
     }
 }
