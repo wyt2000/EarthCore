@@ -34,16 +34,14 @@ public static class ElementTypeFunc {
         return (ElementType)prev;
     }
 
+    // type1克制type2
     public static bool IsNext(this ElementType type1, ElementType type2) {
         return Next(type1) == type2;
     }
 
+    // type1被type2克制
     public static bool IsPrev(this ElementType type1, ElementType type2) {
         return Prev(type1) == type2;
-    }
-
-    public static bool IsClose(this ElementType type1, ElementType type2) {
-        return IsNext(type1, type2) || IsPrev(type1, type2);
     }
 }
 }
