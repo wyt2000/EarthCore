@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Combat.Requests;
+using Combat.Requests.Details;
 
 namespace Combat.Effects {
 // 增益,减益,控制等.用于过滤某些tag
@@ -28,9 +28,6 @@ public class Effect : IComparable<Effect> {
     // 附着的目标
     public CombatantComponent Target;
 
-    // 辅助实现复合效果
-    public Effect Parent;
-
 #endregion
 
 #region 配置项
@@ -45,10 +42,10 @@ public class Effect : IComparable<Effect> {
 #region UI配置
 
     // 效果名
-    public string UiName = "效果";
+    public string UiName = "_None_";
 
     // 效果描述(鼠标悬浮显示)
-    public string UiDescription = "效果描述";
+    public string UiDescription = "_None_";
 
     // 效果图标路径
     public string UiIconPath = "";
@@ -83,8 +80,6 @@ public class Effect : IComparable<Effect> {
 
 #region 事件接口
 
-    // Todo 调用&重写事件接口
-
     /*
     - 效果附着前
     - Todo 判断是否能合并
@@ -97,6 +92,7 @@ public class Effect : IComparable<Effect> {
     - 受到伤害前
     - 受到伤害后
     - 造成伤害后
+    - 计算法力消耗后
     - 出牌前
     - 出牌后
      */
@@ -122,7 +118,7 @@ public class Effect : IComparable<Effect> {
     /// <summary>
     /// 效果消失后调用.只给自身触发
     /// </summary>
-    protected virtual void OnLeaveAttach() { }
+    protected virtual void OnAfterDetach() { }
 
     /// <summary>
     /// 自己回合开始前调用.只给自身触发
@@ -141,14 +137,14 @@ public class Effect : IComparable<Effect> {
     /// <example>
     /// 护甲buff
     /// </example>
-    protected virtual void OnBeforeTakeHpChange(HealthRequest request) { }
+    protected virtual void OnBeforeTakeHpChange(RequestHpChange request) { }
 
     /// <summary>
     /// 自己的生命修改前,预处理修改请求.已有的所有效果都触发
     /// </summary>
     /// <param name="request">修改请求</param>
     /// <returns>返回是否拒绝请求</returns>
-    protected virtual bool OnBeforeSelfHpChange(HealthRequest request) {
+    protected virtual bool OnBeforeSelfHpChange(RequestHpChange request) {
         return false;
     }
 
@@ -156,25 +152,37 @@ public class Effect : IComparable<Effect> {
     /// 自己的生命修改后,后处理修改请求.已有的所有效果都触发
     /// </summary>
     /// <param name="request">修改请求</param>
-    protected virtual void OnAfterSelfHpChange(HealthRequest request) { }
+    protected virtual void OnAfterSelfHpChange(RequestHpChange request) { }
 
     /// <summary>
     /// 造成别人的生命修改后,后处理修改请求.已有的所有效果都触发
     /// </summary>
     /// <param name="request">伤害请求</param>
-    protected virtual void OnAfterTakeHpChange(HealthRequest request) { }
+    protected virtual void OnAfterTakeHpChange(RequestHpChange request) { }
+
+    /// <summary>
+    /// 后处理法力消耗.已有的所有效果都触发
+    /// </summary>
+    /// <param name="request">出牌请求</param>
+    protected virtual void OnBeforePreviewMana(RequestPlayBatchCard request) { }
+
+    /// <summary>
+    /// 后处理法力消耗.已有的所有效果都触发
+    /// </summary>
+    /// <param name="request">出牌请求</param>
+    protected virtual void OnAfterPreviewMana(RequestPlayBatchCard request) { }
 
     /// <summary>
     /// 出牌前调用.已有的所有效果都触发,(多张牌也只调用一次)
     /// </summary>
     /// <param name="request">出牌请求</param>
-    protected virtual void OnBeforePlayCard(PlayCardRequest request) { }
+    protected virtual void OnBeforePlayBatchCard(RequestPlayBatchCard request) { }
 
     /// <summary>
     /// 出牌后调用.已有的所有效果都触发,(多张牌也只调用一次)
     /// </summary>
     /// <param name="request">出牌请求</param>
-    protected virtual void OnAfterPlayCard(PlayCardRequest request) { }
+    protected virtual void OnAfterPlayBatchCard(RequestPlayBatchCard request) { }
 
 #endregion
 
@@ -192,49 +200,48 @@ public class Effect : IComparable<Effect> {
 
     public void Attach(CombatantComponent target) {
         Target = target;
-        Target.Judge.AddEffectTask(new EffectRequest {
+        Target.Judge.Requests.Add(new RequestEffect {
+            Causer = Causer,
             Effect = this,
             Attach = true,
         });
     }
 
     public void Remove() {
-        Target.Judge.AddEffectTask(new EffectRequest {
+        Target.Judge.Requests.Add(new RequestEffect {
+            Causer = Causer,
             Effect = this,
             Attach = false,
         });
     }
 
     public void DoAttach() {
-        var reject = Target.BoardCastAny(effect => effect.OnBeforeAttach(this));
+        var reject = Target.BoardCastAny(effect => effect.BeforeAttach(this));
         if (reject) return;
         m_effectStamp = ms_stamp++;
         Target.Effects.Add(this);
-        OnAfterAttach();
+        AfterAttach();
     }
 
     public void DoRemove() {
-        OnLeaveAttach();
-        var cur = this;
-        while (cur.Parent != null)
-            cur = cur.Parent;
-        Target.Effects.Remove(cur);
+        Target.Effects.Remove(this);
+        AfterDetach();
     }
 
 #endregion
 
-#region 公开事件
+#region 统一事件接口
 
-    public bool BeforeAttach(Effect effect) {
+    private bool BeforeAttach(Effect effect) {
         return OnBeforeAttach(effect);
     }
 
-    public void AfterAttach() {
+    private void AfterAttach() {
         OnAfterAttach();
     }
 
-    public void LeaveAttach() {
-        OnLeaveAttach();
+    private void AfterDetach() {
+        OnAfterDetach();
     }
 
     public void BeforeTurnStart() {
@@ -246,28 +253,36 @@ public class Effect : IComparable<Effect> {
         if (--LgRemainingRounds == 0) Remove();
     }
 
-    public void BeforeTakeHpChange(HealthRequest request) {
+    public void BeforeTakeHpChange(RequestHpChange request) {
         OnBeforeTakeHpChange(request);
     }
 
-    public bool BeforeSelfHpChange(HealthRequest request) {
+    public bool BeforeSelfHpChange(RequestHpChange request) {
         return OnBeforeSelfHpChange(request);
     }
 
-    public void AfterSelfHpChange(HealthRequest request) {
+    public void AfterSelfHpChange(RequestHpChange request) {
         OnAfterSelfHpChange(request);
     }
 
-    public void AfterTakeHpChange(HealthRequest request) {
+    public void AfterTakeHpChange(RequestHpChange request) {
         OnAfterTakeHpChange(request);
     }
 
-    public void BeforePlayCard(PlayCardRequest request) {
-        OnBeforePlayCard(request);
+    public void BeforePreviewMana(RequestPlayBatchCard request) {
+        OnBeforePreviewMana(request);
     }
 
-    public void AfterPlayCard(PlayCardRequest request) {
-        OnAfterPlayCard(request);
+    public void AfterPreviewMana(RequestPlayBatchCard request) {
+        OnAfterPreviewMana(request);
+    }
+
+    public void BeforePlayBatchCard(RequestPlayBatchCard request) {
+        OnBeforePlayBatchCard(request);
+    }
+
+    public void AfterPlayBatchCard(RequestPlayBatchCard request) {
+        OnAfterPlayBatchCard(request);
     }
 
 #endregion
