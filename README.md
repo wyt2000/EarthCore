@@ -10,15 +10,16 @@
  - Design       # 策划设计文档
  - Images       # 文档中使用的图片
 - Assets        # 参与构建的所有项目资源
-  - Arts        # 艺术资源,程序和美术负责上传
-    - Scenes    # 场景资源,程序和美术配合上传
-    - Prefabs   # 预制体资源,程序和美术配合上传
+  - Resources   # 艺术资源,程序和美术负责上传
+  - Scenes      # 场景资源,程序和美术配合上传
     - Materials # 材质资源(shader),程序和美术配合上传
     - Textures  # 纹理资源(图片),美术负责上传
     - Audios    # 音频资源,美术负责上传
-    - GUIs      # GUI资源,程序和美术配合上传
+  - Prefabs     # 预制体资源,程序和美术配合上传
   - Scripts     # 脚本资源,程序负责上传
   - Designs     # 策划文档,策划负责上传
+  - ThirdParty  # 第三方库(程序负责上传)
+    - TMPro     # 中文字体库
 - README.md     # 项目说明文档
 - .gitignore    # git忽略文件列表
 - .clang-format # 代码格式化配置
