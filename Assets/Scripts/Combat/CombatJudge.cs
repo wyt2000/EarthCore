@@ -68,7 +68,7 @@ public class CombatJudge : MonoBehaviour {
     }
 
     // 下一回合
-    private void NextTurn() {
+    public void NextTurn() {
         TurnEnd();
         SwitchTurn();
         TurnStart();
@@ -92,8 +92,6 @@ public class CombatJudge : MonoBehaviour {
 
         Init(playerA, playerB);
     }
-    
-    // Todo 提供切人接口
 
     private void Update() {
         if (Requests.Running) return;
