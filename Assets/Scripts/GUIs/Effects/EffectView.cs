@@ -19,7 +19,7 @@ public class EffectView : MonoBehaviour {
 #endregion
 
     [NonSerialized]
-    public EffectListView ListView;
+    public EffectListView Container;
 
     public Effect Data;
 
@@ -44,7 +44,7 @@ public class EffectView : MonoBehaviour {
             Vector3.down * (IndexVertical * 60) +
             Vector3.right * (IndexHorizontal * 60);
 
-        return ListView.transform.TransformPoint(target);
+        return Container.transform.TransformPoint(target);
     }
 
     public IEnumerator MoveToTarget(float duration) {

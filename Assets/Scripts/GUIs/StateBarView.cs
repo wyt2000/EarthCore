@@ -6,6 +6,7 @@ using UnityEngine;
 using Utils;
 
 namespace GUIs {
+// Todo 显示元素附着状态和其他状态
 public class StateBarView : MonoBehaviour {
 #region prefab配置
 

@@ -46,7 +46,7 @@ public class CardSlotView : MonoBehaviour {
 
     public IEnumerator AddCard(Card data) {
         var card = Instantiate(cardPrefab, transform);
-        card.Slot = this;
+        card.Container = this;
         card.Data = data;
         m_cards.Add(card);
         m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>

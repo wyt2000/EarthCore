@@ -49,7 +49,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     // 父组件
     [NonSerialized]
-    public CardSlotView Slot;
+    public CardSlotView Container;
 
     // 绑定的数据
     public Card Data;
@@ -64,11 +64,11 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         cardImage.sprite = Resources.Load<Sprite>(imageUrl);
         if (cardImage.sprite == null) {
             cardImage.color = Data.LgElement switch {
-                ElementType.Fire  => Color.red,
-                ElementType.Water => Color.blue,
-                ElementType.Wood  => Color.green,
-                ElementType.Metal => Color.yellow,
-                ElementType.Earth => new Color(1f, 0.47f, 0f),
+                ElementType.Huo  => Color.red,
+                ElementType.Shui => Color.blue,
+                ElementType.Mu  => Color.green,
+                ElementType.Jin => Color.yellow,
+                ElementType.Tu => new Color(1f, 0.47f, 0f),
 
                 _ => Color.gray,
             };
@@ -82,11 +82,12 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     // 目标位置
     private Vector3 TargetPosition() {
-        var target = Vector3.right * (Index * Slot.RealOffset());
+        var target = Vector3.right * (Index * Container.RealOffset());
         if (Data.IsSelected) {
             target += Vector3.up * (rect.rect.height * upRate);
         }
-        return Slot.transform.TransformPoint(target);
+
+        return Container.transform.TransformPoint(target);
     }
 
     public IEnumerator MoveToTarget(float duration) {
@@ -94,13 +95,14 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public IEnumerator MoveToHeap(float duration) {
-        yield return this.MoveTo(Slot.combatant.cardHeap.transform.position, duration);
+        yield return this.MoveTo(Container.combatant.cardHeap.transform.position, duration);
         Destroy(gameObject);
     }
 
     public void OnPointerDown(PointerEventData eventData) {
         Data.IsSelected ^= true;
-        rect.SetAsLastSibling();
+        Container.FreshOrder();
+        if (Data.IsSelected) transform.SetAsLastSibling();
         StartCoroutine(MoveToTarget(upDuration));
     }
 }

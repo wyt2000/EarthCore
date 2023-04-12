@@ -21,8 +21,8 @@ public class EffectListView : MonoBehaviour {
 
     public IEnumerator AddEffect(Effect effect) {
         var view = Instantiate(effectViewPrefab, transform);
-        view.ListView = this;
-        view.Data     = effect;
+        view.Container = this;
+        view.Data      = effect;
 
         m_views.Add(view);
 
@@ -31,12 +31,12 @@ public class EffectListView : MonoBehaviour {
     }
 
     public IEnumerator RemoveEffect(Effect effect) {
-        var view = m_views.FirstOrDefault(v => v.Data == effect);
-        if (view != null) {
-            m_views.Remove(view);
-            Destroy(view.gameObject);
-            yield return FreshUI();
-        }
+        var viewIndex = m_views.FindIndex(v => v.Data == effect);
+        if (viewIndex == -1) yield break;
+        var view = m_views[viewIndex];
+        m_views.Remove(view);
+        Destroy(view.gameObject);
+        yield return FreshUI();
     }
 
     private IEnumerator FreshUI() {
