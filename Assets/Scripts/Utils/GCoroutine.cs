@@ -24,9 +24,7 @@ public static class GCoroutine {
             return true;
         }
 
-        public void Reset() {
-            throw new System.NotImplementedException();
-        }
+        public void Reset() { }
 
         public object Current => null;
     }
@@ -49,9 +47,7 @@ public static class GCoroutine {
             return !allDone;
         }
 
-        public void Reset() {
-            throw new System.NotImplementedException();
-        }
+        public void Reset() { }
 
         public object Current => null;
     }
