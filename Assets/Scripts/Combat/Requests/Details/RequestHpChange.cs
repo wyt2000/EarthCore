@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using Combat.Effects;
 using Combat.Enums;
 using UnityEngine;
-using Utils;
 
 namespace Combat.Requests.Details {
 // 伤害/回血
@@ -24,6 +22,9 @@ public class RequestHpChange : CombatRequest {
 
     // 元素类型
     public ElementType? Element = null;
+
+    // 修改原因
+    public string Reason = "";
 
 #endregion
 
@@ -65,21 +66,7 @@ public class RequestHpChange : CombatRequest {
 
         value = Math.Max(0, value);
 
-        // Todo 添加元素克制约束
-        if (Element != null && state.ElementAttach.ContainsKey(Element.Value)) {
-            var type = Element.Value;
-            state.ElementAttach -= new AddableDict<ElementType, int> {
-                { type, 1 },
-            };
-            if (!state.ElementAttach.ContainsKey(type)) {
-                // 施加元素击碎效果 
-                var layer = state.ElementMaxAttach[type];
-                var broken = EffectFactory.ElementBroken(type, layer);
-                var recover = EffectDetails.Element_Broken_Recover(type, layer);
-                target.Attach(broken);
-                target.Attach(recover);
-            }
-        }
+        if (Element.HasValue) Target.TryApplyElementBreak(Causer, Element.Value, 1);
 
         var old = state.Health;
         if (IsHeal) {
@@ -97,7 +84,7 @@ public class RequestHpChange : CombatRequest {
     }
 
     public override string Description() {
-        return $"{Causer.name}对{Target.name}造成{Value}点{(IsHeal ? "治疗" : "伤害")}";
+        return $"由于{Reason},{Causer.name}对{Target.name}造成{Value}点{(IsHeal ? "治疗" : "伤害")}";
     }
 }
 }

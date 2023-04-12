@@ -22,7 +22,7 @@ public enum ElementType {
 public static class ElementTypeFunc {
     private const int N = 5;
 
-    private static ElementType Next(this ElementType type) {
+    public static ElementType Next(this ElementType type) {
         var next = (int)type + 1;
         if (next >= N) next = 0;
         return (ElementType)next;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Combat.Cards;
 using Combat.Effects;
+using Combat.Enums;
 using Combat.Requests.Details;
 using Combat.States;
 using GUIs;
@@ -45,6 +46,14 @@ public class CombatantComponent : MonoBehaviour {
         MagicShield        = 0,
         MagicDamageAmplify = 0,
         MagicDamageReduce  = 0,
+
+        ElementMaxAttach = {
+            { ElementType.Jin, 2 },
+            { ElementType.Mu, 2 },
+            { ElementType.Shui, 2 },
+            { ElementType.Huo, 2 },
+            { ElementType.Tu, 2 },
+        }
     };
 
     // 玩家的效果
@@ -59,6 +68,8 @@ public class CombatantComponent : MonoBehaviour {
     private void Start() {
         State.Health = State.HealthMax / 2;
         State.Mana   = State.ManaMax / 2;
+
+        State.ElementAttach += State.ElementMaxAttach;
     }
 
     public void Attach(Effect effect) {
@@ -108,6 +119,26 @@ public class CombatantComponent : MonoBehaviour {
 
     public bool BoardCastAny(Func<Effect, bool> action) {
         return Effects.Any(action);
+    }
+
+
+    // 尝试施加元素击碎
+    public void TryApplyElementBreak(CombatantComponent causer, ElementType attack, int layer) {
+        if (layer <= 0) return;
+        var next = attack.Next();
+        if (!State.ElementAttach.ContainsKey(next)) return;
+        var cur = State.ElementAttach[next];
+        layer = Math.Min(layer, cur);
+        State.ElementAttach -= new AddableDict<ElementType, int> {
+            { next, layer },
+        };
+        if (State.ElementAttach.ContainsKey(next)) return;
+        // 施加元素击碎效果
+        layer = State.ElementMaxAttach[next];
+        var broken = EffectBroken.GetElementBroken(next, layer);
+        var recover = EffectBroken.GetElementBrokenRecover(next, layer);
+        causer.AttachTo(broken,  this);
+        causer.AttachTo(recover, this);
     }
 }
 }
