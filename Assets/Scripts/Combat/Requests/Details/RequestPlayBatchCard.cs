@@ -143,7 +143,7 @@ public class RequestPlayBatchCard : CombatRequest {
     }
 
     public (Effect, bool) PreviewElementLink() {
-        return EffectFactory.ElementLink(Cards.Where(e => e.LgElement.HasValue).Select(c => c.LgElement.Value).ToArray());
+        return EffectLinks.GetElementLink(Cards.Where(e => e.LgElement.HasValue).Select(c => c.LgElement.Value).ToArray());
     }
 
 #endregion
