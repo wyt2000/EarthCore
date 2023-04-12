@@ -8,52 +8,29 @@ namespace Combat.Cards {
 public class CardHeap {
     public readonly List<Card> AllCards = new();
 
-    private readonly List<Card> m_disCards = new();
+    private readonly List<Card> m_discards = new();
 
-    public int DiscardCount => m_disCards.Count;
+    public int DiscardCount => m_discards.Count;
 
     public CardHeap() {
-        var raw = new[] {
-            CardDetails.Awakening(),
-            CardDetails.Probing(),
-            CardDetails.Drain(),
-            CardDetails.Thirst(),
-            CardDetails.FireSuppression(),
-            CardDetails.FireSummon(),
-            CardDetails.MagicGuard(),
-            CardDetails.ManaSurge(),
-        };
-
-        for (var i = 0; i < 10; ++i) {
-            AllCards.AddRange(raw.Select(v => v.Clone()));
+        for (var i = 0; i < 1; ++i) {
+            AllCards.AddRange(CardDetails.CloneAll());
         }
 
-        Shuffle(AllCards);
-    }
-
-    // Todo 放到utils中
-    private static void Shuffle<T>(IList<T> list) {
-        var n = list.Count;
-        while (n > 1) {
-            n--;
-            var k = GRandom.Range(0, n);
-            (list[k], list[n]) = (list[n], list[k]);
-        }
+        GRandom.Shuffle(AllCards);
     }
 
     private void ReuseCard() {
-        if (m_disCards.Count == 0) return;
+        if (m_discards.Count == 0) return;
         // 洗牌
-        Shuffle(m_disCards);
-        foreach (var card in m_disCards) {
-            AllCards.Add(card.Clone());
-        }
-        m_disCards.Clear();
+        GRandom.Shuffle(m_discards);
+        AllCards.AddRange(m_discards.Select(card => card.Clone()));
+        m_discards.Clear();
     }
 
     // 回收卡牌
     public void RecycleCard(IEnumerable<Card> cards) {
-        m_disCards.AddRange(cards);
+        m_discards.AddRange(cards);
     }
 
     // Todo 优化摸牌算法到O(n)
