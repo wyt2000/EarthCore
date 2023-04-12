@@ -13,7 +13,7 @@ public class Card {
     // 卡牌是否被选中
     public bool IsSelected = false;
 
-    // 卡牌是否可以被选中
+    // 卡牌是否可以被选中 Todo 添加TrySelect接口
     public bool IsSelectable = true;
 
     // 克隆原始卡牌
@@ -29,7 +29,7 @@ public class Card {
     // 卡牌描述
     public string UiDescription = "_None_";
 
-    // 卡牌图片路径 Todo 改成在编辑器里选材质
+    // 卡牌图片路径
     public string UiImagePath = "";
 
 #endregion
@@ -94,10 +94,13 @@ public class Card {
 
     // 快捷造成伤害
     public void TakeDamage(RequestPlayCard request) {
+        if (Damage <= 0) return;
         request.Causer.Attack(request.Batch.Target, new RequestHpChange {
             Value   = Damage,
             Type    = LgDamageType,
             Element = LgElement,
+
+            Reason = $"卡牌[{UiName}]"
         });
     }
 
