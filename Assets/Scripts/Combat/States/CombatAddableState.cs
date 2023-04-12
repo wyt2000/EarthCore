@@ -50,22 +50,31 @@ public class CombatAddableState {
     // 物理护盾
     public float PhysicalShield;
 
-    // 魔法护盾(反伤物理伤害)
+    // 物理护甲(恢复物理护盾) Todo 回合开始恢复
+    public float PhysicalArmor;
+
+    // 魔法护盾(反伤物理伤害) Todo 实现反伤
     public float MagicShield;
 
-    // 物理伤害增幅(计算前)/减免(计算后)
+    // 增加造成的物理伤害
     public float PhysicalDamageAmplify;
+
+    //  减少收到的物理伤害
     public float PhysicalDamageReduce;
 
-    // 魔法伤害增幅(计算前)/减免(计算后)
+    // 增加造成的魔法伤害
     public float MagicDamageAmplify;
+
+    //  减少收到的魔法伤害
     public float MagicDamageReduce;
 
     // 玩家结束时最大手牌数
     public int MaxCardCnt;
 
-    // 元素法印(最大)层数
-    public AddableDict<ElementType, int> ElementAttach    = new();
+    // 元素法印层数
+    public AddableDict<ElementType, int> ElementAttach = new();
+
+    // 元素法印最大层数
     public AddableDict<ElementType, int> ElementMaxAttach = new();
 
     // tag容器
