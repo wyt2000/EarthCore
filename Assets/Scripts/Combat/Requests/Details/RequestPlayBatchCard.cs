@@ -27,11 +27,11 @@ public class RequestPlayBatchCard : CombatRequest {
     public override bool CanEnqueue() {
         return RequireAll(
             Require(
-                Judge.Requests.Count > 0,
+                Judge.Requests.Count == 0,
                 "不能在有任务在队列中时出牌"
             ),
             Require(
-                Causer != null && Cards != null && Cards.Length > 0,
+                Causer != null && Cards is { Length: > 0 },
                 "无效的出牌请求"
             ),
             Require(

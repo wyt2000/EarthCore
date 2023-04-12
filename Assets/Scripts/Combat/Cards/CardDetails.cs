@@ -7,6 +7,7 @@ using Combat.Enums;
 using Combat.Requests.Details;
 using UnityEngine;
 
+// Todo 测试卡牌逻辑
 namespace Combat.Cards {
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 public static class CardDetails {
@@ -288,7 +289,7 @@ public static class CardDetails {
             LgManaCost = 8,
             LgElement  = ElementType.Shui,
 
-            OnAfterPlayBatchCard = req => req.Causer.Attach(EffectDetails.QingSuan((int)req.TotalManaCost))
+            OnAfterPlayBatchCard = req => req.Causer.AttachTo(EffectDetails.QingSuan((int)req.TotalManaCost), req.Target)
         };
     }
 
@@ -331,7 +332,7 @@ public static class CardDetails {
             UiImagePath   = "Textures/Cards/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
-            OnExecute     = req => req.Causer.Attach(EffectDetails.QingSuan(70))
+            OnExecute     = req => req.Causer.AttachTo(EffectDetails.QingSuan(70), req.Batch.Target)
         };
     }
 

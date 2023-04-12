@@ -9,6 +9,7 @@ using Combat.Requests.Details;
 using Utils;
 
 // Todo 检查tag和causer&target的使用是否合理
+// Todo 测试effect逻辑
 namespace Combat.Effects {
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 public static class EffectLinks {
@@ -350,13 +351,25 @@ public static class EffectDetails {
     // 清算
     public static Effect QingSuan(int layer) {
         return new Effect {
-            UiName        = "法印冷却",
+            UiName        = "清算",
             UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
             UiIconPath    = "",
 
             LgRemainingRounds = 1,
             LgOverlay         = layer,
             LgOpenMerge       = true,
+
+            OnImpAfterDetach = self =>
+            {
+                var damage = self.LgOverlay;
+                self.Causer.Attack(self.Target, new RequestHpChange {
+                    Value   = damage,
+                    Type    = DamageType.Magical,
+                    Element = ElementType.Shui,
+
+                    Reason = "清算"
+                });
+            }
         };
     }
 
