@@ -2,6 +2,7 @@
 using Combat;
 using Combat.Requests.Details;
 using UnityEngine;
+using Utils;
 
 namespace Controllers {
 public class PlayerController : MonoBehaviour {
@@ -15,7 +16,7 @@ public class PlayerController : MonoBehaviour {
     // 用户输入
     public void OnUserInput() {
         // 摸牌
-        if (Input.GetKeyDown(KeyCode.S)) {
+        if (Input.GetKeyDown(KeyCode.G)) {
             combatant.GetCard(1);
         }
         // 出牌
@@ -27,7 +28,11 @@ public class PlayerController : MonoBehaviour {
         }
         // 弃牌
         if (Input.GetKeyDown(KeyCode.Return)) {
-            // Todo 
+            var card = combatant.Cards.Extract(c => c.IsSelected);
+            combatant.Judge.Requests.Add(new RequestAnimation {
+                Anim = () => combatant.cardSlot.Discards(card)
+            });
+            combatant.Judge.NextTurn();
         }
     }
 }
