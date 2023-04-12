@@ -11,6 +11,165 @@ using Utils;
 
 namespace Combat.Effects {
 // Todo 优化文档
+// Todo 规范化代码
+public static class EffectLinks {
+    [AttributeUsage(AttributeTargets.Method)]
+    private class ElementLinkAttribute : Attribute {
+        // 联动类型
+        public readonly ElementType[] Types;
+
+        // 是否施加给对方
+        public readonly bool ToOther = false;
+
+        public ElementLinkAttribute(params ElementType[] types)
+            : this(false, types) { }
+
+        public ElementLinkAttribute(bool toOther, params ElementType[] types) {
+            Types   = types.OrderBy(t => (int)t).ToArray();
+            ToOther = toOther;
+        }
+    }
+
+    private static readonly List<(ElementLinkAttribute, Func<Effect>)> Links = new();
+
+    static EffectLinks() {
+        // 用反射扫描所有方法
+        var methods = typeof(EffectLinks).GetMethods(BindingFlags.NonPublic | BindingFlags.Static);
+        foreach (var method in methods) {
+            var attr = method.GetCustomAttribute<ElementLinkAttribute>();
+            if (attr == null) continue;
+            var func = (Func<Effect>)Delegate.CreateDelegate(typeof(Func<Effect>), method);
+            Links.Add((attr, func));
+        }
+    }
+
+    public static (Effect, bool) GetElementLink(IEnumerable<ElementType> types) {
+        var arr = types.OrderBy(t => (int)t).ToArray();
+        foreach (var (attr, func) in Links) {
+            if (attr.Types.SequenceEqual(arr)) {
+                return (func(), attr.ToOther);
+            }
+        }
+
+        return (null, false);
+    }
+
+#region 元素联动细节实现
+
+    [ElementLink(ElementType.Jin, ElementType.Tu)]
+    private static Effect JinTu() {
+        return new EffectOnce {
+            UiName        = "免疫",
+            UiDescription = "金土联动,免疫下一次伤害",
+            LgTags        = { EffectTag.Buff },
+            LgAction      = e => e.Target.State.BlockTags[CombatBlockTag.BlockDamage] += 1
+        };
+    }
+
+#endregion
+}
+
+public static class EffectBroken {
+    // 元素击碎表
+    private static readonly Dictionary<ElementType, Func<int, Effect>> Broken = new() {
+        { ElementType.Jin, Jin },
+        { ElementType.Mu, Mu },
+        { ElementType.Shui, Shui },
+        { ElementType.Huo, Huo },
+        { ElementType.Tu, Tu },
+    };
+
+    // 元素击碎效果
+    public static Effect GetElementBroken(ElementType type, int layer) {
+        return Broken.TryGetValue(type, out var func) ? func(layer) : null;
+    }
+
+    // 法印恢复效果
+    public static Effect GetElementBrokenRecover(ElementType elementType, int layer) {
+        return new EffectTemporary {
+            UiName            = "法印冷却",
+            UiDescription     = $"{elementType.ToDescription()}元素法印冷却",
+            UiIconPath        = "",
+            LgRemainingRounds = layer,
+            OnImpAfterDetach = self =>
+            {
+                var state = self.Target.State;
+                state.ElementAttach[elementType] = state.ElementMaxAttach[elementType];
+            }
+        };
+    }
+
+#region 元素击碎细节实现
+
+    private static Effect Jin(int layer) {
+        return new EffectTemporary {
+            UiName            = "枯竭",
+            UiDescription     = "造成的物理伤害降低20%",
+            UiIconPath        = "",
+            LgRemainingRounds = layer,
+            LgAddState = {
+                PhysicalDamageAmplify = -20
+            }
+        };
+    }
+
+    private static Effect Mu(int layer) {
+        return new EffectOnce {
+            UiName            = "粉碎",
+            UiDescription     = "对对方造成10%当前生命值金元素伤害",
+            UiHidde           = true,
+            LgRemainingRounds = layer,
+            LgAction = e =>
+            {
+                var damage = e.Target.State.Health * 0.1f;
+                e.Target.Attack(e.Causer, new RequestHpChange {
+                    Value   = damage,
+                    Type    = DamageType.Physical,
+                    Element = ElementType.Jin
+                });
+            }
+        };
+    }
+
+    private static Effect Shui(int layer) {
+        return new EffectTemporary {
+            UiName            = "破魔",
+            UiDescription     = "受到的魔法伤害增加20%",
+            UiIconPath        = "",
+            LgRemainingRounds = layer,
+            LgAddState = {
+                MagicDamageReduce = -20
+            },
+        };
+    }
+
+    private static Effect Huo(int layer) {
+        return new EffectTemporary {
+            UiName            = "破甲",
+            UiDescription     = "受到的物理伤害增加20%",
+            UiIconPath        = "",
+            LgRemainingRounds = layer,
+            LgAddState = {
+                PhysicalDamageReduce = -20
+            }
+        };
+    }
+
+    private static Effect Tu(int layer) {
+        return new EffectTemporary {
+            UiName            = "弱化",
+            UiDescription     = "造成的魔法伤害降低20%",
+            UiIconPath        = "",
+            LgRemainingRounds = layer,
+            LgAddState = {
+                MagicDamageAmplify = -20
+            }
+        };
+    }
+
+#endregion
+}
+
 public static class EffectDetails {
 #region 元素联动
 
@@ -154,7 +313,7 @@ public static class EffectDetails {
             if (request.IsHeal) return;
 
             // 修改为火元素伤害
-            request.Element = ElementType.Fire;
+            request.Element = ElementType.Huo;
 
             Target.Attack(request.Causer, request);
 
@@ -182,8 +341,8 @@ public static class EffectDetails {
         }
 
         // 免疫控制效果
-        protected override bool OnBeforeAttach(Effect effect) {
-            var reject = base.OnBeforeAttach(effect);
+        protected override bool OnRejectAttach(Effect effect) {
+            var reject = base.OnRejectAttach(effect);
             if (m_trigger.InValid) return reject;
             return reject && m_trigger.Trigger(effect.LgTags.Contains(EffectTag.Control));
         }
@@ -279,6 +438,10 @@ public static class EffectDetails {
                 // 击碎全部法印 Todo 封装击碎接口
                 e.Target.State.ElementAttach.Clear();
 
+                foreach (var element in Enum.GetValues(typeof(ElementType)).Cast<ElementType>()) {
+                    e.Target.State.ElementAttach[element] = 0;
+                }
+
                 // Todo 斩杀效果
             }
         };
@@ -288,24 +451,18 @@ public static class EffectDetails {
 
 #region 元素击碎
 
-    private class EffectElementRecover : EffectTemporary {
-        public ElementType LgElementType;
-
-        protected override void OnAfterDetach() {
-            base.OnAfterDetach();
-
-            Target.State.ElementAttach[LgElementType] = Target.State.ElementMaxAttach[LgElementType];
-        }
-    }
-
-    // 法印恢复
+    // 法印自动恢复
     public static Effect Element_Broken_Recover(ElementType elementType, int layer) {
-        return new EffectElementRecover {
-            UiName            = $"{elementType.ToDescription()}元素法印冷却",
+        return new EffectTemporary {
+            UiName            = "法印冷却",
             UiDescription     = $"{elementType.ToDescription()}元素法印冷却",
             UiIconPath        = "",
             LgRemainingRounds = layer,
-            LgElementType     = elementType
+            OnImpAfterDetach = self =>
+            {
+                var state = self.Target.State;
+                state.ElementAttach[elementType] = state.ElementMaxAttach[elementType];
+            }
         };
     }
 
@@ -348,7 +505,7 @@ public static class EffectDetails {
                 e.Target.Attack(e.Causer, new RequestHpChange {
                     Value   = damage,
                     Type    = DamageType.Physical,
-                    Element = ElementType.Metal
+                    Element = ElementType.Jin
                 });
             }
         };
@@ -422,7 +579,7 @@ public static class EffectDetails {
             Target.Attack(request.Causer, new RequestHpChange {
                 Value   = damage,
                 Type    = DamageType.Magical,
-                Element = ElementType.Earth,
+                Element = ElementType.Tu,
             });
             if (LgOverlay <= 0) {
                 Remove();
@@ -449,47 +606,47 @@ public static class EffectFactory {
     private static readonly Dictionary<ElementType[], (Func<Effect>, bool)> Links = new() {
         {
             // 金+土
-            new[] { ElementType.Metal, ElementType.Earth },
+            new[] { ElementType.Jin, ElementType.Tu },
             (EffectDetails.Metal_Earth, true)
         }, {
             // 火+土
-            new[] { ElementType.Fire, ElementType.Earth },
+            new[] { ElementType.Huo, ElementType.Tu },
             (EffectDetails.Fire_Earth, true)
         }, {
             // 水+金
-            new[] { ElementType.Water, ElementType.Metal },
+            new[] { ElementType.Shui, ElementType.Jin },
             (EffectDetails.Water_Metal, true)
         }, {
             // 火+木
-            new[] { ElementType.Fire, ElementType.Wood },
+            new[] { ElementType.Huo, ElementType.Mu },
             (EffectDetails.Fire_Wood, false)
         }, {
             // 水+木
-            new[] { ElementType.Water, ElementType.Wood },
+            new[] { ElementType.Shui, ElementType.Mu },
             (EffectDetails.Water_Wood, true)
         }, {
             // 火+木+土
-            new[] { ElementType.Fire, ElementType.Wood, ElementType.Earth },
+            new[] { ElementType.Huo, ElementType.Mu, ElementType.Tu },
             (EffectDetails.Fire_Wood_Earth, true)
         }, {
             // 金+土+水
-            new[] { ElementType.Metal, ElementType.Earth, ElementType.Water },
+            new[] { ElementType.Jin, ElementType.Tu, ElementType.Shui },
             (EffectDetails.Metal_Earth_Water, true)
         }, {
             // 金+水+木
-            new[] { ElementType.Metal, ElementType.Water, ElementType.Wood },
+            new[] { ElementType.Jin, ElementType.Shui, ElementType.Mu },
             (EffectDetails.Metal_Water_Wood, true)
         }, {
             // 火+土+金
-            new[] { ElementType.Fire, ElementType.Earth, ElementType.Metal },
+            new[] { ElementType.Huo, ElementType.Tu, ElementType.Jin },
             (EffectDetails.Fire_Earth_Metal, false)
         }, {
             // 水+火+木
-            new[] { ElementType.Water, ElementType.Fire, ElementType.Wood },
+            new[] { ElementType.Shui, ElementType.Huo, ElementType.Mu },
             (EffectDetails.Water_Fire_Wood, false)
         }, {
             // 金+木+水+火+土
-            new[] { ElementType.Metal, ElementType.Wood, ElementType.Water, ElementType.Fire, ElementType.Earth },
+            new[] { ElementType.Jin, ElementType.Mu, ElementType.Shui, ElementType.Huo, ElementType.Tu },
             (EffectDetails.Metal_Wood_Water_Fire_Earth, false)
         }
     };
@@ -499,19 +656,19 @@ public static class EffectFactory {
     // 元素击碎表
     private static readonly Dictionary<ElementType, Func<int, Effect>> Broken = new() {
         {
-            ElementType.Metal,
+            ElementType.Jin,
             EffectDetails.Metal_Broken
         }, {
-            ElementType.Water,
+            ElementType.Shui,
             EffectDetails.Water_Broken
         }, {
-            ElementType.Wood,
+            ElementType.Mu,
             EffectDetails.Wood_Broken
         }, {
-            ElementType.Fire,
+            ElementType.Huo,
             EffectDetails.Fire_Broken
         }, {
-            ElementType.Earth,
+            ElementType.Tu,
             EffectDetails.Earth_Broken
         }
     };

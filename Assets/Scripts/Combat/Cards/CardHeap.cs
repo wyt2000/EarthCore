@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Combat.Requests.Details;
-using Designs;
 using Utils;
 
 namespace Combat.Cards {

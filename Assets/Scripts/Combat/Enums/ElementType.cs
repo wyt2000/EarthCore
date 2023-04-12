@@ -4,31 +4,31 @@ namespace Combat.Enums {
 // 卡牌附带的五行元素
 public enum ElementType {
     [Description("金")]
-    Metal = 0,
+    Jin = 0,
 
     [Description("木")]
-    Wood = 1,
+    Mu = 1,
 
     [Description("水")]
-    Water = 2,
+    Shui = 2,
 
     [Description("火")]
-    Fire = 3,
+    Huo = 3,
 
     [Description("土")]
-    Earth = 4,
+    Tu = 4,
 }
 
 public static class ElementTypeFunc {
     private const int N = 5;
 
-    public static ElementType Next(this ElementType type) {
+    private static ElementType Next(this ElementType type) {
         var next = (int)type + 1;
         if (next >= N) next = 0;
         return (ElementType)next;
     }
 
-    public static ElementType Prev(this ElementType type) {
+    private static ElementType Prev(this ElementType type) {
         var prev = (int)type - 1;
         if (prev < 0) prev = N - 1;
         return (ElementType)prev;

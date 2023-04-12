@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using Combat.Effects;
 using Combat.Enums;
-using Designs;
 using UnityEngine;
 using Utils;
 
@@ -65,6 +65,7 @@ public class RequestHpChange : CombatRequest {
 
         value = Math.Max(0, value);
 
+        // Todo 添加元素克制约束
         if (Element != null && state.ElementAttach.ContainsKey(Element.Value)) {
             var type = Element.Value;
             state.ElementAttach -= new AddableDict<ElementType, int> {

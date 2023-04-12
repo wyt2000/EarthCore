@@ -19,17 +19,15 @@ public static class CardDetails {
             Clone         = Probing,
             UiName        = "试探",
             UiDescription = "为自身添加25物理护盾值",
-            UiImagePath   = "Textures/Cards/Fire", // Todo 
+            UiImagePath   = "Textures/Cards/试探",
             LgManaCost    = 0,
-            LgElement     = ElementType.Metal,
+            LgDamage      = 25,
+            LgDamageType  = DamageType.Physical,
+            LgElement     = ElementType.Jin,
             OnExecute = req =>
             {
                 req.Causer.State.PhysicalShield += 25;
-                req.Causer.Attack(req.Batch.Target, new RequestHpChange {
-                    Value   = 25,
-                    Type    = DamageType.Physical,
-                    Element = ElementType.Metal,
-                });
+                req.TakeDamage();
             }
         };
     }
@@ -48,12 +46,13 @@ public static class CardDetails {
     public static Card ManaSurge() {
         return new Card {
             Clone          = ManaSurge,
-            UiName         = "法力狂涌",
+            UiName         = "咒能狂涌",
             UiDescription  = "50*（100%+50%当前法力值）",
-            UiImagePath    = "", // Todo  
-            LgDamageFunc   = card => 50 * (1 + 0.5f * card.Owner.State.Mana / 100),
+            UiImagePath    = "Textures/Cards/咒能狂涌",
             LgManaCostFunc = card => card.Owner.State.Mana * 0.5f,
-            LgElement      = ElementType.Water,
+            LgDamageFunc   = card => 50 * (1 + 0.5f * card.Owner.State.Mana / 100),
+            LgDamageType   = DamageType.Magical,
+            LgElement      = ElementType.Shui,
             OnExecute      = req => req.TakeDamage()
         };
     }
@@ -71,11 +70,13 @@ public static class CardDetails {
     public static Card Drain() {
         return new Card {
             Clone         = Drain,
-            UiName        = "汲取",
+            UiName        = "生命汲取",
             UiDescription = "回复本次总伤害50%的生命值",
-            UiImagePath   = "", // Todo 
+            UiImagePath   = "Textures/Cards/生命汲取",
             LgManaCost    = 10,
-            LgElement     = ElementType.Wood,
+            LgElement     = ElementType.Mu,
+            LgDamage      = 10,
+            LgDamageType  = DamageType.Magical,
             OnExecute     = req => req.TakeDamage(),
             OnAfterPlayBatchCard = req =>
             {
@@ -101,9 +102,9 @@ public static class CardDetails {
             Clone         = Awakening,
             UiName        = "清醒",
             UiDescription = "恢复10点法力",
-            UiImagePath   = "", // Todo 
+            UiImagePath   = "Textures/Cards/清醒",
             LgManaCost    = 0,
-            LgElement     = ElementType.Wood,
+            LgElement     = ElementType.Mu,
             OnExecute     = req => req.Causer.State.Mana += 10
         };
     }
@@ -121,11 +122,11 @@ public static class CardDetails {
     public static Card FireSuppression() {
         return new Card {
             Clone         = FireSuppression,
-            UiName        = "火力压制",
+            UiName        = "火焰连击",
             UiDescription = "造成五次伤害,每次10点",
-            UiImagePath   = "", // Todo 
+            UiImagePath   = "Textures/Cards/火焰连击",
             LgManaCost    = 0,
-            LgElement     = ElementType.Fire,
+            LgElement     = ElementType.Huo,
             LgDamage      = 10,
             OnExecute = req =>
             {
@@ -151,9 +152,9 @@ public static class CardDetails {
             Clone         = MagicGuard,
             UiName        = "魔法守护",
             UiDescription = "浸染，获得50点魔法护盾",
-            UiImagePath   = "", // Todo 
+            UiImagePath   = "Textures/Cards/魔法守护",
             LgManaCost    = 10,
-            LgElement     = ElementType.Earth,
+            LgElement     = ElementType.Tu,
             LgInfect      = true,
             OnExecute = req =>
             {
@@ -179,7 +180,7 @@ public static class CardDetails {
             Clone         = Thirst,
             UiName        = "渴望",
             UiDescription = "唯一，不计入出牌次数，抽两张牌",
-            UiImagePath   = "", // Todo 
+            UiImagePath   = "Textures/Cards/渴望",
             LgManaCost    = 10,
             LgUnique      = true,
             OnExecute     = req => req.Causer.GetCard(2)
@@ -201,7 +202,7 @@ public static class CardDetails {
             Clone         = FireSummon,
             UiName        = "火之召唤",
             UiDescription = "唯一，不计入出牌次数，从牌组随机抽一张火元素卡牌",
-            UiImagePath   = "", // Todo 
+            UiImagePath   = "Textures/Cards/火之召唤",
             LgManaCost    = 10,
             LgUnique      = true,
             OnExecute = req =>
@@ -209,7 +210,7 @@ public static class CardDetails {
                 // 发起摸牌请求
                 req.Causer.GetCard(new RequestGetCard {
                     Count       = 1,
-                    Filter      = c => c.LgElement == ElementType.Fire,
+                    Filter      = c => c.LgElement == ElementType.Huo,
                     SelectIndex = n => Random.Range(0, n)
                 });
             }
