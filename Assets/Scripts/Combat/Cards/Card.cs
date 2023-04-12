@@ -48,6 +48,9 @@ public class Card {
     // 动态卡牌伤害
     public Func<Card, float> LgDamageFunc = null;
 
+    // 卡牌伤害类型
+    public DamageType LgDamageType = DamageType.Physical;
+
     // 卡牌本身的元素类型(仅用于触发元素联动,不一定造成伤害)
     public ElementType? LgElement = null;
 
@@ -93,7 +96,7 @@ public class Card {
     public void TakeDamage(RequestPlayCard request) {
         request.Causer.Attack(request.Batch.Target, new RequestHpChange {
             Value   = Damage,
-            Type    = DamageType.Physical,
+            Type    = LgDamageType,
             Element = LgElement,
         });
     }
