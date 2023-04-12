@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Combat.Effects;
+using System.Reflection;
 using Combat.Effects.Templates;
 using Combat.Enums;
 using Combat.Requests.Details;
+using Combat.States;
 using UnityEngine;
 using Utils;
 
-namespace Designs {
+namespace Combat.Effects {
 // Todo 优化文档
 public static class EffectDetails {
 #region 元素联动

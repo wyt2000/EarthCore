@@ -1,9 +1,8 @@
-﻿using Combat.Cards;
-using Combat.Enums;
+﻿using Combat.Enums;
 using Combat.Requests.Details;
 using UnityEngine;
 
-namespace Designs {
+namespace Combat.Cards {
 public static class CardDetails {
     /*
     试探
