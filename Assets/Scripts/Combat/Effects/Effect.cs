@@ -67,7 +67,7 @@ public class Effect : IComparable<Effect> {
     public int LgRemainingRounds;
 
     // 最大叠加层数
-    public int LgMaxOverlay = 1;
+    public int LgMaxOverlay = int.MaxValue;
 
     // 叠加层数
     public int LgOverlay = 1;
@@ -97,7 +97,8 @@ public class Effect : IComparable<Effect> {
     - 计算法力消耗后(法力消耗减半)
     - 出牌前(如 不竭:本次出牌法力消耗减半,抽一张牌)
     - 出牌后(如 生命汲取:本次出牌造成伤害的50%转化为生命)
-     */
+    - Todo 状态修改事件
+    */
 
     /// <summary>
     /// 有新效果附着前调用,判定是否拒绝附着
