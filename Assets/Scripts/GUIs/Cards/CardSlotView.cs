@@ -49,25 +49,36 @@ public class CardSlotView : MonoBehaviour {
         card.Slot = this;
         card.Data = data;
         m_cards.Add(card);
+        m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
+        {
+            var index = c.Data.LgElement.HasValue ? (int)c.Data.LgElement.Value : -1;
+            return (index, c.Data.UiName);
+        }));
 
         card.transform.position = combatant.cardHeap.transform.position;
 
         return FreshUI();
     }
 
+    public void FreshOrder() {
+        m_cards.ForEach(
+            (c, i) => c.transform.SetSiblingIndex(c.Index = i)
+        );
+        // foreach (var card in m_cards.Where(card => card.Data.IsSelected)) {
+        //     card.transform.SetAsLastSibling();
+        // }
+    }
+
     private IEnumerator FreshUI() {
-        return ToolsCoroutine.Combine(m_cards.Select((card, i) =>
-        {
-            card.Index = i;
-            return card.MoveToTarget(0.3f);
-        }));
+        FreshOrder();
+        return GCoroutine.Parallel(m_cards.Select(c => c.MoveToTarget(0.3f)));
     }
 
     public IEnumerator PlayCards(IEnumerable<Card> cards) {
         var set = cards.ToHashSet();
         var remove = m_cards.Extract(card => set.Contains(card.Data));
         combatant.Heap.RecycleCard(set);
-        return ToolsCoroutine.Combine(remove.Select(card => card.MoveToHeap(0.1f)).Append(FreshUI()));
+        return GCoroutine.Parallel(remove.Select(card => card.MoveToHeap(0.1f)).Append(FreshUI()));
     }
 }
 }

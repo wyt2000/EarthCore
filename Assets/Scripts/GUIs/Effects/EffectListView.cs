@@ -46,7 +46,8 @@ public class EffectListView : MonoBehaviour {
             view.IndexVertical   = i / 10;
             view.IndexHorizontal = i % 10;
         }
-        return ToolsCoroutine.Combine(m_views.Select(view => view.MoveToTarget(0.1f)));
+
+        return GCoroutine.Parallel(m_views.Select(view => view.MoveToTarget(0.1f)));
     }
 }
 }

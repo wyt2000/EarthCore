@@ -1,6 +1,7 @@
 ﻿using System;
 
 namespace Utils {
+// 随机数单例
 public static class GRandom {
     private static readonly Random Instance = new();
 

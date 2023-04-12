@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Utils {
-public static class ToolsCoroutine {
+// 协程工具类
+public static class GCoroutine {
     private class StackEnumerator : IEnumerator {
         private readonly Stack<IEnumerator> m_stack = new();
 
@@ -17,6 +18,7 @@ public static class ToolsCoroutine {
                 if (i.Current is IEnumerator result) m_stack.Push(result);
                 return true;
             }
+
             if (m_stack.Count <= 1) return false;
             m_stack.Pop();
             return true;
@@ -29,12 +31,12 @@ public static class ToolsCoroutine {
         public object Current => null;
     }
 
-    private class CombineEnumerator : IEnumerator {
+    private class ParallelEnumerator : IEnumerator {
         private readonly StackEnumerator[] m_enumerators;
 
-        private CombineEnumerator m_next;
+        private ParallelEnumerator m_next;
 
-        public CombineEnumerator(IEnumerable<IEnumerator> coroutines) {
+        public ParallelEnumerator(IEnumerable<IEnumerator> coroutines) {
             m_enumerators = coroutines.Select(c => new StackEnumerator(c)).ToArray();
         }
 
@@ -43,6 +45,7 @@ public static class ToolsCoroutine {
             foreach (var enumerator in m_enumerators) {
                 if (enumerator.MoveNext()) allDone = false;
             }
+
             return !allDone;
         }
 
@@ -53,8 +56,14 @@ public static class ToolsCoroutine {
         public object Current => null;
     }
 
-    public static IEnumerator Combine(IEnumerable<IEnumerator> coroutines) {
-        return new CombineEnumerator(coroutines);
+    // 并行运行多个协程
+    public static IEnumerator Parallel(IEnumerable<IEnumerator> coroutines) {
+        return new ParallelEnumerator(coroutines);
+    }
+
+    // 顺序运行多个协程
+    public static IEnumerator Sequence(params IEnumerator[] coroutines) {
+        return coroutines.GetEnumerator();
     }
 }
 }
