@@ -12,12 +12,14 @@ public class JudgeLogView : MonoBehaviour {
 
     private readonly LinkedList<(int, string)> m_strings = new();
 
+    private int m_index;
+
     public void AddLog(string str) {
         StartCoroutine(AddLogNoOverflow(str));
     }
 
     private IEnumerator AddLogNoOverflow(string str) {
-        m_strings.AddLast((m_strings.Count + 1, str));
+        m_strings.AddLast((++m_index, str));
         do {
             LoadString();
             yield return null;

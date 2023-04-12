@@ -66,9 +66,9 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
             cardImage.color = Data.LgElement switch {
                 ElementType.Huo  => Color.red,
                 ElementType.Shui => Color.blue,
-                ElementType.Mu  => Color.green,
-                ElementType.Jin => Color.yellow,
-                ElementType.Tu => new Color(1f, 0.47f, 0f),
+                ElementType.Mu   => Color.green,
+                ElementType.Jin  => Color.yellow,
+                ElementType.Tu   => new Color(1f, 0.47f, 0f),
 
                 _ => Color.gray,
             };
@@ -78,6 +78,9 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
         cardCost.text        = Data.LgManaCostFunc == null ? $"{Data.LgManaCost}" : "???";
+
+        // Todo 实现preview法力消耗
+        // Todo 加伤害text
     }
 
     // 目标位置

@@ -74,7 +74,7 @@ public class CardSlotView : MonoBehaviour {
         return GCoroutine.Parallel(m_cards.Select(c => c.MoveToTarget(0.3f)));
     }
 
-    public IEnumerator PlayCards(IEnumerable<Card> cards) {
+    public IEnumerator Discards(IEnumerable<Card> cards) {
         var set = cards.ToHashSet();
         var remove = m_cards.Extract(card => set.Contains(card.Data));
         combatant.Heap.RecycleCard(set);

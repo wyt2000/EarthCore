@@ -94,7 +94,7 @@ public class RequestPlayBatchCard : CombatRequest {
         }
 
         Add(new RequestAnimation {
-            Anim = () => Causer.cardSlot.PlayCards(Cards)
+            Anim = () => Causer.cardSlot.Discards(Cards)
         });
 
         // 监听伤害
