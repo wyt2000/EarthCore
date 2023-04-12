@@ -10,7 +10,10 @@ public sealed class RequestLogic : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        return Logic != null;
+        return Require(
+            Logic != null,
+            "无效的自定义逻辑请求"
+        );
     }
 
     protected override void ExecuteNoCross() {

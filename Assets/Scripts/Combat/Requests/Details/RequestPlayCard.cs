@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Combat.Cards;
-using UnityEngine;
 
 namespace Combat.Requests.Details {
 // 批量出牌请求指派的单个出牌请求
@@ -16,9 +15,10 @@ public class RequestPlayCard : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        if (Batch != null && Current != null) return true;
-        Debug.LogError($"批量出牌请求指派的单个出牌请求的Batch或Current为空");
-        return false;
+        return Require(
+            Batch != null && Current != null,
+            "批量出牌请求指派的单个出牌请求的Batch或Current为空"
+        );
     }
 
     // Todo 加动画

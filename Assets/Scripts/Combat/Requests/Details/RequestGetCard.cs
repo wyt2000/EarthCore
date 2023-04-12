@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Linq;
 using Combat.Cards;
-using UnityEngine;
 
 namespace Combat.Requests.Details {
 // 摸牌请求
@@ -21,9 +20,10 @@ public class RequestGetCard : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        if (Causer != null && Count > 0) return true;
-        Debug.LogWarning("Invalid card request");
-        return false;
+        return Require(
+            Causer != null && Count > 0,
+            "无效的摸牌请求"
+        );
     }
 
     public override IEnumerator Execute() {

@@ -10,7 +10,10 @@ public class RequestPostLogic : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        return OnFinish != null;
+        return Require(
+            OnFinish != null,
+            "无效的后处理逻辑请求"
+        );
     }
 
     protected override void ExecuteNoCross() {

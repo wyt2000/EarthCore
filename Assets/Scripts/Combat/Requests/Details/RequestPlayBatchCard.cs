@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Combat.Cards;
 using Combat.Effects;
-using UnityEngine;
 using Utils;
 
 namespace Combat.Requests.Details {
@@ -26,21 +25,20 @@ public class RequestPlayBatchCard : CombatRequest {
 #region 重写
 
     public override bool CanEnqueue() {
-        if (Judge.Requests.Count > 0) {
-            Debug.LogWarning("Cannot play card when there are tasks in queue");
-            return false;
-        }
-
-        if (Causer == null || Cards == null || Cards.Length == 0) {
-            Debug.LogWarning("Invalid card request");
-            return false;
-        }
-
-        var manaCost = PreviewManaCost();
-        if (manaCost <= Causer.State.Mana) return true;
-
-        Debug.LogWarning("Not enough mana");
-        return false;
+        return RequireAll(
+            Require(
+                Judge.Requests.Count > 0,
+                "不能在有任务在队列中时出牌"
+            ),
+            Require(
+                Causer != null && Cards != null && Cards.Length > 0,
+                "无效的出牌请求"
+            ),
+            Require(
+                PreviewManaCost() <= Causer.State.Mana,
+                "法力值不足"
+            )
+        );
     }
 
     protected override void ExecuteNoCross() {

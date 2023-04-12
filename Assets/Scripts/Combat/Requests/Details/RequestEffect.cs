@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Combat.Effects;
-using UnityEngine;
 
 namespace Combat.Requests.Details {
 // 效果附着/脱离请求
@@ -13,9 +12,10 @@ public class RequestEffect : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        if (Effect != null && Effect.Target != null) return true;
-        Debug.LogWarning("Invalid effect request");
-        return false;
+        return Require(
+            Effect != null && Effect.Target != null,
+            "无效的效果请求"
+        );
     }
 
     public override IEnumerator Execute() {

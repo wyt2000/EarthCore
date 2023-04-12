@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Combat.Requests {
 public abstract class CombatRequest {
@@ -13,6 +15,9 @@ public abstract class CombatRequest {
 
     // 用于拦截请求
     public bool Reject;
+
+    // 拒绝原因字段
+    public string RejectReason;
 
     // 结点
     public LinkedListNode<CombatRequest> Node;
@@ -32,7 +37,7 @@ public abstract class CombatRequest {
 
     // 真正执行请求(无跨帧)
     protected virtual void ExecuteNoCross() {
-        throw new System.NotImplementedException();
+        Debug.LogError("没有实现ExecuteNoCross");
     }
 
     // 任务描述
@@ -71,6 +76,17 @@ public abstract class CombatRequest {
     protected void AddAfter(CombatRequest request) {
         request.Causer ??= Causer;
         Judge.Requests.AddAfter(this, request);
+    }
+
+    protected bool Require(bool expression, string error) {
+        if (expression) return true;
+        Reject       = true;
+        RejectReason = error;
+        return false;
+    }
+
+    protected static bool RequireAll(params bool[] expressions) {
+        return expressions.All(expression => expression);
     }
 
 #endregion

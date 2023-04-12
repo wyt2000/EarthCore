@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using Combat.Enums;
-using UnityEngine;
 
 namespace Combat.Requests.Details {
 // 伤害/回血
@@ -29,9 +28,10 @@ public class RequestHpChange : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        if (Target != null && Causer != null && Value >= 0) return true;
-        Debug.LogWarning("Invalid health request");
-        return false;
+        return Require(
+            Target != null && Causer != null && Value >= 0,
+            "非法的生命请求"
+        );
     }
 
     // Todo 加动画

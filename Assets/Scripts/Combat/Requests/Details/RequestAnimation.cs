@@ -6,7 +6,10 @@ public class RequestAnimation : CombatRequest {
     public Func<IEnumerator> Anim = () => null;
 
     public override bool CanEnqueue() {
-        return true;
+        return Require(
+            Anim != null,
+            "无效的延迟动画请求"
+        );
     }
 
     public override IEnumerator Execute() {

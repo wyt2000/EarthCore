@@ -18,7 +18,13 @@ public class CombatRequestList {
     private bool InValid(CombatRequest request) {
         if (Judge == null || request == null) return true;
         request.Judge = Judge;
-        return !request.CanEnqueue();
+        var reject = !request.CanEnqueue();
+        if (reject) {
+            var msg = $"Request {request} rejected: {request.RejectReason}";
+            Debug.Log(msg);
+            Judge.logger.AddLog(msg);
+        }
+        return reject;
     }
 
 
@@ -74,7 +80,7 @@ public class CombatRequestList {
         while (Count > 0) {
             var task = PopFirst();
             var desc = task.Description();
-            Judge.logger.AddLog(desc);
+            if (!string.IsNullOrEmpty(desc)) Judge.logger.AddLog(desc);
             yield return task.Execute();
         }
         Running = false;
