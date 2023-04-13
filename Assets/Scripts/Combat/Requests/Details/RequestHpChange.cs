@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using Combat.Enums;
+using UnityEngine;
+using Utils;
 
 namespace Combat.Requests.Details {
 // 伤害/回血
@@ -45,7 +47,7 @@ public class RequestHpChange : CombatRequest {
         var causer = Causer;
         var target = Target;
         causer.BoardCast(effect => effect.BeforeTakeHpChange(this));
-        if (!IsReal || target.BoardCastAny(effect => effect.BeforeSelfHpChange(this))) yield break;
+        if (!IsReal && target.BoardCastAny(effect => effect.BeforeSelfHpChange(this))) yield break;
 
         var value = Value;
         var state = Target.State;
@@ -79,14 +81,12 @@ public class RequestHpChange : CombatRequest {
         if (Element.HasValue) Target.TryApplyElementBreak(Causer, Element.Value, 1);
 
         var old = state.Health;
-        if (IsHeal) {
-            state.Health += value;
-        }
-        else {
-            state.Health -= value;
-        }
+        var cur = old + (IsHeal ? value : -value);
 
-        var change = state.Health - old;
+        // Todo 加个scale动画
+        yield return GAnimation.Lerp(0.5f, t => state.Health = Mathf.Lerp(old, cur, t));
+
+        var change = cur - old;
 
         Value = Math.Abs(change);
         target.BoardCast(effect => effect.AfterSelfHpChange(this));
