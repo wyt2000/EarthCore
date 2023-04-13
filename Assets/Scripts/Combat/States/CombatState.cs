@@ -14,6 +14,9 @@ public class CombatState : CombatAddableState {
     // 玩家最大法力
     public float ManaMax => ManaMaxBase * (1 + ManaMaxPercent / 100) + ManaMaxExtra;
 
+    // 玩家是否死亡(生命值归零且无元素附着)
+    public bool IsDead => Health <= 0 && ElementAttach.Count == 0;
+
 #endregion
 
 #region 区间约束字段

@@ -4,12 +4,16 @@ using Combat.Enums;
 using Utils;
 
 namespace Combat.States {
+// Todo 处理封锁标签
 public enum CombatBlockTag {
     // 属性封锁:不能使用某种固定属性卡牌
     BlockElement,
 
     // 摸牌封锁:不能抽牌
     BlockGetCard,
+
+    // 出牌封锁
+    BlockPlayCard,
 
     // 联动封锁:无法触发元素联动
     BlockElementLink,
@@ -50,10 +54,10 @@ public class CombatAddableState {
     // 物理护盾
     public float PhysicalShield;
 
-    // 物理护甲(恢复物理护盾) Todo 回合开始恢复
+    // 物理护甲(恢复物理护盾)
     public float PhysicalArmor;
 
-    // 魔法护盾(反伤物理伤害) Todo 实现反伤
+    // 魔法护盾(反伤物理伤害)
     public float MagicShield;
 
     // 增加造成的物理伤害
@@ -72,13 +76,13 @@ public class CombatAddableState {
     public int MaxCardCnt;
 
     // 元素法印层数
-    public AddableDict<ElementType, int> ElementAttach = new();
+    public CompactDict<ElementType, int> ElementAttach = new();
 
     // 元素法印最大层数
-    public AddableDict<ElementType, int> ElementMaxAttach = new();
+    public CompactDict<ElementType, int> ElementMaxAttach = new();
 
     // tag容器
-    public AddableDict<CombatBlockTag, int> BlockTags = new();
+    public CompactDict<CombatBlockTag, int> BlockTags = new();
 
 #endregion
 
