@@ -7,7 +7,5 @@ public enum DamageType {
 
     [Description("魔法")]
     Magical,
-
-    // Todo 真伤/穿透
 }
 }

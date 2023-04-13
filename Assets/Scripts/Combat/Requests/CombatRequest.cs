@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Todo 规范配置项命名:In/Out/Io
 namespace Combat.Requests {
 public abstract class CombatRequest {
 #region 配置项

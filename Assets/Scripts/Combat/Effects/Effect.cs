@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using Combat.Requests.Details;
+using UnityEngine;
 
 namespace Combat.Effects {
 // 增益,减益,控制等.用于过滤某些tag
 public enum EffectTag {
+    // 增益类buff
     Buff,
+
+    // 减益类buff
     DeBuff,
+
+    // 控制类buff
     Control,
+
+    // 固有buff,不可移除
+    Fixed,
 }
 
 // 效果 基类
@@ -159,7 +168,7 @@ public class Effect : IComparable<Effect> {
     /// <example>
     /// 护甲buff
     /// </example>
-    protected virtual void OnBeforeTurnStart() { }
+    protected virtual void OnAfterTurnStart() { }
 
     /// <summary>
     /// 自己回合结束后调用.只给自身触发
@@ -258,7 +267,7 @@ public class Effect : IComparable<Effect> {
 
     public Action<Effect> OnImpAfterDetach;
 
-    public Action<Effect> OnImpBeforeTurnStart;
+    public Action<Effect> OnImpAfterTurnStart;
 
     public Action<Effect> OnImpAfterTurnEnd;
 
@@ -285,11 +294,7 @@ public class Effect : IComparable<Effect> {
 #region 公开函数
 
     public int CompareTo(Effect other) {
-        if (LgPriority == other.LgPriority) {
-            return m_effectStamp - other.m_effectStamp;
-        }
-
-        return LgPriority - other.LgPriority;
+        return (LgPriority, m_effectStamp).CompareTo((other.LgPriority, other.m_effectStamp));
     }
 
     public void Attach(CombatantComponent target) {
@@ -310,7 +315,7 @@ public class Effect : IComparable<Effect> {
     }
 
     public void DoAttach() {
-        var reject = Target.BoardCastAny(effect => effect.RejectAttach(this));
+        var reject = !LgTags.Contains(EffectTag.Fixed) && Target.BoardCastAny(effect => effect.RejectAttach(this));
         if (reject) return;
         var mergeAble = Target.BoardCastAny(effect =>
         {
@@ -325,6 +330,10 @@ public class Effect : IComparable<Effect> {
     }
 
     public void DoRemove() {
+        if (LgTags.Contains(EffectTag.Fixed)) {
+            Debug.LogError("固定效果不可移除!");
+            return;
+        }
         Target.Effects.Remove(this);
         AfterDetach();
     }
@@ -337,6 +346,7 @@ public class Effect : IComparable<Effect> {
         return OnRejectAttach(effect) || (OnImpRejectAttach?.Invoke(this, effect) ?? false);
     }
 
+    // Todo 测试合并逻辑
     private bool CheckMergeAble(Effect effect) {
         return LgOpenMerge && (OnCheckMergeAble(effect) || (OnImpCheckMergeAble?.Invoke(this, effect) ?? false));
     }
@@ -358,9 +368,9 @@ public class Effect : IComparable<Effect> {
         OnImpAfterDetach?.Invoke(this);
     }
 
-    public void BeforeTurnStart() {
-        OnBeforeTurnStart();
-        OnImpBeforeTurnStart?.Invoke(this);
+    public void AfterTurnStart() {
+        OnAfterTurnStart();
+        OnImpAfterTurnStart?.Invoke(this);
     }
 
     public void AfterTurnEnd() {

@@ -48,7 +48,7 @@ public class RequestPlayBatchCard : CombatRequest {
         // 计算元素联动
         var (link, self) = PreviewElementLink();
         if (link != null) {
-            (self ? Causer : Target).Attach(link);
+            (self ? Causer : Target).AddBuffFrom(link, Causer);
             Add(new RequestLogic {
                 Causer = Causer,
                 Logic  = RealExecuteLogic
@@ -143,7 +143,7 @@ public class RequestPlayBatchCard : CombatRequest {
     }
 
     public (Effect, bool) PreviewElementLink() {
-        return EffectLinks.GetElementLink(Cards.Where(e => e.LgElement.HasValue).Select(c => c.LgElement.Value).ToArray());
+        return EffectLinks.GetElementLink(Cards);
     }
 
 #endregion

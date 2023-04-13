@@ -12,9 +12,15 @@ public class RequestEffect : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        return Require(
-            Effect != null && Effect.Target != null,
-            "无效的效果请求"
+        return RequireAll(
+            Require(
+                Effect != null && Effect.Target != null,
+                "无效的效果请求"
+            ),
+            Require(
+                Effect != null && !Effect.LgTags.Contains(EffectTag.Fixed),
+                "固定效果不可移除"
+            )
         );
     }
 

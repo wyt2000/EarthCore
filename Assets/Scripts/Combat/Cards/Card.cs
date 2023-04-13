@@ -13,7 +13,7 @@ public class Card {
     // 卡牌是否被选中
     public bool IsSelected = false;
 
-    // 卡牌是否可以被选中 Todo 添加TrySelect接口
+    // 卡牌是否可以被选中 Todo 优化选择卡牌相关逻辑和ui
     public bool IsSelectable = true;
 
     // 克隆原始卡牌
