@@ -16,6 +16,9 @@ public class RequestHpChange : CombatRequest {
     // 是否为治疗请求
     public bool IsHeal = false;
 
+    // 是否为真实伤害(Todo 计算时无视:reject,护盾,增伤,抗性)
+    public bool IsReal = false;
+
     // 伤害类型
     public DamageType Type = DamageType.Physical;
 

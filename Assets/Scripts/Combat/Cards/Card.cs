@@ -93,12 +93,13 @@ public class Card {
     }
 
     // 快捷造成伤害
-    public void TakeDamage(RequestPlayCard request) {
+    public void TakeDamage(RequestPlayCard request, bool real = false) {
         if (Damage <= 0) return;
-        request.Causer.Attack(request.Batch.Target, new RequestHpChange {
+        request.Causer.Attack(new RequestHpChange {
             Value   = Damage,
             Type    = LgDamageType,
             Element = LgElement,
+            IsReal  = real,
 
             Reason = $"卡牌[{UiName}]"
         });

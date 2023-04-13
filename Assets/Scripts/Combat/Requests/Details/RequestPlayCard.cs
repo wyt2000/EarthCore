@@ -33,8 +33,8 @@ public class RequestPlayCard : CombatRequest {
 
 #region 公开函数
 
-    public void TakeDamage() {
-        Current.TakeDamage(this);
+    public void TakeDamage(bool real = false) {
+        Current.TakeDamage(this, real);
     }
 
 #endregion
