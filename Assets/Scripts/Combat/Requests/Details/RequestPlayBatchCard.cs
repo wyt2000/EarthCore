@@ -46,9 +46,9 @@ public class RequestPlayBatchCard : CombatRequest {
         Causer.State.Mana -= TotalManaCost;
 
         // 计算元素联动
-        var (link, self) = PreviewElementLink();
+        var (link, other) = PreviewElementLink();
         if (link != null) {
-            (self ? Causer : Target).AddBuffFrom(link, Causer);
+            (other ? Target : Causer).AddBuffFrom(link, Causer);
             Add(new RequestLogic {
                 Causer = Causer,
                 Logic  = RealExecuteLogic

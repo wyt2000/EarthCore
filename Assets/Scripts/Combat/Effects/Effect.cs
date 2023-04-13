@@ -347,7 +347,6 @@ public class Effect : IComparable<Effect> {
         return OnRejectAttach(effect) || (OnImpRejectAttach?.Invoke(this, effect) ?? false);
     }
 
-    // Todo 测试合并逻辑
     private bool CheckMergeAble(Effect effect) {
         return LgOpenMerge && (OnCheckMergeAble(effect) || (OnImpCheckMergeAble?.Invoke(this, effect) ?? false));
     }
@@ -386,7 +385,7 @@ public class Effect : IComparable<Effect> {
     }
 
     public bool BeforeSelfHpChange(RequestHpChange request) {
-        return OnBeforeSelfHpChange(request) && (OnImpBeforeSelfHpChange?.Invoke(this, request) ?? false);
+        return OnBeforeSelfHpChange(request) || (OnImpBeforeSelfHpChange?.Invoke(this, request) ?? false);
     }
 
     public void AfterSelfHpChange(RequestHpChange request) {

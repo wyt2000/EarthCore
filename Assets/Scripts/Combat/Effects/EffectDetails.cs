@@ -66,14 +66,13 @@ public static class EffectLinks {
     [ElementLink(ElementType.Jin, ElementType.Tu)]
     private static Effect JinTu() {
         var trigger = new EffectTrigger();
-        var effect = new Effect {
+        return trigger.Bind(new Effect {
             UiName        = "免疫",
             UiDescription = "金土联动,免疫下一次伤害",
             LgTags        = { EffectTag.Buff },
 
             OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal)
-        };
-        return trigger.Bind(effect);
+        });
     }
 
     [ElementLink(ElementType.Huo, ElementType.Tu)]
@@ -213,7 +212,7 @@ public static class EffectLinks {
     }
 
     // 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
-    [ElementLink(ElementType.Shui, ElementType.Huo, ElementType.Mu)]
+    [ElementLink(true, ElementType.Shui, ElementType.Huo, ElementType.Mu)]
     private static Effect ShuiHuoMu() {
         return new EffectOnce {
             UiName        = "击碎",
@@ -231,7 +230,7 @@ public static class EffectLinks {
     }
 
     // 金+木+水+火+土：净化：直接击碎全部敌方法印，斩杀生命值低于10%的敌人。
-    [ElementLink(ElementType.Jin, ElementType.Mu, ElementType.Shui, ElementType.Huo, ElementType.Tu)]
+    [ElementLink(true, ElementType.Jin, ElementType.Mu, ElementType.Shui, ElementType.Huo, ElementType.Tu)]
     private static Effect JinMuShuiHuoTu() {
         return new EffectOnce {
             UiName        = "净化",
