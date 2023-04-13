@@ -112,5 +112,13 @@ public static class GAnimation {
             yield return null;
         } while (current < endTime);
     }
+
+    // 等待
+    public static IEnumerator Wait(float duration) {
+        var target = Time.time + duration;
+        while (Time.time < target) {
+            yield return null;
+        }
+    }
 }
 }

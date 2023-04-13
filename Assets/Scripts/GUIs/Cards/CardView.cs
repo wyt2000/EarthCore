@@ -17,6 +17,10 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     [SerializeField]
     private RectTransform rect;
 
+    // 卡牌边框
+    [SerializeField]
+    private Image cardBorder;
+
     // 卡牌图片
     [SerializeField]
     private Image cardImage;
@@ -63,18 +67,16 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     private void Start() {
         if (Data == null) return;
         var imageUrl = Data.UiImagePath;
-        cardImage.sprite = Resources.Load<Sprite>(imageUrl);
-        if (cardImage.sprite == null) {
-            cardImage.color = Data.LgElement switch {
-                ElementType.Huo  => Color.red,
-                ElementType.Shui => Color.blue,
-                ElementType.Mu   => Color.green,
-                ElementType.Jin  => Color.yellow,
-                ElementType.Tu   => new Color(1f, 0.47f, 0f),
+        cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
+        cardBorder.color = Data.LgElement switch {
+            ElementType.Huo  => new Color(0.78f, 0.24f, 0.1f),
+            ElementType.Shui => new Color(0.41f, 0.68f, 0.74f),
+            ElementType.Mu   => new Color(0.34f, 0.76f, 0.53f),
+            ElementType.Jin  => new Color(0.65f, 0.51f, 0.29f),
+            ElementType.Tu   => new Color(0.43f, 0.27f, 0.18f),
 
-                _ => Color.gray,
-            };
-        }
+            _ => new Color(0.38f, 0.39f, 0.42f),
+        };
 
         cardName.text        = Data.UiName;
         cardDescription.text = Data.UiDescription;
@@ -99,8 +101,14 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         yield return this.MoveTo(m_locker, TargetPosition(), duration);
     }
 
-    public IEnumerator MoveToHeap(float duration) {
-        yield return this.MoveTo(m_locker, Container.combatant.cardHeap.transform.position, duration);
+    public IEnumerator MoveToHeap(int index, float duration) {
+        rect.SetPivotWithoutChangingPosition(new Vector2(0.5f, 0.5f));
+        var target = Container.combatant.cardHeap.transform.position;
+        var first = target + Vector3.right * ((index + 1) * rect.rect.width * 1.25f);
+        yield return this.MoveTo(null, first, duration);
+        yield return GAnimation.Wait(1.0f);
+        yield return this.MoveTo(null, target, 0.2f);
+        // Todo 加缩放动画
         Destroy(gameObject);
     }
 

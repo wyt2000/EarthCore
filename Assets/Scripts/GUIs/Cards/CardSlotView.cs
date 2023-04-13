@@ -80,7 +80,7 @@ public class CardSlotView : MonoBehaviour {
         var set = cards.ToHashSet();
         var remove = m_cards.Extract(card => set.Contains(card.Data));
         combatant.Heap.RecycleCard(set);
-        return GCoroutine.Parallel(remove.Select(card => card.MoveToHeap(0.1f)).Append(FreshUI()));
+        return GCoroutine.Parallel(remove.Select((card, i) => card.MoveToHeap(i, 0.5f)).Append(FreshUI()));
     }
 }
 }
