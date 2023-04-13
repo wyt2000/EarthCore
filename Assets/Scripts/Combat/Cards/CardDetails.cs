@@ -72,12 +72,12 @@ public static class CardDetails {
         return new Card {
             Clone         = JinZhongZhao,
             UiName        = "金钟罩",
-            UiDescription = "为自身添加15护盾",
+            UiDescription = "为自身添加15护甲",
             UiImagePath   = "Textures/Cards/金钟罩",
             LgElement     = ElementType.Jin,
             OnExecute = req =>
             {
-                req.Causer.State.PhysicalArmor += 25;
+                req.Causer.State.PhysicalArmor += 15;
                 req.TakeDamage();
             }
         };
@@ -151,7 +151,7 @@ public static class CardDetails {
             OnExecute     = req => req.TakeDamage(),
             OnAfterPlayBatchCard = req =>
             {
-                req.Causer.HealSelf(new RequestHpChange {
+                req.Causer.Heal(new RequestHpChange {
                     Value  = req.TotalDamage * 0.5f,
                     Reason = "生命汲取"
                 });
@@ -197,7 +197,7 @@ public static class CardDetails {
             UiImagePath   = "Textures/Cards/包扎",
             LgManaCost    = 5,
             LgElement     = ElementType.Mu,
-            OnExecute = req => req.Causer.HealSelf(new RequestHpChange {
+            OnExecute = req => req.Causer.Heal(new RequestHpChange {
                 Value  = 50,
                 Reason = "包扎"
             })
@@ -211,7 +211,7 @@ public static class CardDetails {
     | 法力消耗 | 10                                                   |
     | 伤害类型 | 无                                                    |
     | 伤害值  | 无                                                    |
-    | 效果   | 为自身施加三层【疗养】效果：OnBeforeTurnStart:回复50点生命和5点法力，削减一层自身。 |
+    | 效果   | 为自身施加三层【疗养】效果：OnAfterTurnStart:回复50点生命和5点法力，削减一层自身。 |
      */
     private static Card LiangYao() {
         var effect = new Effect {
@@ -221,9 +221,9 @@ public static class CardDetails {
             LgOverlay     = 3,
             LgOpenMerge   = true,
 
-            OnImpBeforeTurnStart = self =>
+            OnImpAfterTurnStart = self =>
             {
-                self.Causer.HealSelf(new RequestHpChange {
+                self.Causer.Heal(new RequestHpChange {
                     Value  = 50,
                     Reason = "良药"
                 });
@@ -234,11 +234,11 @@ public static class CardDetails {
         return new Card {
             Clone         = LiangYao,
             UiName        = "良药",
-            UiDescription = "为自身施加三层【疗养】效果：OnBeforeTurnStart:回复50点生命和5点法力，削减一层自身。",
+            UiDescription = "为自身施加三层【疗养】效果：OnAfterTurnStart:回复50点生命和5点法力，削减一层自身。",
             UiImagePath   = "Textures/Cards/良药",
             LgManaCost    = 10,
             LgElement     = ElementType.Mu,
-            OnExecute     = req => req.Causer.Attach(effect)
+            OnExecute     = req => req.Causer.AddBuff(effect)
         };
     }
 
@@ -289,7 +289,7 @@ public static class CardDetails {
             LgManaCost = 8,
             LgElement  = ElementType.Shui,
 
-            OnAfterPlayBatchCard = req => req.Causer.AttachTo(EffectDetails.QingSuan((int)req.TotalManaCost), req.Target)
+            OnAfterPlayBatchCard = req => req.Causer.AddOpBuff(EffectPrefabs.QingSuan((int)req.TotalManaCost))
         };
     }
 
@@ -332,7 +332,7 @@ public static class CardDetails {
             UiImagePath   = "Textures/Cards/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
-            OnExecute     = req => req.Causer.AttachTo(EffectDetails.QingSuan(70), req.Batch.Target)
+            OnExecute     = req => req.Causer.AddOpBuff(EffectPrefabs.QingSuan(70))
         };
     }
 
@@ -413,13 +413,8 @@ public static class CardDetails {
             UiDescription = "造成35点物理伤害，穿透",
             UiImagePath   = "Textures/Cards/穿刺",
             LgDamage      = 35,
-            // Todo 穿刺效果
-            LgElement = ElementType.Huo,
-            OnExecute = req =>
-            {
-                req.Batch.Target.State.PhysicalArmor = 0;
-                req.TakeDamage();
-            }
+            LgElement     = ElementType.Huo,
+            OnExecute     = req => req.TakeDamage(true)
         };
     }
 
@@ -439,7 +434,7 @@ public static class CardDetails {
             UiDescription = "为敌人施加3层【淬炼】效果",
             UiImagePath   = "Textures/Cards/焚烧",
             LgElement     = ElementType.Huo,
-            OnExecute     = req => req.Batch.Target.Attach(EffectDetails.CuiLian(3))
+            OnExecute     = req => req.Causer.AddOpBuff(EffectPrefabs.CuiLian(3))
         };
     }
 
@@ -464,6 +459,7 @@ public static class CardDetails {
             UiImagePath   = "Textures/Cards/魔法守护",
             LgManaCost    = 10,
             LgElement     = ElementType.Tu,
+            LgInfect      = true,
             OnExecute     = req => req.Causer.State.MagicShield += 50
         };
     }
@@ -510,10 +506,10 @@ public static class CardDetails {
             UiDescription     = "三回合后生效造成100点土属性魔法伤害（生效于敌方回合开始时）",
             UiIconPath        = "",
             LgRemainingRounds = 3,
-            OnImpBeforeTurnStart = self =>
+            OnImpAfterTurnStart = self =>
             {
                 if (self.LgRemainingRounds > 1) return;
-                self.Causer.Attack(self.Target, new RequestHpChange {
+                self.Causer.Attack(new RequestHpChange {
                     Value   = 100,
                     Element = ElementType.Tu,
                     Type    = DamageType.Magical,
@@ -529,7 +525,7 @@ public static class CardDetails {
             LgManaCost    = 7,
             LgDamage      = 100,
             LgElement     = ElementType.Tu,
-            OnExecute     = req => req.Causer.AttachTo(effect, req.Batch.Target)
+            OnExecute     = req => req.Causer.AddOpBuff(effect)
         };
     }
 
@@ -617,7 +613,7 @@ public static class CardDetails {
             UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
             UiImagePath   = "Textures/Cards/铁甲加固",
             LgManaCost    = 20,
-            OnExecute     = req => req.Causer.Attach(effect)
+            OnExecute     = req => req.Causer.AddBuff(effect)
         };
     }
 
