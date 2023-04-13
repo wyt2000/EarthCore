@@ -130,7 +130,8 @@ public class Effect : IComparable<Effect> {
     /// 燃烧效果
     /// </example>
     protected virtual bool OnCheckMergeAble(Effect effect) {
-        return GetType() == effect.GetType();
+        // Todo 优化判断逻辑
+        return GetType() == effect.GetType() && UiName == effect.UiName;
     }
 
     /// <summary>
@@ -348,7 +349,7 @@ public class Effect : IComparable<Effect> {
     }
 
     private bool CheckMergeAble(Effect effect) {
-        return LgOpenMerge && (OnCheckMergeAble(effect) || (OnImpCheckMergeAble?.Invoke(this, effect) ?? false));
+        return LgOpenMerge && effect.LgOpenMerge && (OnCheckMergeAble(effect) || (OnImpCheckMergeAble?.Invoke(this, effect) ?? false));
     }
 
     private void DoMerge(Effect effect) {
