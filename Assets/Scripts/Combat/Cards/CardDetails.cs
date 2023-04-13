@@ -60,7 +60,7 @@ public static class CardDetails {
     }
 
     /*
-    | 金钟罩  |           |
+    | 格挡  |           |
     |------|-----------|
     | 元素属性 | 金         |
     | 法力消耗 | 无         |
@@ -71,9 +71,9 @@ public static class CardDetails {
     private static Card JinZhongZhao() {
         return new Card {
             Clone         = JinZhongZhao,
-            UiName        = "金钟罩",
+            UiName        = "格挡",
             UiDescription = "为自身添加15护甲",
-            UiImagePath   = "Textures/Cards/金钟罩",
+            UiImagePath   = "Textures/Cards/格挡",
             LgElement     = ElementType.Jin,
             OnExecute = req =>
             {
@@ -234,7 +234,7 @@ public static class CardDetails {
         return new Card {
             Clone         = LiangYao,
             UiName        = "良药",
-            UiDescription = "为自身施加三层【疗养】效果：OnAfterTurnStart:回复50点生命和5点法力，削减一层自身。",
+            UiDescription = "为自身施加【疗养】效果,持续3回合.",
             UiImagePath   = "Textures/Cards/良药",
             LgManaCost    = 10,
             LgElement     = ElementType.Mu,
@@ -365,7 +365,7 @@ public static class CardDetails {
     }
 
     /*
-    | 玉石俱焚 |                                    |
+    | 熔铁之刃 |                                    |
     |------|------------------------------------|
     | 元素属性 | 火                                  |
     | 法力消耗 | 无                                  |
@@ -376,9 +376,9 @@ public static class CardDetails {
     private static Card YuShiJuFen() {
         return new Card {
             Clone         = YuShiJuFen,
-            UiName        = "玉石俱焚",
+            UiName        = "熔铁之刃",
             UiDescription = "造成25点物理伤害，减少敌方10点护甲值，若敌方护甲值不足10点，造成溢出部分两倍的伤害",
-            UiImagePath   = "Textures/Cards/玉石俱焚",
+            UiImagePath   = "Textures/Cards/熔铁之刃",
             LgDamage      = 25,
             LgElement     = ElementType.Huo,
             OnExecute = req =>
