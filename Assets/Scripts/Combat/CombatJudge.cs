@@ -1,4 +1,5 @@
-﻿using Combat.Requests;
+﻿using System.Collections;
+using Combat.Requests;
 using Controllers;
 using GUIs;
 using UnityEngine;
@@ -19,6 +20,9 @@ public class CombatJudge : MonoBehaviour {
 
     // 战斗双方
     private readonly CombatantComponent[] m_combatants = new CombatantComponent[2];
+
+    // 是否开始
+    private bool m_start;
 
     // 当前回合
     private int m_round;
@@ -47,9 +51,18 @@ public class CombatJudge : MonoBehaviour {
         m_round = 0;
     }
 
+    private const int InitCardCount = 5;
+
     // 战斗开始事件
     private void CombatStart() {
         m_round = 0;
+        m_start = true;
+
+        // 初始摸牌
+        CurrentComp.GetCard(InitCardCount);
+        NextComp.GetCard(InitCardCount);
+
+        TurnStart();
     }
 
     // 切换回合
@@ -59,12 +72,12 @@ public class CombatJudge : MonoBehaviour {
 
     // 回合开始事件
     private void TurnStart() {
-        CurrentComp.BoardCast(e => e.BeforeTurnStart());
+        CurrentComp.BoardCast(e => e.AfterTurnStart());
     }
 
     // 回合结束事件
     private void TurnEnd() {
-        CurrentComp.BoardCast(e => { e.AfterTurnEnd(); });
+        CurrentComp.BoardCast(e => e.AfterTurnEnd());
     }
 
     // 下一回合
@@ -83,21 +96,30 @@ public class CombatJudge : MonoBehaviour {
 
 #region 脚本逻辑
 
-    private void Start() {
+    private IEnumerator Start() {
         // 检查ab
         if (playerA == null || playerB == null) {
             Debug.LogError("PlayerA or PlayerB not set");
-            return;
+            yield break;
         }
 
         Init(playerA, playerB);
+
+        // Todo 开始动画
+        yield return new WaitForSeconds(1);
+
+        CombatStart();
     }
 
     private void Update() {
-        if (Requests.Running) return;
+        if (!m_start || Requests.Running) return;
         var current = CurrentComp;
-        current.GetComponent<PlayerController>()?.OnUserInput();
+        current.GetComponent<CombatController>()?.OnUserInput();
         if (Requests.Count > 0) DealAllTask();
+        if (current.State.IsDead || NextComp.State.IsDead) {
+            // Todo 结束动画
+            m_start = false;
+        }
     }
 
 #endregion

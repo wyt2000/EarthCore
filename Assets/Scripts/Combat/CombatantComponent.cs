@@ -47,6 +47,8 @@ public class CombatantComponent : MonoBehaviour {
         MagicDamageAmplify = 0,
         MagicDamageReduce  = 0,
 
+        MaxCardCnt = 10,
+
         ElementMaxAttach = {
             { ElementType.Jin, 2 },
             { ElementType.Mu, 2 },
@@ -70,57 +72,124 @@ public class CombatantComponent : MonoBehaviour {
         State.Mana   = State.ManaMax / 2;
 
         State.ElementAttach += State.ElementMaxAttach;
+
+        // 加载固有buff
+        foreach (var effect in EffectFixed.GetAll(this)) {
+            effect.DoAttach();
+        }
     }
 
-    public void Attach(Effect effect) {
-        AttachTo(effect, this);
+#region 发起快捷请求
+
+    // 广播效果回调
+    public void BoardCast(Action<Effect> action) {
+        Effects.ForEach(action);
     }
 
-    public void AttachTo(Effect effect, CombatantComponent target) {
-        effect.Causer = this;
-        effect.Target = target;
-        effect.Attach(target);
+    // 广播效果回调直到有一个返回true
+    public bool BoardCastAny(Func<Effect, bool> action) {
+        return Effects.Any(action);
     }
 
-    public void Attack(CombatantComponent target, RequestHpChange request) {
-        request.Causer = this;
-        request.Target = target;
-        request.IsHeal = false;
-        Judge.Requests.Add(request);
+    // 给自己上buff
+    public void AddBuff(Effect effect) {
+        AddBuffFrom(effect, this);
     }
 
-    public void HealSelf(RequestHpChange request) {
+    // 给敌人上buff
+    public void AddOpBuff(Effect effect) {
+        Opponent.AddBuffFrom(effect, this);
+    }
+
+    // 上buff来自
+    public void AddBuffFrom(Effect effect, CombatantComponent causer) {
+        effect.Causer = causer;
+        effect.Target = this;
+        effect.Attach(this);
+    }
+
+    // 治疗自己
+    public void Heal(RequestHpChange request) {
         request.Causer = this;
         request.Target = this;
         request.IsHeal = true;
         Judge.Requests.Add(request);
     }
 
-    public void PlayCard(CombatantComponent target, RequestPlayBatchCard request) {
+    // 攻击敌人
+    public void Attack(RequestHpChange request) {
         request.Causer = this;
-        request.Target = target;
+        request.Target = Opponent;
+        request.IsHeal = false;
         Judge.Requests.Add(request);
     }
 
+    // 对敌人出牌
+    public void PlayCard(params Card[] cards) {
+        PlayCard((IEnumerable<Card>)cards);
+    }
+
+    public void PlayCard(IEnumerable<Card> cards) {
+        Judge.Requests.Add(new RequestPlayBatchCard {
+            Causer = this,
+            Target = Opponent,
+            Cards  = cards.ToArray()
+        });
+    }
+
+    // 摸牌 
     public void GetCard(RequestGetCard request) {
         request.Causer = this;
         Judge.Requests.Add(request);
     }
 
+    // 摸牌
     public void GetCard(int cnt) {
         GetCard(new RequestGetCard {
             Count = cnt
         });
     }
 
-    public void BoardCast(Action<Effect> action) {
-        Effects.ForEach(action);
+    // 能否选择一张牌预备出牌
+    public bool CanSelectCardToPlay(Card card) {
+        if (State.BlockTags.ContainsKey(CombatBlockTag.BlockPlayCard)) return false;
+        var selected = Cards.Where(c => c.IsSelected).ToList();
+        if (card.LgUnique && selected.Count > 0) return false;
+        if (selected.Any(s => s.LgUnique)) return false;
+        if (!card.LgElement.HasValue) return true;
+        // 要么只有<=1种元素,要么能触发元素联动
+        var types = selected.Select(c => c.LgElement).Where(t => t != null).Cast<ElementType>().ToHashSet();
+        return types.Count <= 1 || EffectLinks.GetElementLink(types).Item1 != null;
     }
 
-    public bool BoardCastAny(Func<Effect, bool> action) {
-        return Effects.Any(action);
+    // 选择一张牌预备出牌
+    public void SelectCardToPlay(Card card) {
+        if (!CanSelectCardToPlay(card)) return;
+        card.IsSelected = true;
+        // Todo 刷新ui
     }
 
+    // 取消选择一张牌
+    public void UnSelectCardToPlay(Card card) {
+        if (!card.IsSelected) return;
+        card.IsSelected = false;
+        // Todo 刷新ui
+        // Todo 按原有顺序重新尝试选择card
+    }
+
+    // 弃牌
+    public void Discard() {
+        // 选中的弃掉
+        var card = Cards.Extract(c => c.IsSelected);
+        // 超过上限的也弃掉 Todo 优化自动弃牌逻辑 
+        card.AddRange(Cards.Extract((_, i) => i >= State.MaxCardCnt));
+        Judge.Requests.Add(new RequestAnimation {
+            Anim = () => cardSlot.Discards(card)
+        });
+        Judge.Requests.Add(new RequestPostLogic {
+            OnFinish = () => Judge.NextTurn()
+        });
+    }
 
     // 尝试施加元素击碎
     public void TryApplyElementBreak(CombatantComponent causer, ElementType attack, int layer) {
@@ -129,7 +198,7 @@ public class CombatantComponent : MonoBehaviour {
         if (!State.ElementAttach.ContainsKey(next)) return;
         var cur = State.ElementAttach[next];
         layer = Math.Min(layer, cur);
-        State.ElementAttach -= new AddableDict<ElementType, int> {
+        State.ElementAttach -= new CompactDict<ElementType, int> {
             { next, layer },
         };
         if (State.ElementAttach.ContainsKey(next)) return;
@@ -137,8 +206,10 @@ public class CombatantComponent : MonoBehaviour {
         layer = State.ElementMaxAttach[next];
         var broken = EffectBroken.GetElementBroken(next, layer);
         var recover = EffectBroken.GetElementBrokenRecover(next, layer);
-        causer.AttachTo(broken,  this);
-        causer.AttachTo(recover, this);
+        AddBuffFrom(broken,  causer);
+        AddBuffFrom(recover, causer);
     }
+
+#endregion
 }
 }
