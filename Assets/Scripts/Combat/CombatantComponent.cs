@@ -130,18 +130,12 @@ public class CombatantComponent : MonoBehaviour {
     }
 
     public void PlayCard(IEnumerable<Card> cards) {
-        var enumerable = cards as Card[] ?? cards.ToArray();
-        foreach (Card card in enumerable)
-        {
-            if (card.View.isFlipped)
-            {
-                card.View.Show();
-            }
-        }
+        var arr = cards.ToArray();
+        arr.ForEach(c => c.View.Show());
         Judge.Requests.Add(new RequestPlayBatchCard {
             Causer = this,
             Target = Opponent,
-            Cards  = enumerable.ToArray()
+            Cards  = arr
         });
     }
 

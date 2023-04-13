@@ -4,7 +4,6 @@ using Combat.Cards;
 using Combat.Enums;
 using GUIs.Animations;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -67,8 +66,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     public bool isFlipped;
 
-    public void Show()
-    {
+    public void Show() {
         var imageUrl = Data.UiImagePath;
         cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
         cardBorder.color = Data.LgElement switch {
@@ -88,15 +86,23 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         // Todo 实现preview法力消耗
         // Todo 加伤害text
     }
-    
+
+    // 将卡牌翻面 Todo 改成加载卡背贴图
+    public void Flip() {
+        cardImage.sprite     = null;
+        cardImage.color      = Color.grey;
+        cardName.text        = "";
+        cardDescription.text = "";
+        cardElementType.text = "";
+        cardCost.text        = "???";
+    }
+
     private void Start() {
         if (Data == null) return;
-        if (isFlipped)
-        {
+        if (isFlipped) {
             Flip();
         }
-        else
-        {
+        else {
             Show();
         }
     }
@@ -127,25 +133,11 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        if (Data.IsSelectable)
-        {
-            Data.IsSelected ^= true;
-            Container.FreshOrder();
-            if (Data.IsSelected) transform.SetAsLastSibling();
-            StartCoroutine(MoveToTarget(upDuration));
-        }
+        if (!Data.IsSelectable) return;
+        Data.IsSelected ^= true;
+        Container.FreshOrder();
+        if (Data.IsSelected) transform.SetAsLastSibling();
+        StartCoroutine(MoveToTarget(upDuration));
     }
-
-    // 将卡牌翻面
-    public void Flip()
-    {
-        cardImage.sprite     = null;
-        cardImage.color      = Color.grey;
-        cardName.text        = "";
-        cardDescription.text = "";
-        cardElementType.text = "";
-        cardCost.text        = "???";
-    }
-
 }
 }

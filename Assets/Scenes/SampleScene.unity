@@ -389,11 +389,11 @@ PrefabInstance:
     - target: {fileID: 7690888453032867380, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 98e7cc1db5da19948b5098c6d406e9f5, type: 2}
+      objectReference: {fileID: 11400000, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
     - target: {fileID: 7690888453032867380, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -2441309311515012075, guid: 98e7cc1db5da19948b5098c6d406e9f5, type: 2}
+      objectReference: {fileID: 660632147882524155, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
     - target: {fileID: 8515500233380930473, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -715,6 +715,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1823542874}
     m_Modifications:
+    - target: {fileID: 15766245561288218, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
+      propertyPath: isOtherPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1833169590184321042, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: cardHeap
       value: 
@@ -754,11 +758,11 @@ PrefabInstance:
     - target: {fileID: 7690888453032867380, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 98e7cc1db5da19948b5098c6d406e9f5, type: 2}
+      objectReference: {fileID: 11400000, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
     - target: {fileID: 7690888453032867380, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -2441309311515012075, guid: 98e7cc1db5da19948b5098c6d406e9f5, type: 2}
+      objectReference: {fileID: 660632147882524155, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
     - target: {fileID: 8515500233380930473, guid: 97f8ec875155f8a4ab02c18075cd4106, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
