@@ -160,8 +160,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u5269\u4F59\u5361\u724Cx0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b781048ecbcb3d4f86b29d6dc9cfcec, type: 2}
-  m_sharedMaterial: {fileID: -4095526716146406805, guid: 9b781048ecbcb3d4f86b29d6dc9cfcec, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 98e7cc1db5da19948b5098c6d406e9f5, type: 2}
+  m_sharedMaterial: {fileID: -2441309311515012075, guid: 98e7cc1db5da19948b5098c6d406e9f5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
