@@ -22,9 +22,13 @@ public static class MoveToAnim {
         for (var i = 1; i < nodes.Length; i++) {
             sum += Vector3.Distance(nodes[i - 1], nodes[i]);
         }
+        if (sum < float.Epsilon) yield break;
         var pre = transform.position;
         foreach (var node in nodes) {
-            yield return mono.MoveTo(locker, node, Vector3.Distance(pre, node) / sum * duration);
+            var dis = Vector3.Distance(pre, node);
+            if (dis < float.Epsilon) continue;
+            var cost = dis / sum * duration;
+            yield return mono.MoveTo(locker, node, cost);
             pre = node;
         }
     }
