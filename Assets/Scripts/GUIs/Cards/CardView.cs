@@ -4,6 +4,7 @@ using Combat.Cards;
 using Combat.Enums;
 using GUIs.Animations;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -64,8 +65,10 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Delay);
 
-    private void Start() {
-        if (Data == null) return;
+    public bool isFlipped;
+
+    public void Show()
+    {
         var imageUrl = Data.UiImagePath;
         cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
         cardBorder.color = Data.LgElement switch {
@@ -82,9 +85,20 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
         cardCost.text        = Data.LgManaCostFunc == null ? $"{Data.LgManaCost}" : "???";
-
         // Todo 实现preview法力消耗
         // Todo 加伤害text
+    }
+    
+    private void Start() {
+        if (Data == null) return;
+        if (isFlipped)
+        {
+            Flip();
+        }
+        else
+        {
+            Show();
+        }
     }
 
     // 目标位置
@@ -113,10 +127,25 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        Data.IsSelected ^= true;
-        Container.FreshOrder();
-        if (Data.IsSelected) transform.SetAsLastSibling();
-        StartCoroutine(MoveToTarget(upDuration));
+        if (Data.IsSelectable)
+        {
+            Data.IsSelected ^= true;
+            Container.FreshOrder();
+            if (Data.IsSelected) transform.SetAsLastSibling();
+            StartCoroutine(MoveToTarget(upDuration));
+        }
     }
+
+    // 将卡牌翻面
+    public void Flip()
+    {
+        cardImage.sprite     = null;
+        cardImage.color      = Color.grey;
+        cardName.text        = "";
+        cardDescription.text = "";
+        cardElementType.text = "";
+        cardCost.text        = "???";
+    }
+
 }
 }

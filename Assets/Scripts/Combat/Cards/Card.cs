@@ -1,6 +1,7 @@
 ﻿using System;
 using Combat.Enums;
 using Combat.Requests.Details;
+using GUIs.Cards;
 
 namespace Combat.Cards {
 // 卡牌 基类
@@ -18,8 +19,11 @@ public class Card {
 
     // 克隆原始卡牌
     public Func<Card> Clone;
+    
+    // 对应的 CardView
+    public CardView View;
 
-#endregion
+    #endregion
 
 #region UI配置
 

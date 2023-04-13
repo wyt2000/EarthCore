@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Combat;
 using Combat.Cards;
+using Combat.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace GUIs.Cards {
@@ -14,6 +16,8 @@ public class CardSlotView : MonoBehaviour {
 
     public CombatantComponent combatant;
 
+    public bool isOtherPlayer;
+    
     [SerializeField]
     // 卡牌预制体 
     private CardView cardPrefab;
@@ -48,8 +52,17 @@ public class CardSlotView : MonoBehaviour {
 
     public IEnumerator AddCard(Card data) {
         var card = Instantiate(cardPrefab, transform);
+
         card.Container = this;
         card.Data      = data;
+        card.Data.View = card;
+        if (isOtherPlayer)
+        {
+            card.Data.IsSelectable = false;
+            card.isFlipped = true;
+            card.Flip();
+        }
+        
         m_cards.Add(card);
         m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
         {
