@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using UnityEngine;
 
 namespace Utils {
 public static class LinqExtension {
@@ -58,6 +59,17 @@ public static class EnumExtension {
         var field = value.GetType().GetField(value.ToString());
         var attribute = field.GetCustomAttribute<DescriptionAttribute>();
         return attribute?.Description ?? value.ToString();
+    }
+}
+
+public static class RectTransformExtensions {
+    public static void SetPivotWithoutChangingPosition(this RectTransform rectTransform, Vector2 pivot) {
+        var size = rectTransform.rect.size;
+        var deltaPivot = rectTransform.pivot - pivot;
+        var scale = rectTransform.lossyScale;
+        var deltaPosition = new Vector3(deltaPivot.x * size.x * scale.x, deltaPivot.y * size.y * scale.y);
+        rectTransform.pivot         =  pivot;
+        rectTransform.localPosition -= deltaPosition;
     }
 }
 }
