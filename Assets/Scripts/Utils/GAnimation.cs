@@ -18,7 +18,7 @@ public enum AnimConflictPolicy {
 
 // 动画锁,一个锁管理一类动画
 public class AnimLocker {
-    private int m_id;
+    private int m_id = -1;
 
     private Queue<int> m_waits;
 
@@ -53,21 +53,24 @@ public static class GAnimation {
     public static IEnumerator Lerp(AnimLocker locker, float duration, Action<float> action, Func<float, float> curve = null) {
         var id = ms_lerpCounter++;
 
-        switch (locker.Policy) {
-            case AnimConflictPolicy.Ignore when !locker.CanRun(id):
-                // 不能跑,直接忽略新任务
-                yield break;
-            case AnimConflictPolicy.Delay:
-                // 等到能跑,再执行新任务,按id排队
-                locker.Wait(id);
-                while (!locker.CanRun(id)) {
-                    yield return null;
+        if (!locker.CanRun(id)) {
+            switch (locker.Policy) {
+                case AnimConflictPolicy.Ignore:
+                    // 不能跑,直接忽略新任务
+                    yield break;
+                case AnimConflictPolicy.Delay: {
+                    // 等到能跑,再执行新任务,按id排队
+                    locker.Wait(id);
+                    while (!locker.CanRun(id)) {
+                        yield return null;
+                    }
+                    break;
                 }
-                break;
-            case AnimConflictPolicy.Overwrite:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+                case AnimConflictPolicy.Overwrite:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         // 切换当前任务
@@ -80,7 +83,7 @@ public static class GAnimation {
             // 有其他新任务开始执行
             if (locker.Policy == AnimConflictPolicy.Overwrite && !locker.CanRun(id)) {
                 // 覆盖,结束当前任务
-                yield break;
+                break;
             }
             current = Time.time;
             var t = Mathf.Clamp01((current - startTime) / duration);
