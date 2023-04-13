@@ -19,10 +19,11 @@ public class StateBarView : MonoBehaviour {
     private void Update() {
         var state = combatant.State;
         // {combatant.name} status : 
-        var element = string.Join(",", state.ElementAttach.Keys.Select(v => v.ToDescription()));
-        var str = $"元素附着x{element}\n";
+        var element = string.Join(",", state.ElementAttach.Select(item => $"{item.Key.ToDescription()}x{item.Value}"));
+        var str = $"元素:{element}\n";
         str += $"生命值 : {state.Health:F0}/{state.HealthMax} \n";
         str += $"魔法值 : {state.Mana:F0}/{state.ManaMax} \n";
+        str += $"护甲 : {state.PhysicalArmor}\n";
         str += $"物理护盾 : {state.PhysicalShield}\n";
         str += $"物理伤害加成 : {state.PhysicalDamageAmplify}\n";
         str += $"物理伤害减免 : {state.PhysicalDamageReduce}\n";
