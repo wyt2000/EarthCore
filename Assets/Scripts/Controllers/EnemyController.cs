@@ -1,5 +1,4 @@
-﻿using Combat.Requests.Details;
-using Utils;
+﻿using Utils;
 
 namespace Controllers {
 public class EnemyController : CombatController {

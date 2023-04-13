@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Combat.Requests.Details;
 using UnityEngine;
 
 namespace Controllers {
