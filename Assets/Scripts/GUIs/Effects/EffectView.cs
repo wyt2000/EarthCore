@@ -4,6 +4,7 @@ using Combat.Effects;
 using GUIs.Animations;
 using TMPro;
 using UnityEngine;
+using Utils;
 
 namespace GUIs.Effects {
 // Todo 效果图标,加tooltip
@@ -29,6 +30,8 @@ public class EffectView : MonoBehaviour {
     [NonSerialized]
     public int IndexHorizontal; // 列
 
+    private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
+
     private void Start() {
         effectName.text = Data.UiName;
     }
@@ -48,7 +51,7 @@ public class EffectView : MonoBehaviour {
     }
 
     public IEnumerator MoveToTarget(float duration) {
-        return this.MoveTo(TargetPosition(), duration);
+        return this.MoveTo(m_locker, TargetPosition(), duration);
     }
 }
 }

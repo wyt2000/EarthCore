@@ -7,6 +7,8 @@ using UnityEngine;
 using Utils;
 
 namespace GUIs.Cards {
+// Todo 根据IsOtherPlayer来判断是否是对方的卡槽,并做出相应的UI调整
+// Todo 优化选择卡牌时的UI表现
 public class CardSlotView : MonoBehaviour {
 #region prefab配置
 
@@ -47,7 +49,7 @@ public class CardSlotView : MonoBehaviour {
     public IEnumerator AddCard(Card data) {
         var card = Instantiate(cardPrefab, transform);
         card.Container = this;
-        card.Data = data;
+        card.Data      = data;
         m_cards.Add(card);
         m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
         {

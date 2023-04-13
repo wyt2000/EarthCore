@@ -35,15 +35,21 @@ public static class LinqExtension {
     }
 
     // 抽取对象
-    public static List<T> Extract<T>(this List<T> source, Func<T, bool> predicate) {
+    public static List<T> Extract<T>(this List<T> source, Func<T, int, bool> predicate) {
         var ret = new List<T>();
+        var i = 0;
         source.RemoveAll(s =>
         {
-            if (!predicate(s)) return false;
+            if (!predicate(s, i++)) return false;
             ret.Add(s);
             return true;
         });
         return ret;
+    }
+
+    // 抽取对象
+    public static List<T> Extract<T>(this List<T> source, Func<T, bool> predicate) {
+        return source.Extract((s, _) => predicate(s));
     }
 }
 

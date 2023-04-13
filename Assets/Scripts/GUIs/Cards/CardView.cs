@@ -58,6 +58,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     [NonSerialized]
     public int Index;
 
+    private readonly AnimLocker m_locker = new(AnimConflictPolicy.Delay);
+
     private void Start() {
         if (Data == null) return;
         var imageUrl = Data.UiImagePath;
@@ -94,11 +96,11 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public IEnumerator MoveToTarget(float duration) {
-        yield return this.MoveTo(TargetPosition(), duration);
+        yield return this.MoveTo(m_locker, TargetPosition(), duration);
     }
 
     public IEnumerator MoveToHeap(float duration) {
-        yield return this.MoveTo(Container.combatant.cardHeap.transform.position, duration);
+        yield return this.MoveTo(m_locker, Container.combatant.cardHeap.transform.position, duration);
         Destroy(gameObject);
     }
 
