@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using Combat.Cards;
 using Combat.Effects.Templates;
 using Combat.Enums;
 using Combat.Requests.Details;
@@ -12,6 +13,7 @@ using Utils;
 // Todo 测试effect逻辑
 namespace Combat.Effects {
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
+// 元素联动相关效果
 public static class EffectLinks {
     [AttributeUsage(AttributeTargets.Method)]
     private class ElementLinkAttribute : Attribute {
@@ -43,6 +45,11 @@ public static class EffectLinks {
         }
     }
 
+    public static (Effect, bool) GetElementLink(IEnumerable<Card> cards) {
+        var types = cards.Select(c => c.LgElement).Where(t => t != null).Cast<ElementType>().ToHashSet();
+        return GetElementLink(types);
+    }
+
     public static (Effect, bool) GetElementLink(IEnumerable<ElementType> types) {
         var arr = types.OrderBy(t => (int)t).ToArray();
         foreach (var (attr, func) in Links) {
@@ -71,7 +78,7 @@ public static class EffectLinks {
 
     [ElementLink(ElementType.Huo, ElementType.Tu)]
     private static Effect HuoTu() {
-        return new Effect {
+        return new EffectOnce {
             UiName        = "固定",
             UiDescription = "火土联动,令自身魔法护盾值增加20%",
             LgTags        = { EffectTag.Buff },
@@ -104,7 +111,7 @@ public static class EffectLinks {
         return new Effect {
             UiName        = "引燃",
             UiDescription = "火木联动,令敌方获得5层燃烧,每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害（额外伤害小于1时改为1，属性与触发燃烧效果的攻击相同）（永久）",
-            LgTags        = { EffectTag.Buff },
+            LgTags        = { EffectTag.DeBuff },
             LgOverlay     = 5,
             LgOpenMerge   = true,
 
@@ -114,7 +121,7 @@ public static class EffectLinks {
                 var state = self.Target.State;
                 var damage = state.Health * 0.02f;
                 if (damage < 1) damage = 1;
-                self.Target.Attack(req.Target, new RequestHpChange {
+                self.Causer.Attack(new RequestHpChange {
                     Value   = damage,
                     Type    = DamageType.Physical,
                     Element = req.Element,
@@ -148,7 +155,7 @@ public static class EffectLinks {
             {
                 if (req.IsHeal) return;
                 var damage = req.Value;
-                self.Target.Attack(self.Target, new RequestHpChange {
+                self.Target.Attack(new RequestHpChange {
                     Value   = damage,
                     Type    = DamageType.Physical,
                     Element = req.Element,
@@ -163,16 +170,28 @@ public static class EffectLinks {
     // 金+土+水：洞察：无效敌方下一次的伤害和控制效果（分两部分，分别持续到下次伤害到来和下次控制到来）
     [ElementLink(ElementType.Jin, ElementType.Tu, ElementType.Shui)]
     private static Effect JinTuShui() {
-        // Todo 分成两个独立buff实现
-        var trigger = new EffectTrigger();
-        return trigger.Bind(new Effect {
-            UiName        = "洞察",
-            UiDescription = "金土水联动,无效敌方下一次的伤害和控制效果（分两部分，分别持续到下次伤害到来和下次控制到来）",
-            LgTags        = { EffectTag.Buff },
+        Effect damage, control;
+        {
+            var trigger = new EffectTrigger();
+            damage = trigger.Bind(new Effect {
+                UiName        = "洞察",
+                UiDescription = "金土水联动,无效敌方下一次的伤害效果",
+                LgTags        = { EffectTag.Buff },
 
-            OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal && req.Value > 0),
-            OnImpRejectAttach       = (_, effect) => trigger.Trigger(effect.LgTags.Contains(EffectTag.Control))
-        });
+                OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal && req.Value > 0),
+            });
+        }
+        {
+            var trigger = new EffectTrigger();
+            control = trigger.Bind(new Effect {
+                UiName        = "洞察",
+                UiDescription = "金土水联动,无效敌方下一次的控制效果",
+                LgTags        = { EffectTag.Buff },
+
+                OnImpRejectAttach = (_, effect) => trigger.Trigger(effect.LgTags.Contains(EffectTag.Control))
+            });
+        }
+        return EffectCombine.Create(damage, control);
     }
 
     [ElementLink(ElementType.Jin, ElementType.Shui, ElementType.Mu)]
@@ -190,7 +209,7 @@ public static class EffectLinks {
     //火+土+金：淬炼：为敌方施加5层淬炼效果，每回合开始时消耗一层淬炼对敌方造成（1%*淬炼层数）最大生命值物理伤害。（永久）
     [ElementLink(true, ElementType.Huo, ElementType.Tu, ElementType.Jin)]
     private static Effect HuoTuJin() {
-        return EffectDetails.CuiLian(5);
+        return EffectPrefabs.CuiLian(5);
     }
 
     // 水+火+木：击碎：令敌方物理和魔法护盾值各减少20%
@@ -230,9 +249,13 @@ public static class EffectLinks {
                 causer.Judge.Requests.Add(new RequestPostLogic {
                     OnFinish = () =>
                     {
-                        if (state.Health >= state.HealthMax * 0.1) return;
-                        // Todo 实现斩杀效果
-                        state.Health = 0;
+                        var damage = state.HealthMax * 0.1f;
+                        if (state.Health > damage) return;
+                        // 实现斩杀效果 
+                        causer.Attack(new RequestHpChange {
+                            Value  = state.HealthMax,
+                            IsReal = true,
+                        });
                     }
                 });
             }
@@ -242,6 +265,7 @@ public static class EffectLinks {
 #endregion
 }
 
+// 元素击碎相关效果
 public static class EffectBroken {
     // 元素击碎表
     private static readonly Dictionary<ElementType, Func<int, Effect>> Broken = new() {
@@ -297,7 +321,7 @@ public static class EffectBroken {
             LgAction = e =>
             {
                 var damage = e.Target.State.Health * 0.1f;
-                e.Target.Attack(e.Causer, new RequestHpChange {
+                e.Causer.Attack(new RequestHpChange {
                     Value   = damage,
                     Type    = DamageType.Physical,
                     Element = ElementType.Jin,
@@ -347,7 +371,8 @@ public static class EffectBroken {
 #endregion
 }
 
-public static class EffectDetails {
+// 通用效果的预制体
+public static class EffectPrefabs {
     // 清算
     public static Effect QingSuan(int layer) {
         return new Effect {
@@ -355,6 +380,7 @@ public static class EffectDetails {
             UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
             UiIconPath    = "",
 
+            LgTags            = { EffectTag.DeBuff },
             LgRemainingRounds = 1,
             LgOverlay         = layer,
             LgOpenMerge       = true,
@@ -362,7 +388,7 @@ public static class EffectDetails {
             OnImpAfterDetach = self =>
             {
                 var damage = self.LgOverlay;
-                self.Causer.Attack(self.Target, new RequestHpChange {
+                self.Causer.Attack(new RequestHpChange {
                     Value   = damage,
                     Type    = DamageType.Magical,
                     Element = ElementType.Shui,
@@ -383,11 +409,11 @@ public static class EffectDetails {
             LgOverlay   = layer,
             LgOpenMerge = true,
 
-            OnImpBeforeTurnStart = self =>
+            OnImpAfterTurnStart = self =>
             {
                 var state = self.Target.State;
                 var damage = state.HealthMax * 0.01f * self.LgOverlay;
-                self.Causer.Attack(self.Target, new RequestHpChange {
+                self.Causer.Attack(new RequestHpChange {
                     Value = damage,
                     Type  = DamageType.Physical,
 
@@ -397,5 +423,66 @@ public static class EffectDetails {
             }
         };
     }
+}
+
+[SuppressMessage("ReSharper", "UnusedMember.Local")]
+// 固有效果
+public static class EffectFixed {
+    private static readonly List<Func<Effect>> All = new();
+
+    static EffectFixed() {
+        var type = typeof(EffectFixed);
+        var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Static);
+        foreach (var method in methods) {
+            if (method.ReturnType != typeof(Effect) || method.GetParameters().Length != 0) continue;
+            All.Add(() => (Effect)method.Invoke(null, null));
+        }
+    }
+
+    public static IEnumerable<Effect> GetAll(CombatantComponent target) {
+        return All.Select(func =>
+        {
+            var ret = func();
+            ret.Causer = target;
+            ret.Target = target;
+
+            ret.UiHidde = true;
+
+            ret.LgTags = new HashSet<EffectTag> { EffectTag.Fixed };
+
+            ret.LgRemainingRounds = 0;
+
+            ret.LgPriority = int.MinValue;
+
+            return ret;
+        });
+    }
+
+#region 效果细节
+
+    // 摸牌
+    private static Effect MoPai() => new() {
+        OnImpAfterTurnStart = self => self.Causer.GetCard(2)
+    };
+
+    // 护甲
+    private static Effect HuJia() => new() {
+        OnImpAfterTurnStart = self =>
+        {
+            var state = self.Target.State;
+            state.PhysicalShield = Math.Max(state.PhysicalArmor, state.PhysicalShield);
+        }
+    };
+
+    // 魔法护盾 
+    private static Effect MoFaHuDun() => new() {
+        OnImpAfterSelfHpChange = (self, req) =>
+        {
+            // Todo 确定计算逻辑
+            // 护盾值表示能够阻挡的魔法伤害值，且表示受到伤害时对敌人造成等量土属性魔法伤害
+        }
+    };
+
+#endregion
 }
 }
