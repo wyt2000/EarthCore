@@ -51,6 +51,11 @@ public static class GAnimation {
 
     // 用于创建动画的协程模板
     public static IEnumerator Lerp(AnimLocker locker, float duration, Action<float> action, Func<float, float> curve = null) {
+        if (locker == null) {
+            yield return Lerp(duration, action, curve);
+            yield break;
+        }
+
         var id = ms_lerpCounter++;
 
         if (!locker.CanRun(id)) {
@@ -93,6 +98,19 @@ public static class GAnimation {
 
         // 任务结束
         locker.Finish();
+    }
+
+    // 无lock
+    public static IEnumerator Lerp(float duration, Action<float> action, Func<float, float> curve = null) {
+        var startTime = Time.time;
+        var endTime = startTime + duration;
+        float current;
+        do {
+            current = Time.time;
+            var t = Mathf.Clamp01((current - startTime) / duration);
+            action(curve?.Invoke(t) ?? t);
+            yield return null;
+        } while (current < endTime);
     }
 }
 }
