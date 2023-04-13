@@ -28,8 +28,7 @@ public class RequestEffect : CombatRequest {
         var effect = Effect;
         var attach = Attach;
         if (attach) {
-            effect.DoAttach();
-            if (!effect.UiHidde) yield return Effect.Target.effectList.AddEffect(effect);
+            if (effect.DoAttach()) yield return Effect.Target.effectList.AddEffect(effect);
         }
         else {
             effect.DoRemove();

@@ -314,19 +314,20 @@ public class Effect : IComparable<Effect> {
         });
     }
 
-    public void DoAttach() {
+    public bool DoAttach() {
         var reject = !LgTags.Contains(EffectTag.Fixed) && Target.BoardCastAny(effect => effect.RejectAttach(this));
-        if (reject) return;
+        if (reject) return false;
         var mergeAble = Target.BoardCastAny(effect =>
         {
             if (!effect.CheckMergeAble(this)) return false;
             effect.DoMerge(this);
             return true;
         });
-        if (mergeAble) return;
+        if (mergeAble) return false;
         m_effectStamp = ms_stamp++;
         Target.Effects.Add(this);
         AfterAttach();
+        return !UiHidde;
     }
 
     public void DoRemove() {
