@@ -16,7 +16,7 @@ public class RequestHpChange : CombatRequest {
     // 是否为治疗请求
     public bool IsHeal = false;
 
-    // 是否为真实伤害(Todo 计算时无视:reject,护盾,增伤,抗性)
+    // 是否为真实伤害
     public bool IsReal = false;
 
     // 伤害类型
@@ -27,6 +27,9 @@ public class RequestHpChange : CombatRequest {
 
     // 修改原因
     public string Reason = "";
+
+    // 抵消伤害
+    public float OutShieldChange;
 
 #endregion
 
@@ -42,17 +45,19 @@ public class RequestHpChange : CombatRequest {
         var causer = Causer;
         var target = Target;
         causer.BoardCast(effect => effect.BeforeTakeHpChange(this));
-        if (target.BoardCastAny(effect => effect.BeforeSelfHpChange(this))) yield break;
+        if (!IsReal || target.BoardCastAny(effect => effect.BeforeSelfHpChange(this))) yield break;
 
         var value = Value;
         var state = Target.State;
-        if (!IsHeal) {
+        if (!IsHeal && !IsReal) {
             if (Type == DamageType.Magical) {
                 value *= 1 + Causer.State.MagicDamageAmplify / 100;
                 value *= 1 - Causer.State.MagicDamageReduce / 100;
 
                 var shield = Math.Min(state.MagicShield, value);
                 state.MagicShield -= shield;
+
+                OutShieldChange = shield;
 
                 value -= shield;
             }
@@ -62,6 +67,8 @@ public class RequestHpChange : CombatRequest {
 
                 var shield = Math.Min(state.PhysicalShield, value);
                 state.PhysicalShield -= shield;
+
+                OutShieldChange = shield;
 
                 value -= shield;
             }

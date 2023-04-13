@@ -380,12 +380,11 @@ public static class EffectPrefabs {
             UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
             UiIconPath    = "",
 
-            LgTags            = { EffectTag.DeBuff },
-            LgRemainingRounds = 1,
-            LgOverlay         = layer,
-            LgOpenMerge       = true,
+            LgTags      = { EffectTag.DeBuff },
+            LgOverlay   = layer,
+            LgOpenMerge = true,
 
-            OnImpAfterDetach = self =>
+            OnImpAfterTurnEnd = self =>
             {
                 var damage = self.LgOverlay;
                 self.Causer.Attack(new RequestHpChange {
@@ -395,6 +394,7 @@ public static class EffectPrefabs {
 
                     Reason = "清算"
                 });
+                self.Remove();
             }
         };
     }
@@ -462,7 +462,12 @@ public static class EffectFixed {
 
     // 摸牌
     private static Effect MoPai() => new() {
-        OnImpAfterTurnStart = self => self.Causer.GetCard(2)
+        OnImpAfterTurnStart = self => self.Target.GetCard(2)
+    };
+
+    // 回复法力25%
+    private static Effect HuiFuFaLi() => new() {
+        OnImpAfterTurnStart = self => self.Target.State.Mana += self.Target.State.ManaMax * 0.25f
     };
 
     // 护甲
@@ -478,8 +483,13 @@ public static class EffectFixed {
     private static Effect MoFaHuDun() => new() {
         OnImpAfterSelfHpChange = (self, req) =>
         {
-            // Todo 确定计算逻辑
+            if (req.IsHeal || req.OutShieldChange <= 0) return;
             // 护盾值表示能够阻挡的魔法伤害值，且表示受到伤害时对敌人造成等量土属性魔法伤害
+            self.Target.Attack(new RequestHpChange {
+                Value   = req.OutShieldChange,
+                Type    = DamageType.Physical,
+                Element = ElementType.Tu,
+            });
         }
     };
 
