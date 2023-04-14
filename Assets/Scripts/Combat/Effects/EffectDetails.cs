@@ -7,6 +7,7 @@ using Combat.Cards;
 using Combat.Effects.Templates;
 using Combat.Enums;
 using Combat.Requests.Details;
+using UnityEngine;
 using Utils;
 
 // Todo 检查tag和causer&target的使用是否合理
@@ -42,6 +43,12 @@ public static class EffectLinks {
             if (attr == null) continue;
             var func = (Func<Effect>)Delegate.CreateDelegate(typeof(Func<Effect>), method);
             Links.Add((attr, func));
+            var types = attr.Types;
+            for (int i = 0, n = types.Length; i < n; ++i) {
+                if (types[i].Next() != types[(i + 1) % n]) {
+                    Debug.LogError($"联动类型{types[i]}和{types[(i + 1) % n]}不相邻!");
+                }
+            }
         }
     }
 
