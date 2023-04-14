@@ -54,15 +54,30 @@ public class CombatJudge : MonoBehaviour {
     private const int InitCardCount = 5;
 
     // 战斗开始事件
-    private void CombatStart() {
+    private IEnumerator CombatStart() {
+        logger.AddLog("游戏准备中...");
+
         m_round = 0;
         m_start = true;
+
+        // Todo 开始动画
+        yield return new WaitForSeconds(1);
+
+        logger.AddLog("游戏开始");
 
         // 初始摸牌
         CurrentComp.GetCard(InitCardCount);
         NextComp.GetCard(InitCardCount);
 
         TurnStart();
+    }
+
+    // 战斗终止事件
+    private IEnumerator CombatEnd() {
+        // Todo 结束动画
+        yield return new WaitForSeconds(1);
+
+        logger.AddLog("游戏结束");
     }
 
     // 切换回合
@@ -105,10 +120,7 @@ public class CombatJudge : MonoBehaviour {
 
         Init(playerA, playerB);
 
-        // Todo 开始动画
-        yield return new WaitForSeconds(1);
-
-        CombatStart();
+        yield return CombatStart();
     }
 
     private IEnumerator m_iter;
@@ -117,8 +129,8 @@ public class CombatJudge : MonoBehaviour {
     private void Update() {
         if (!m_start || Requests.Running) return;
         if (CurrentComp.State.IsDead || NextComp.State.IsDead) {
-            // Todo 结束动画
             m_start = false;
+            StartCoroutine(CombatEnd());
             return;
         }
         if (m_iterFinish) {

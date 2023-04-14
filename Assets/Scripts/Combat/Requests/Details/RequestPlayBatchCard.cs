@@ -90,6 +90,7 @@ public class RequestPlayBatchCard : CombatRequest {
         // 计算元素联动
         var (link, other) = PreviewElementLink();
         if (link != null) {
+            Judge.logger.AddLog($"触发元素联动{link.UiName}");
             // 元素联动摸牌
             Causer.GetCard(1);
             // 施加联动buff
