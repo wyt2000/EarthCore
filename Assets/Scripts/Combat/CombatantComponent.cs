@@ -131,7 +131,6 @@ public class CombatantComponent : MonoBehaviour {
 
     public void PlayCard(IEnumerable<Card> cards) {
         var arr = cards.ToArray();
-        arr.ForEach(c => c.View.Show());
         Judge.Requests.Add(new RequestPlayBatchCard {
             Causer = this,
             Target = Opponent,
@@ -159,23 +158,15 @@ public class CombatantComponent : MonoBehaviour {
         if (card.LgUnique && selected.Count > 0) return false;
         if (selected.Any(s => s.LgUnique)) return false;
         if (!card.LgElement.HasValue) return true;
+        selected.Add(card);
         // 要么只有<=1种元素,要么能触发元素联动
-        var types = selected.Select(c => c.LgElement).Where(t => t != null).Cast<ElementType>().ToHashSet();
+        var types = selected.Where(t => t.LgElement.HasValue).Select(c => c.LgElement.Value).ToHashSet();
         return types.Count <= 1 || EffectLinks.GetElementLink(types).Item1 != null;
     }
 
-    // 选择一张牌预备出牌
-    public void SelectCardToPlay(Card card) {
-        if (!CanSelectCardToPlay(card)) return;
-        card.IsSelected = true;
-        // Todo 刷新ui
-    }
-
     // 取消选择一张牌
-    public void UnSelectCardToPlay(Card card) {
-        if (!card.IsSelected) return;
-        card.IsSelected = false;
-        // Todo 刷新ui
+    public void UnSelectAllCardToPlay() {
+        Cards.ForEach(c => c.IsSelected = false);
         // Todo 按原有顺序重新尝试选择card
     }
 

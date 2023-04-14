@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Combat;
 using Combat.Cards;
-using Combat.Enums;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace GUIs.Cards {
-// Todo 根据IsOtherPlayer来判断是否是对方的卡槽,并做出相应的UI调整
-// Todo 优化选择卡牌时的UI表现
 public class CardSlotView : MonoBehaviour {
 #region prefab配置
 
     public CombatantComponent combatant;
 
     public bool isOtherPlayer;
-    
+
+    // 卡牌最大间距
+    public float inner = 10;
+
     [SerializeField]
     // 卡牌预制体 
     private CardView cardPrefab;
-
-    // 卡牌间距
-    public float inner = 10;
 
 #endregion
 
@@ -55,38 +51,37 @@ public class CardSlotView : MonoBehaviour {
 
         card.Container = this;
         card.Data      = data;
-        card.Data.View = card;
-        if (isOtherPlayer)
-        {
-            card.Data.IsSelectable = false;
-            card.isFlipped = true;
-            card.Flip();
-        }
-        
+        card.Style     = isOtherPlayer ? CardStyle.Other : CardStyle.Valid;
+
         m_cards.Add(card);
-        m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
-        {
-            var index = c.Data.LgElement.HasValue ? (int)c.Data.LgElement.Value : -1;
-            return (index, c.Data.UiName);
-        }));
 
         card.transform.position = combatant.cardHeap.transform.position;
 
         return FreshUI();
     }
 
-    public void FreshOrder() {
+    private void FreshOrder() {
+        if (!isOtherPlayer) {
+            m_cards.ForEach(c =>
+            {
+                if (c.Style == CardStyle.Played || c.Data.IsSelected) return;
+                c.Style = combatant.CanSelectCardToPlay(c.Data) ? CardStyle.Valid : CardStyle.Ban;
+                c.FreshUI();
+            });
+            m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
+            {
+                var index = c.Data.LgElement.HasValue ? (int)c.Data.LgElement.Value : -1;
+                return (!c.Data.IsSelected, !c.IsSelectable, index, c.Data.UiName);
+            }));
+        }
         m_cards.ForEach(
             (c, i) => c.transform.SetSiblingIndex(c.Index = i)
         );
-        // foreach (var card in m_cards.Where(card => card.Data.IsSelected)) {
-        //     card.transform.SetAsLastSibling();
-        // }
     }
 
-    private IEnumerator FreshUI() {
+    public IEnumerator FreshUI() {
         FreshOrder();
-        return GCoroutine.Parallel(m_cards.Select(c => c.MoveToTarget(0.3f)));
+        return GCoroutine.Parallel(m_cards.Select(c => c.MoveToTarget()));
     }
 
     public IEnumerator Discards(IEnumerable<Card> cards) {

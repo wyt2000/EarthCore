@@ -46,7 +46,7 @@ public static class CardDetails {
         return new Card {
             Clone         = ShiTan,
             UiName        = "试探",
-            UiDescription = "为自身添加25物理护盾",
+            UiDescription = "为自身添加25物理护盾并造成25点物理伤害",
             UiImagePath   = "Textures/Cards/试探",
             LgDamage      = 25,
             LgDamageType  = DamageType.Physical,
@@ -68,18 +68,14 @@ public static class CardDetails {
     | 伤害值  | 无         |
     | 效果   | 为自身添加15护甲 |
      */
-    private static Card JinZhongZhao() {
+    private static Card GeDang() {
         return new Card {
-            Clone         = JinZhongZhao,
+            Clone         = GeDang,
             UiName        = "格挡",
             UiDescription = "为自身添加15护甲",
             UiImagePath   = "Textures/Cards/格挡",
             LgElement     = ElementType.Jin,
-            OnExecute = req =>
-            {
-                req.Causer.State.PhysicalArmor += 15;
-                req.TakeDamage();
-            }
+            OnExecute     = req => req.Causer.State.PhysicalArmor += 15
         };
     }
 

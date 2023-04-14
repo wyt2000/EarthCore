@@ -10,6 +10,20 @@ using UnityEngine.UI;
 using Utils;
 
 namespace GUIs.Cards {
+public enum CardStyle {
+    // 自己可选的卡牌
+    Valid,
+
+    // 自己不可选的卡牌
+    Ban,
+
+    // 对方的卡牌
+    Other,
+
+    // 双方打出的牌
+    Played,
+}
+
 public class CardView : MonoBehaviour, IPointerDownHandler {
 #region prefab配置
 
@@ -24,6 +38,14 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     // 卡牌图片
     [SerializeField]
     private Image cardImage;
+
+    // 卡背贴图
+    [SerializeField]
+    private Image cardBack;
+
+    [SerializeField]
+    // 不可选中的时候加个灰度滤镜
+    private Image cardBanFilter;
 
     // 卡牌名称
     [SerializeField]
@@ -45,10 +67,6 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     [SerializeField]
     private float upRate = 0.2f;
 
-    // 上升动画时间
-    [SerializeField]
-    private float upDuration = 0.1f;
-
 #endregion
 
     // 父组件
@@ -62,13 +80,20 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     [NonSerialized]
     public int Index;
 
+    [NonSerialized]
+    public CardStyle Style = CardStyle.Other;
+
+    public bool IsSelectable => Style == CardStyle.Valid;
+
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Delay);
 
-    public bool isFlipped;
-
-    public void Show() {
-        var imageUrl = Data.UiImagePath;
-        cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
+    public void FreshUI() {
+        if (Style == CardStyle.Other) {
+            // Todo 加个卡背贴图
+            cardBack.gameObject.SetActive(true);
+            return;
+        }
+        cardBack.gameObject.SetActive(false);
         cardBorder.color = Data.LgElement switch {
             ElementType.Huo  => new Color(0.78f, 0.24f, 0.1f),
             ElementType.Shui => new Color(0.41f, 0.68f, 0.74f),
@@ -78,33 +103,24 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
             _ => new Color(0.38f, 0.39f, 0.42f),
         };
+        // Todo 加个默认贴图
+        var imageUrl = Data.UiImagePath;
+        cardImage.sprite = Resources.Load<Sprite>(imageUrl); // ?? cardImage.sprite;
+        if (cardImage.sprite == null) cardImage.color = Color.magenta;
 
         cardName.text        = Data.UiName;
         cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
-        cardCost.text        = Data.LgManaCostFunc == null ? $"{Data.LgManaCost}" : "???";
-        // Todo 实现preview法力消耗
+        cardCost.text        = $"{Data.ManaCost}";
+        // Todo 实现preview总法力消耗
         // Todo 加伤害text
-    }
 
-    // 将卡牌翻面 Todo 改成加载卡背贴图
-    public void Flip() {
-        cardImage.sprite     = null;
-        cardImage.color      = Color.grey;
-        cardName.text        = "";
-        cardDescription.text = "";
-        cardElementType.text = "";
-        cardCost.text        = "???";
+        cardBanFilter.gameObject.SetActive(Style == CardStyle.Ban);
     }
 
     private void Start() {
         if (Data == null) return;
-        if (isFlipped) {
-            Flip();
-        }
-        else {
-            Show();
-        }
+        FreshUI();
     }
 
     // 目标位置
@@ -117,14 +133,16 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         return Container.transform.TransformPoint(target);
     }
 
-    public IEnumerator MoveToTarget(float duration) {
-        yield return this.MoveTo(m_locker, TargetPosition(), duration);
+    public IEnumerator MoveToTarget() {
+        yield return this.MoveTo(m_locker, TargetPosition(), 0.3f);
     }
 
     public IEnumerator MoveToHeap(int index, float duration) {
+        Style = CardStyle.Played;
         rect.SetPivotWithoutChangingPosition(new Vector2(0.5f, 0.5f));
         var target = Container.combatant.cardHeap.transform.position;
-        var first = target + Vector3.right * ((index + 1) * rect.rect.width * 1.25f);
+        // Todo 加个全局中心锚点, 保证整体居中
+        var first = target + Vector3.right * ((index - 1) * rect.rect.width * 1.15f);
         yield return this.MoveTo(null, first, duration);
         yield return GAnimation.Wait(1.0f);
         yield return this.MoveTo(null, target, 0.2f);
@@ -133,11 +151,16 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        if (!Data.IsSelectable) return;
+        if (!IsSelectable) return;
         Data.IsSelected ^= true;
-        Container.FreshOrder();
-        if (Data.IsSelected) transform.SetAsLastSibling();
-        StartCoroutine(MoveToTarget(upDuration));
+        if (Data.IsSelected) {
+            // Todo 游戏侧边加个详细信息面板 
+        }
+        else {
+            // 所有牌都取消选中
+            Data.Owner.UnSelectAllCardToPlay();
+        }
+        StartCoroutine(Container.FreshUI());
     }
 }
 }
