@@ -139,6 +139,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     public IEnumerator MoveToHeap(int index, float duration) {
         Style = CardStyle.Played;
+        FreshUI();
         rect.SetPivotWithoutChangingPosition(new Vector2(0.5f, 0.5f));
         var target = Container.combatant.cardHeap.transform.position;
         // Todo 加个全局中心锚点, 保证整体居中
