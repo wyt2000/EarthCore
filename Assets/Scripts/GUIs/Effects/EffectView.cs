@@ -5,23 +5,31 @@ using GUIs.Animations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Utils;
 
 namespace GUIs.Effects {
-// Todo 效果图标,加tooltip
 public class EffectView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 #region prefab配置
 
+    // 效果图标
+    public Image effectIcon;
+
+    // 效果名称
     public TextMeshProUGUI effectName;
 
+    // 剩余回合
     public TextMeshProUGUI remainTurns;
 
+    // 叠加层数
     public TextMeshProUGUI layerCount;
 
+    // 提示栏根组件
+    public Canvas tipView;
+
+    // 提升文本
     public TextMeshProUGUI tipText;
 
-    public Canvas tipCanvas;
-    
 #endregion
 
     [NonSerialized]
@@ -38,7 +46,8 @@ public class EffectView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
 
     private void Start() {
-        effectName.text = Data.UiName;
+        effectName.text   = Data.UiName;
+        effectIcon.sprite = Resources.Load<Sprite>(Data.UiIconPath);
     }
 
     private void Update() {
@@ -58,17 +67,17 @@ public class EffectView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public IEnumerator MoveToTarget(float duration) {
         return this.MoveTo(m_locker, TargetPosition(), duration);
     }
-    
-    public void OnPointerEnter(PointerEventData eventData)
-    {
+
+    public void OnPointerEnter(PointerEventData eventData) {
+        tipView.gameObject.SetActive(true);
+        tipView.overrideSorting = true;
+        tipView.sortingOrder    = 100;
+
         tipText.text = Data.UiDescription;
-        tipCanvas.gameObject.SetActive(true);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        tipCanvas.gameObject.SetActive(false);
+    public void OnPointerExit(PointerEventData eventData) {
+        tipView.gameObject.SetActive(false);
     }
-
 }
 }
