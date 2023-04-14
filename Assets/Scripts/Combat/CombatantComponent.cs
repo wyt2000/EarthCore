@@ -141,6 +141,7 @@ public class CombatantComponent : MonoBehaviour {
         Judge.Requests.Add(new RequestPlayBatchCard {
             Causer = this,
             Target = Opponent,
+            Judge  = Judge,
             Cards  = arr
         });
     }
@@ -160,21 +161,15 @@ public class CombatantComponent : MonoBehaviour {
 
     // 能否选择一张牌预备出牌
     public bool CanSelectCardToPlay(Card card) {
-        if (State.BlockTags.ContainsKey(CombatBlockTag.BlockPlayCard)) return false;
-        var selected = Cards.Where(c => c.IsSelected).ToList();
-        if (card.LgUnique && selected.Count > 0) return false;
-        if (selected.Any(s => s.LgUnique)) return false;
-        if (!card.LgElement.HasValue) return true;
-        selected.Add(card);
-        // 要么只有<=1种元素,要么能触发元素联动
-        var types = selected.Where(t => t.LgElement.HasValue).Select(c => c.LgElement.Value).ToHashSet();
-        return types.Count <= 1 || EffectLinks.GetElementLink(types).Item1 != null;
+        card.IsSelected = true;
+        var ret = PreviewBatch.CanEnqueue();
+        card.IsSelected = false;
+        return ret;
     }
 
-    // 取消选择一张牌
+    // 取消选择所有牌
     public void UnSelectAllCardToPlay() {
         Cards.ForEach(c => c.IsSelected = false);
-        // Todo 按原有顺序重新尝试选择card
     }
 
     // 弃牌
@@ -210,5 +205,12 @@ public class CombatantComponent : MonoBehaviour {
     }
 
 #endregion
+
+    public RequestPlayBatchCard PreviewBatch => new() {
+        Causer = this,
+        Target = Opponent,
+        Judge  = Judge,
+        Cards  = Cards.Where(c => c.IsSelected).ToArray()
+    };
 }
 }

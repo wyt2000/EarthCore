@@ -95,10 +95,6 @@ public abstract class CombatRequest {
         return false;
     }
 
-    protected static bool RequireAll(params bool[] expressions) {
-        return expressions.All(expression => expression);
-    }
-
 #endregion
 }
 }
