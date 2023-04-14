@@ -14,6 +14,13 @@ public class RequestPlayCard : CombatRequest {
 
 #endregion
 
+#region 中间项
+
+    // Todo 修改所有卡牌的数值计算方式
+    public float Scale => Batch.Scale;
+
+#endregion
+
     public override bool CanEnqueue() {
         return Require(
             Batch != null && Current != null,
@@ -24,6 +31,8 @@ public class RequestPlayCard : CombatRequest {
     // Todo 加动画
     public override IEnumerator Execute() {
         Current.OnExecute(this);
+        // 元素浸染,施加一次元素打击
+        if (Current.LgInfect) TakeDamage(true);
         yield break;
     }
 

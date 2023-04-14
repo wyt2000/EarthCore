@@ -30,6 +30,10 @@ public class RequestHpChange : CombatRequest {
     // 修改原因
     public string Reason = "";
 
+#endregion
+
+#region 输出项
+
     // 抵消伤害
     public float OutShieldChange;
 

@@ -19,6 +19,7 @@ public class EffectCombine : EffectOnce {
 
     private void ProxyAll() {
         foreach (var effect in (m_effects as IEnumerable<Effect>).Reverse()) {
+            effect.Target = Target;
             Target.Judge.Requests.AddFirst(new RequestEffect {
                 Causer = Causer,
                 Effect = effect,

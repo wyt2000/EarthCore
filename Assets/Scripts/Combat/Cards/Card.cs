@@ -91,9 +91,10 @@ public class Card {
 
     // 快捷造成伤害
     public void TakeDamage(RequestPlayCard request, bool real = false) {
-        if (Damage <= 0) return;
+        var damage = Damage;
+        if (damage <= 0) return;
         request.Causer.Attack(new RequestHpChange {
-            Value   = Damage,
+            Value   = damage * request.Scale,
             Type    = LgDamageType,
             Element = LgElement,
             IsReal  = real,
