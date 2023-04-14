@@ -4,11 +4,12 @@ using Combat.Effects;
 using GUIs.Animations;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utils;
 
 namespace GUIs.Effects {
 // Todo 效果图标,加tooltip
-public class EffectView : MonoBehaviour {
+public class EffectView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 #region prefab配置
 
     public TextMeshProUGUI effectName;
@@ -17,6 +18,10 @@ public class EffectView : MonoBehaviour {
 
     public TextMeshProUGUI layerCount;
 
+    public TextMeshProUGUI tipText;
+
+    public Canvas tipCanvas;
+    
 #endregion
 
     [NonSerialized]
@@ -53,5 +58,17 @@ public class EffectView : MonoBehaviour {
     public IEnumerator MoveToTarget(float duration) {
         return this.MoveTo(m_locker, TargetPosition(), duration);
     }
+    
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        tipText.text = Data.UiDescription;
+        tipCanvas.gameObject.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        tipCanvas.gameObject.SetActive(false);
+    }
+
 }
 }
