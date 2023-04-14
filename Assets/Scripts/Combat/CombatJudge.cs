@@ -111,15 +111,27 @@ public class CombatJudge : MonoBehaviour {
         CombatStart();
     }
 
+    private IEnumerator m_iter;
+    private bool        m_iterFinish = true;
+
     private void Update() {
         if (!m_start || Requests.Running) return;
-        var current = CurrentComp;
-        current.GetComponent<CombatController>()?.OnUserInput();
-        if (Requests.Count > 0) DealAllTask();
-        if (current.State.IsDead || NextComp.State.IsDead) {
+        if (CurrentComp.State.IsDead || NextComp.State.IsDead) {
             // Todo 结束动画
             m_start = false;
+            return;
         }
+        if (m_iterFinish) {
+            m_iterFinish = false;
+
+            m_iter = CurrentComp.GetComponent<CombatController>()?.OnUserInput();
+        }
+        if (m_iter == null || !m_iter.MoveNext()) {
+            m_iterFinish = true;
+
+            m_iter = null;
+        }
+        if (Requests.Count > 0) DealAllTask();
     }
 
 #endregion

@@ -1,26 +1,20 @@
-﻿using Utils;
+﻿using System.Collections;
+using Utils;
 
 namespace Controllers {
 public class EnemyController : CombatController {
-    // 随机尝试出5次牌 
-    private int m_times = 5;
-
     // Todo 完善敌人AI
-    public override void OnUserInput() {
-        if (m_times == 6) {
-            combatant.GetCard(6);
-            --m_times;
-            return;
+    public override IEnumerator OnUserInput() {
+        var c = combatant;
+
+        // 随机尝试出5次牌 
+        for (var i = 0; i < 5 && c.Cards.Count > 0; ++i) {
+            var card = c.Cards[GRandom.Range(0, c.Cards.Count)];
+            c.PlayCard(card);
+            yield return GAnimation.Wait(1.0f);
         }
 
-        if (m_times-- <= 0) {
-            combatant.Discard();
-            m_times = 6;
-            return;
-        }
-
-        var card = combatant.Cards[GRandom.Range(0, combatant.Cards.Count)];
-        combatant.PlayCard(card);
+        c.Discard();
     }
 }
 }

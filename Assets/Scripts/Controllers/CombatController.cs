@@ -1,4 +1,5 @@
-﻿using Combat;
+﻿using System.Collections;
+using Combat;
 using UnityEngine;
 
 namespace Controllers {
@@ -10,7 +11,7 @@ public abstract class CombatController : MonoBehaviour {
 
 #endregion
 
-    // Todo 优化接口抽象
-    public abstract void OnUserInput();
+    // 返回null表示当前线程直接执行
+    public abstract IEnumerator OnUserInput();
 }
 }

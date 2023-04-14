@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace Controllers {
 public class PlayerController : CombatController {
     // 用户输入
-    public override void OnUserInput() {
+    public override IEnumerator OnUserInput() {
         // 摸牌
         if (Input.GetKeyDown(KeyCode.G)) {
             combatant.GetCard(1);
@@ -18,6 +19,8 @@ public class PlayerController : CombatController {
         if (Input.GetKeyDown(KeyCode.Return)) {
             combatant.Discard();
         }
+
+        return null;
     }
 }
 }
