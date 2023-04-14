@@ -2,7 +2,7 @@
 
 namespace Combat.Requests.Details {
 // 后处理逻辑(所有请求执行完毕后执行)
-public class RequestPostLogic : CombatRequest {
+public sealed class RequestPostLogic : CombatRequest {
 #region 配置项
 
     public Action OnFinish;

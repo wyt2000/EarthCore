@@ -81,6 +81,13 @@ public class CombatantComponent : MonoBehaviour {
 
 #region 发起快捷请求
 
+    public void AddPost(Action action) {
+        Judge.Requests.AddPost(new RequestPostLogic {
+            Causer   = this,
+            OnFinish = action
+        });
+    }
+
     // 广播效果回调
     public void BoardCast(Action<Effect> action) {
         Effects.ForEach(action);
@@ -177,11 +184,10 @@ public class CombatantComponent : MonoBehaviour {
         // 超过上限的也弃掉 Todo 优化自动弃牌逻辑 
         card.AddRange(Cards.Extract((_, i) => i >= State.MaxCardCnt));
         Judge.Requests.Add(new RequestAnimation {
-            Anim = () => cardSlot.Discards(card)
+            Causer = this,
+            Anim   = () => cardSlot.Discards(card)
         });
-        Judge.Requests.Add(new RequestPostLogic {
-            OnFinish = () => Judge.NextTurn()
-        });
+        AddPost(() => Judge.NextTurn());
     }
 
     // 尝试施加元素击碎

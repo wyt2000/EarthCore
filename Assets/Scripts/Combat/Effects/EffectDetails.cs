@@ -252,17 +252,14 @@ public static class EffectLinks {
                 // 元素击碎
                 var keys = state.ElementAttach.Keys.ToArray();
                 keys.ForEach(key => target.TryApplyElementBreak(causer, key, state.ElementMaxAttach[key]));
-                causer.Judge.Requests.Add(new RequestPostLogic {
-                    OnFinish = () =>
-                    {
-                        var damage = state.HealthMax * 0.1f;
-                        if (state.Health > damage) return;
-                        // 实现斩杀效果 
-                        causer.Attack(new RequestHpChange {
-                            Value  = state.HealthMax,
-                            IsReal = true,
-                        });
-                    }
+                causer.AddPost(() => {
+                    var damage = state.HealthMax * 0.1f;
+                    if (state.Health > damage) return;
+                    // 实现斩杀效果 
+                    causer.Attack(new RequestHpChange {
+                        Value  = state.HealthMax,
+                        IsReal = true,
+                    });
                 });
             }
         };

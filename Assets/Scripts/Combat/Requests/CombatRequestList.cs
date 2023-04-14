@@ -1,22 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Combat.Requests.Details;
 using UnityEngine;
 
 namespace Combat.Requests {
 public class CombatRequestList {
-    private readonly LinkedList<CombatRequest> m_requests = new();
+    private readonly LinkedList<CombatRequest> m_requests   = new();
+    private readonly Queue<RequestPostLogic>   m_postLogics = new();
 
     public CombatJudge Judge;
 
-    public IEnumerable<CombatRequest> Raw => m_requests;
-
-    public int Count => m_requests.Count;
+    public int Count => m_requests.Count + m_postLogics.Count;
 
     public bool Running { get; private set; }
 
     private bool InValid(CombatRequest request) {
-        if (Judge == null || request == null) return true;
+        if (request is null or RequestPostLogic) {
+            Debug.LogError("后处理逻辑需要用AddPostLogic入队");
+            return true;
+        }
         request.Judge = Judge;
         var reject = !request.CanEnqueue();
         if (reject) {
@@ -27,9 +30,12 @@ public class CombatRequestList {
         return reject;
     }
 
-
     public void Add(CombatRequest request) {
         AddLast(request);
+    }
+
+    public void AddPost(RequestPostLogic request) {
+        m_postLogics.Enqueue(request);
     }
 
     public void AddFirst(CombatRequest request) {
@@ -60,15 +66,9 @@ public class CombatRequestList {
         newRequest.Node = m_requests.AddAfter(request.Node, newRequest);
     }
 
-    public void Clear() {
-        m_requests.Clear();
-    }
-
     private CombatRequest PopFirst() {
-        if (m_requests.Count == 0) return null;
+        if (m_requests.Count == 0) return m_postLogics.Dequeue();
         var node = m_requests.First;
-        while (node is { Value: RequestPostLogic }) node = node.Next;
-        node ??= m_requests.First;
         var value = node.Value;
         m_requests.Remove(node);
         return value;

@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Combat.Requests.Details;
 using UnityEngine;
 
 // Todo 规范配置项命名:In/Out/Io
@@ -57,6 +59,13 @@ public abstract class CombatRequest {
     protected void Add(CombatRequest request) {
         request.Causer ??= Causer;
         Judge.Requests.Add(request);
+    }
+
+    protected void AddPost(Action action) {
+        Judge.Requests.AddPost(new RequestPostLogic {
+            Causer   = Causer,
+            OnFinish = action
+        });
     }
 
     protected void AddFirst(CombatRequest request) {

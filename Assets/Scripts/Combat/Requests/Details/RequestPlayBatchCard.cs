@@ -107,15 +107,11 @@ public class RequestPlayBatchCard : CombatRequest {
             Attach = true
         });
 
-        Add(new RequestPostLogic {
-            Judge = Judge,
-            OnFinish = () =>
-            {
-                listener.Remove();
-                TotalDamage = listener.TotalDamage;
-                Causer.BoardCast(e => e.AfterPlayBatchCard(this));
-                Cards.ForEach(c => c.OnAfterPlayBatchCard(this));
-            }
+        AddPost(() => {
+            listener.Remove();
+            TotalDamage = listener.TotalDamage;
+            Causer.BoardCast(e => e.AfterPlayBatchCard(this));
+            Cards.ForEach(c => c.OnAfterPlayBatchCard(this));
         });
     }
 
