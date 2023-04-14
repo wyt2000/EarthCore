@@ -134,7 +134,7 @@ public static class EffectLinks {
 
     [ElementLink(ElementType.Shui, ElementType.Mu)]
     private static Effect ShuiMu() {
-        return new Effect {
+        return new EffectBatch {
             UiName        = "宁静",
             UiDescription = "水木联动,本次出牌法力消耗减半",
             LgTags        = { EffectTag.Buff },
@@ -169,6 +169,7 @@ public static class EffectLinks {
     // 金+土+水：洞察：无效敌方下一次的伤害和控制效果（分两部分，分别持续到下次伤害到来和下次控制到来）
     [ElementLink(ElementType.Jin, ElementType.Tu, ElementType.Shui)]
     private static Effect JinTuShui() {
+        // Todo 转成一个buff
         Effect damage, control;
         {
             var trigger = new EffectTrigger();
@@ -195,7 +196,7 @@ public static class EffectLinks {
 
     [ElementLink(ElementType.Jin, ElementType.Shui, ElementType.Mu)]
     private static Effect JinShuiMu() {
-        return new Effect {
+        return new EffectBatch {
             UiName        = "不竭",
             UiDescription = "金水木联动,本次出牌法力消耗减半，抽一张牌",
             LgTags        = { EffectTag.Buff },
