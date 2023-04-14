@@ -37,13 +37,20 @@ public class CardSlotView : MonoBehaviour {
         m_cardWidth = cardPrefab.GetComponent<RectTransform>().rect.width;
     }
 
-    public float RealOffset() {
-        var cnt = m_cards.Count;
-        if (cnt <= 1) return 0;
-        // real * (cnt - 1) + cardWidth = slotWidth
-        var realOffset = (m_slotWidth - m_cardWidth) / (cnt - 1);
-        realOffset = Mathf.Min(realOffset, m_cardWidth + inner);
-        return realOffset;
+    public float RealOffset(int index) {
+        // 前面的卡使用了的宽度
+        var offset = 0.0f;
+        var i = 0;
+        for (; i < index && m_cards[i].Data.IsSelected; ++i) offset += m_cardWidth;
+        var cnt = m_cards.Count - i;
+        // (cnt-1) * real + m_cardWidth = m_slotWidth - offset
+        if (cnt > 1) {
+            var real = (m_slotWidth - offset - m_cardWidth) / (cnt - 1);
+            real   =  Mathf.Min(real, m_cardWidth + inner);
+            offset += real * (index - i);
+        }
+
+        return offset;
     }
 
     public IEnumerator AddCard(Card data) {
@@ -70,7 +77,7 @@ public class CardSlotView : MonoBehaviour {
             });
             m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
             {
-                var index = c.Data.LgElement.HasValue ? (int)c.Data.LgElement.Value : -1;
+                var index = c.Data.LgElement.HasValue ? (int)c.Data.LgElement.Value : int.MaxValue;
                 return (!c.Data.IsSelected, !c.IsSelectable, index, c.Data.UiName);
             }));
         }

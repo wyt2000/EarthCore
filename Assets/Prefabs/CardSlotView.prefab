@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 300}
+  m_SizeDelta: {x: 1200, y: 300}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &5957420782092112893
 MonoBehaviour:
@@ -52,9 +52,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatant: {fileID: 0}
-  cardPrefab: {fileID: 6432213332602428712, guid: 588e0bd5caf56f5429124bf37029ebb3, type: 3}
+  isOtherPlayer: 0
   inner: 10
-  previewCnt: 2
+  cardPrefab: {fileID: 6432213332602428712, guid: 588e0bd5caf56f5429124bf37029ebb3, type: 3}
 --- !u!222 &5642173813733422004
 CanvasRenderer:
   m_ObjectHideFlags: 0

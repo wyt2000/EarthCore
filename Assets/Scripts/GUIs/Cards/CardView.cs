@@ -96,7 +96,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     // 目标位置
     private Vector3 TargetPosition() {
-        var target = Vector3.right * (Index * Container.RealOffset());
+        var target = Vector3.right * Container.RealOffset(Index);
         if (Data.IsSelected) {
             target += Vector3.up * (rect.rect.height * upRate);
         }
@@ -126,7 +126,6 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
         cardCost.text        = $"{Data.ManaCost:F0}";
-        // Todo 实现preview总法力消耗
         // Todo 加伤害text
 
         cardBanFilter.gameObject.SetActive(Style == CardStyle.Ban);
@@ -156,8 +155,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         if (Data.IsSelected) {
             // Todo 游戏侧边加个详细信息面板 
         }
-        else {
-            // 所有牌都取消选中
+        else if (!Data.Owner.PreviewBatch.CanEnqueue()) {
             Data.Owner.UnSelectAllCardToPlay();
         }
         StartCoroutine(Container.FreshUI());
