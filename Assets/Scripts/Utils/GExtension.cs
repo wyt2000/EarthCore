@@ -72,4 +72,21 @@ public static class RectTransformExtensions {
         rectTransform.localPosition -= deltaPosition;
     }
 }
+
+public static class MonoBehaviourExtension {
+    public static void InitRenderOrder(this MonoBehaviour monoBehaviour, int order) {
+        var canvas = monoBehaviour.GetComponent<Canvas>();
+        if (canvas == null) {
+            Debug.LogError("Canvas is null");
+        }
+        canvas.SetRenderOrder(order);
+    }
+}
+
+public static class CanvasExtension {
+    public static void SetRenderOrder(this Canvas canvas, int order) {
+        canvas.overrideSorting = true;
+        canvas.sortingOrder    = order;
+    }
+}
 }

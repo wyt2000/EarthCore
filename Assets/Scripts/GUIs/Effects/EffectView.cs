@@ -70,9 +70,7 @@ public class EffectView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter(PointerEventData eventData) {
         tipView.gameObject.SetActive(true);
-        tipView.overrideSorting = true;
-        tipView.sortingOrder    = 100;
-
+        tipView.SetRenderOrder(100);
         tipText.text = Data.UiDescription;
     }
 

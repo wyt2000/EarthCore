@@ -87,9 +87,25 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Delay);
 
+    private void Start() {
+        if (Data == null) return;
+        // Todo 修复卡牌被对方ui遮挡的bug,加了canvas后会导致检测不到鼠标事件
+        // this.InitRenderOrder(200);
+        FreshUI();
+    }
+
+    // 目标位置
+    private Vector3 TargetPosition() {
+        var target = Vector3.right * (Index * Container.RealOffset());
+        if (Data.IsSelected) {
+            target += Vector3.up * (rect.rect.height * upRate);
+        }
+
+        return Container.transform.TransformPoint(target);
+    }
+
     public void FreshUI() {
         if (Style == CardStyle.Other) {
-            // Todo 加个卡背贴图
             cardBack.gameObject.SetActive(true);
             return;
         }
@@ -103,34 +119,17 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
             _ => new Color(0.38f, 0.39f, 0.42f),
         };
-        // Todo 加个默认贴图
         var imageUrl = Data.UiImagePath;
-        cardImage.sprite = Resources.Load<Sprite>(imageUrl); // ?? cardImage.sprite;
-        if (cardImage.sprite == null) cardImage.color = Color.magenta;
+        cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
 
         cardName.text        = Data.UiName;
         cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
-        cardCost.text        = $"{Data.ManaCost}";
+        cardCost.text        = $"{Data.ManaCost:F0}";
         // Todo 实现preview总法力消耗
         // Todo 加伤害text
 
         cardBanFilter.gameObject.SetActive(Style == CardStyle.Ban);
-    }
-
-    private void Start() {
-        if (Data == null) return;
-        FreshUI();
-    }
-
-    // 目标位置
-    private Vector3 TargetPosition() {
-        var target = Vector3.right * (Index * Container.RealOffset());
-        if (Data.IsSelected) {
-            target += Vector3.up * (rect.rect.height * upRate);
-        }
-
-        return Container.transform.TransformPoint(target);
     }
 
     public IEnumerator MoveToTarget() {

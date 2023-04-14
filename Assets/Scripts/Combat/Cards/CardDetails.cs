@@ -47,7 +47,7 @@ public static class CardDetails {
             Clone         = ShiTan,
             UiName        = "试探",
             UiDescription = "为自身添加25物理护盾并造成25点物理伤害",
-            UiImagePath   = "Textures/Cards/试探",
+            UiImagePath   = "Textures/Card/Details/试探",
             LgDamage      = 25,
             LgDamageType  = DamageType.Physical,
             LgElement     = ElementType.Jin,
@@ -73,7 +73,7 @@ public static class CardDetails {
             Clone         = GeDang,
             UiName        = "格挡",
             UiDescription = "为自身添加15护甲",
-            UiImagePath   = "Textures/Cards/格挡",
+            UiImagePath   = "Textures/Card/Details/格挡",
             LgElement     = ElementType.Jin,
             OnExecute     = req => req.Causer.State.PhysicalArmor += 15
         };
@@ -93,7 +93,7 @@ public static class CardDetails {
             Clone         = ZhongJi,
             UiName        = "重击",
             UiDescription = "造成50点物理伤害",
-            UiImagePath   = "Textures/Cards/重击",
+            UiImagePath   = "Textures/Card/Details/重击",
             LgDamage      = 50,
             LgElement     = ElementType.Jin,
             OnExecute     = req => req.TakeDamage()
@@ -114,7 +114,7 @@ public static class CardDetails {
             Clone         = DunJi,
             UiName        = "盾击",
             UiDescription = "造成50%自身物理护盾值的物理伤害",
-            UiImagePath   = "Textures/Cards/盾击",
+            UiImagePath   = "Textures/Card/Details/盾击",
             LgDamageFunc  = c => c.Owner.State.PhysicalShield / 2,
             LgElement     = ElementType.Jin,
             OnExecute     = req => req.TakeDamage()
@@ -139,7 +139,7 @@ public static class CardDetails {
             Clone         = JiQu,
             UiName        = "汲取",
             UiDescription = "回复本次总伤害50%的生命值",
-            UiImagePath   = "Textures/Cards/生命汲取",
+            UiImagePath   = "Textures/Card/Details/汲取",
             LgManaCost    = 10,
             LgElement     = ElementType.Mu,
             LgDamage      = 10,
@@ -169,7 +169,7 @@ public static class CardDetails {
             Clone         = QingXing,
             UiName        = "清醒",
             UiDescription = "恢复10点法力",
-            UiImagePath   = "Textures/Cards/清醒",
+            UiImagePath   = "Textures/Card/Details/清醒",
             LgManaCost    = 0,
             LgElement     = ElementType.Mu,
             OnExecute     = req => req.Causer.State.Mana += 10
@@ -190,7 +190,7 @@ public static class CardDetails {
             Clone         = BaoZha,
             UiName        = "包扎",
             UiDescription = "回复50点生命值",
-            UiImagePath   = "Textures/Cards/包扎",
+            UiImagePath   = "Textures/Card/Details/包扎",
             LgManaCost    = 5,
             LgElement     = ElementType.Mu,
             OnExecute = req => req.Causer.Heal(new RequestHpChange {
@@ -231,7 +231,7 @@ public static class CardDetails {
             Clone         = LiangYao,
             UiName        = "良药",
             UiDescription = "为自身施加【疗养】效果,持续3回合.",
-            UiImagePath   = "Textures/Cards/良药",
+            UiImagePath   = "Textures/Card/Details/良药",
             LgManaCost    = 10,
             LgElement     = ElementType.Mu,
             OnExecute     = req => req.Causer.AddBuff(effect)
@@ -257,7 +257,7 @@ public static class CardDetails {
             Clone          = FaLiKuangYong,
             UiName         = "法力狂涌",
             UiDescription  = "造成50*(100%+50%当前法力值)伤害",
-            UiImagePath    = "Textures/Cards/法力狂涌",
+            UiImagePath    = "Textures/Card/Details/法力狂涌",
             LgManaCostFunc = card => card.Owner.State.Mana * 0.5f,
             LgDamageFunc   = card => 50 * (1 + 0.5f * card.Owner.State.Mana / 100),
             LgDamageType   = DamageType.Magical,
@@ -280,7 +280,7 @@ public static class CardDetails {
             Clone         = JiXv,
             UiName        = "积蓄",
             UiDescription = "获得等于本次出牌总法力消耗的清算值",
-            UiImagePath   = "Textures/Cards/积蓄",
+            UiImagePath   = "Textures/Card/Details/积蓄",
 
             LgManaCost = 8,
             LgElement  = ElementType.Shui,
@@ -303,7 +303,7 @@ public static class CardDetails {
             Clone         = ShiFa,
             UiName        = "施法",
             UiDescription = "造成60点魔法伤害",
-            UiImagePath   = "Textures/Cards/施法",
+            UiImagePath   = "Textures/Card/Details/施法",
             LgManaCost    = 5,
             LgDamage      = 60,
             LgElement     = ElementType.Shui,
@@ -325,7 +325,7 @@ public static class CardDetails {
             Clone         = AnChaoYongDong,
             UiName        = "暗潮涌动",
             UiDescription = "获得70点【清算】值",
-            UiImagePath   = "Textures/Cards/暗潮涌动",
+            UiImagePath   = "Textures/Card/Details/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
             OnExecute     = req => req.Causer.AddOpBuff(EffectPrefabs.QingSuan(70))
@@ -350,7 +350,7 @@ public static class CardDetails {
             Clone         = HuoLiYaZhi,
             UiName        = "火力压制",
             UiDescription = "造成5*10点物理伤害",
-            UiImagePath   = "Textures/Cards/火力压制",
+            UiImagePath   = "Textures/Card/Details/火力压制",
             LgDamage      = 10,
             LgElement     = ElementType.Huo,
             OnExecute = req =>
@@ -374,7 +374,7 @@ public static class CardDetails {
             Clone         = YuShiJuFen,
             UiName        = "熔铁之刃",
             UiDescription = "造成25点物理伤害，减少敌方10点护甲值，若敌方护甲值不足10点，造成溢出部分两倍的伤害",
-            UiImagePath   = "Textures/Cards/熔铁之刃",
+            UiImagePath   = "Textures/Card/Details/熔铁之刃",
             LgDamage      = 25,
             LgElement     = ElementType.Huo,
             OnExecute = req =>
@@ -407,7 +407,7 @@ public static class CardDetails {
             Clone         = ChuanCi,
             UiName        = "穿刺",
             UiDescription = "造成35点物理伤害，穿透",
-            UiImagePath   = "Textures/Cards/穿刺",
+            UiImagePath   = "Textures/Card/Details/穿刺",
             LgDamage      = 35,
             LgElement     = ElementType.Huo,
             OnExecute     = req => req.TakeDamage(true)
@@ -428,7 +428,7 @@ public static class CardDetails {
             Clone         = FenShao,
             UiName        = "焚烧",
             UiDescription = "为敌人施加3层【淬炼】效果",
-            UiImagePath   = "Textures/Cards/焚烧",
+            UiImagePath   = "Textures/Card/Details/焚烧",
             LgElement     = ElementType.Huo,
             OnExecute     = req => req.Causer.AddOpBuff(EffectPrefabs.CuiLian(3))
         };
@@ -452,7 +452,7 @@ public static class CardDetails {
             Clone         = MoFaShouHu,
             UiName        = "魔法守护",
             UiDescription = "浸染，获得50点魔法护盾",
-            UiImagePath   = "Textures/Cards/魔法守护",
+            UiImagePath   = "Textures/Card/Details/魔法守护",
             LgManaCost    = 10,
             LgElement     = ElementType.Tu,
             LgInfect      = true,
@@ -474,7 +474,7 @@ public static class CardDetails {
             Clone         = WuNiZhiQu,
             UiName        = "污泥之躯",
             UiDescription = "消耗15%当前生命值，获得两倍于其的魔法护盾",
-            UiImagePath   = "Textures/Cards/污泥之躯",
+            UiImagePath   = "Textures/Card/Details/污泥之躯",
             LgManaCost    = 5,
             LgElement     = ElementType.Tu,
             OnExecute = req =>
@@ -517,7 +517,7 @@ public static class CardDetails {
             Clone         = EYun,
             UiName        = "厄运",
             UiDescription = "为敌方施加厄运buff，三回合后生效造成100点土属性魔法伤害（生效于敌方回合开始时）",
-            UiImagePath   = "Textures/Cards/厄运",
+            UiImagePath   = "Textures/Card/Details/厄运",
             LgManaCost    = 7,
             LgDamage      = 100,
             LgElement     = ElementType.Tu,
@@ -543,7 +543,7 @@ public static class CardDetails {
             Clone         = KeWang,
             UiName        = "渴望",
             UiDescription = "唯一，不计入出牌次数，抽两张牌",
-            UiImagePath   = "Textures/Cards/渴望",
+            UiImagePath   = "Textures/Card/Details/渴望",
             LgManaCost    = 10,
             LgUnique      = true,
             OnExecute     = req => req.Causer.GetCard(2)
@@ -564,7 +564,7 @@ public static class CardDetails {
             Clone         = HuoZhiZhaoHuang,
             UiName        = "火之召唤",
             UiDescription = "唯一，不计入出牌次数，从牌组随机抽一张火元素卡牌",
-            UiImagePath   = "Textures/Cards/火之召唤",
+            UiImagePath   = "Textures/Card/Details/火之召唤",
             LgManaCost    = 10,
             LgUnique      = true,
             OnExecute = req =>
@@ -607,7 +607,7 @@ public static class CardDetails {
             Clone         = TieJiaJiaGu,
             UiName        = "铁甲加固",
             UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
-            UiImagePath   = "Textures/Cards/铁甲加固",
+            UiImagePath   = "Textures/Card/Details/铁甲加固",
             LgManaCost    = 20,
             OnExecute     = req => req.Causer.AddBuff(effect)
         };
