@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Card
+    uniqueID: 3707695463
+    locked: 0
+  - name: Tooltip
+    uniqueID: 686151669
+    locked: 0
