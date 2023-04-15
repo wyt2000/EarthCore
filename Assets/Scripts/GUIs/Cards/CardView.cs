@@ -85,7 +85,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     public bool IsSelectable => Style == CardStyle.Valid;
 
-    private readonly AnimLocker m_locker = new(AnimConflictPolicy.Delay);
+    private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
 
     private void Start() {
         if (Data == null) return;
@@ -135,16 +135,17 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         yield return this.MoveTo(m_locker, TargetPosition(), 0.3f);
     }
 
-    public IEnumerator MoveToHeap(int index, float duration) {
+    public IEnumerator MoveToHeap(float index, float duration) {
         Style = CardStyle.Played;
         FreshUI();
-        rect.SetPivotWithoutChangingPosition(new Vector2(0.5f, 0.5f));
-        var target = Container.combatant.cardHeap.transform.position;
-        // Todo 加个全局中心锚点, 保证整体居中
-        var first = target + Vector3.right * ((index - 1) * rect.rect.width * 1.15f);
+        var heap = Container.combatant.cardHeap;
+        var trans = GetComponent<RectTransform>();
+        var mid = new Vector2(0.5f, 0.5f);
+        var first = trans.GetPosition(mid, heap.center.position + Vector3.right * (trans.lossyScale.x * index * rect.rect.width));
+        var final = trans.GetPosition(mid, heap.transform);
         yield return this.MoveTo(null, first, duration);
         yield return GAnimation.Wait(1.0f);
-        yield return this.MoveTo(null, target, 0.2f);
+        yield return this.MoveTo(null, final, 0.2f);
         // Todo 加缩放动画
         Destroy(gameObject);
     }
@@ -162,3 +163,4 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 }
 }
+// Todo 彻底解决sortOrder问题

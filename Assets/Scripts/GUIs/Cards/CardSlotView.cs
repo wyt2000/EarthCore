@@ -37,20 +37,21 @@ public class CardSlotView : MonoBehaviour {
         m_cardWidth = cardPrefab.GetComponent<RectTransform>().rect.width;
     }
 
-    public float RealOffset(int index) {
-        // 前面的卡使用了的宽度
-        var offset = 0.0f;
-        var i = 0;
-        for (; i < index && m_cards[i].Data.IsSelected; ++i) offset += m_cardWidth;
-        var cnt = m_cards.Count - i;
-        // (cnt-1) * real + m_cardWidth = m_slotWidth - offset
-        if (cnt > 1) {
-            var real = (m_slotWidth - offset - m_cardWidth) / (cnt - 1);
-            real   =  Mathf.Min(real, m_cardWidth + inner);
-            offset += real * (index - i);
-        }
+    private float Offset(float width, int cnt, float maxInner) {
+        if (cnt <= 1) return 0;
+        return Mathf.Min((width - m_cardWidth) / (cnt - 1), m_cardWidth + maxInner);
+    }
 
-        return offset;
+    public float RealOffset(int index) {
+        var isSelect = m_cards[index].Data.IsSelected;
+        var selectCnt = m_cards.Count(item => item.Data.IsSelected);
+        var unselectCnt = m_cards.Count - selectCnt;
+        var selectWidth = Mathf.Min(m_cardWidth * selectCnt, m_slotWidth - 3 * m_cardWidth);
+        var unselectWidth = m_slotWidth - selectWidth;
+        var selectOffset = Offset(selectWidth,     selectCnt,   0);
+        var unselectOffset = Offset(unselectWidth, unselectCnt, inner);
+        if (isSelect) return selectOffset * index;
+        return selectWidth + unselectOffset * (index - selectCnt);
     }
 
     public IEnumerator AddCard(Card data) {
@@ -94,8 +95,9 @@ public class CardSlotView : MonoBehaviour {
     public IEnumerator Discards(IEnumerable<Card> cards) {
         var set = cards.ToHashSet();
         var remove = m_cards.Extract(card => set.Contains(card.Data));
+        var sub = (remove.Count - 1) / 2.0f;
         combatant.Heap.RecycleCard(set);
-        return GCoroutine.Parallel(remove.Select((card, i) => card.MoveToHeap(i, 0.5f)).Append(FreshUI()));
+        return GCoroutine.Parallel(remove.Select((card, i) => card.MoveToHeap(i - sub, 0.5f)).Append(FreshUI()));
     }
 }
 }

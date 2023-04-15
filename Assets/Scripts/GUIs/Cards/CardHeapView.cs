@@ -9,6 +9,8 @@ public class CardHeapView : MonoBehaviour {
 
     public CombatantComponent combatant;
 
+    public RectTransform center;
+
     [SerializeField]
     private TextMeshProUGUI text;
 

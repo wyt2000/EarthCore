@@ -63,30 +63,29 @@ public static class EnumExtension {
 }
 
 public static class RectTransformExtensions {
-    public static void SetPivotWithoutChangingPosition(this RectTransform rectTransform, Vector2 pivot) {
-        var size = rectTransform.rect.size;
-        var deltaPivot = rectTransform.pivot - pivot;
-        var scale = rectTransform.lossyScale;
-        var deltaPosition = new Vector3(deltaPivot.x * size.x * scale.x, deltaPivot.y * size.y * scale.y);
-        rectTransform.pivot         =  pivot;
-        rectTransform.localPosition -= deltaPosition;
+    public static void SetPivotWithoutChangingPosition(this RectTransform rect, Vector2 pivot) {
+        rect.position += rect.PivotOffset(pivot);
     }
-}
 
-public static class MonoBehaviourExtension {
-    public static void InitRenderOrder(this MonoBehaviour monoBehaviour, int order) {
-        var canvas = monoBehaviour.GetComponent<Canvas>();
-        if (canvas == null) {
-            Debug.LogError("Canvas is null");
-        }
-        canvas.SetRenderOrder(order);
+    private static Vector3 AtPivot(this RectTransform rect, Vector2 pivot) {
+        return rect.position + rect.PivotOffset(pivot);
     }
-}
 
-public static class CanvasExtension {
-    public static void SetRenderOrder(this Canvas canvas, int order) {
-        canvas.overrideSorting = true;
-        canvas.sortingOrder    = order;
+    private static Vector3 PivotOffset(this RectTransform rect, Vector2 pivot) {
+        return (pivot - rect.pivot) * rect.rect.size * rect.lossyScale;
+    }
+
+    // 将rect的pivot对应的3D坐标, 设置为指定3D坐标
+    public static Vector3 GetPosition(this RectTransform rect, Vector2 pivot, Vector3 at) {
+        return at - rect.PivotOffset(pivot);
+    }
+
+    public static Vector3 GetPosition(this RectTransform rect, Vector2 pivot, Transform at) {
+        return rect.GetPosition(pivot, at.position);
+    }
+
+    public static Vector3 GetPosition(this RectTransform rect, Vector2 pivot, RectTransform at, Vector2 atPivot) {
+        return at.AtPivot(atPivot) - rect.PivotOffset(pivot);
     }
 }
 }
