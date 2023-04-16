@@ -222,7 +222,6 @@ GameObject:
   - component: {fileID: 809641804923188747}
   - component: {fileID: 2886038986140786151}
   - component: {fileID: 6432213332602428712}
-  - component: {fileID: 3915163663283613559}
   - component: {fileID: 7903955662717746330}
   - component: {fileID: 5634819371022044911}
   m_Layer: 0
@@ -288,17 +287,6 @@ MonoBehaviour:
   cardElementType: {fileID: 5010049810144023232}
   cardCost: {fileID: 5564986346919084868}
   upRate: 0.2
---- !u!210 &3915163663283613559
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1761778367209169010}
-  m_Enabled: 1
-  m_SortingLayerID: 501569027
-  m_SortingLayer: 1
-  m_SortingOrder: 0
 --- !u!223 &7903955662717746330
 Canvas:
   m_ObjectHideFlags: 0

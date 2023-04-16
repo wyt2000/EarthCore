@@ -13,8 +13,6 @@ public class TooltipHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public Func<string> OnShow;
 
-    // Todo OnPointer事件触发不流畅稳定
-
     public void OnPointerEnter(PointerEventData eventData) {
         tooltipView.gameObject.SetActive(true);
         if (OnShow != null) tooltipView.FreshUI(OnShow.Invoke());

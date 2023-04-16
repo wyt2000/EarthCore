@@ -10,12 +10,18 @@ public class TooltipView : MonoBehaviour {
     [SerializeField]
     private TextMeshProUGUI text;
 
-    // Todo 被card遮挡的问题
+    // canvas
+    [SerializeField]
+    private Canvas canvas;
 
 #endregion
 
     public void FreshUI(string str) {
         text.text = str;
+    }
+
+    private void Start() {
+        canvas.SetOrder(SortOrder.Tooltip);
     }
 }
 }

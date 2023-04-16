@@ -54,6 +54,7 @@ public class StateBarView : MonoBehaviour {
         magicShield.FreshUI();
         magicAmplify.FreshUI();
         magicReduce.FreshUI();
+        elementSeals.ForEach(element => element.FreshUI());
     }
 
     private void Start() {
@@ -67,13 +68,13 @@ public class StateBarView : MonoBehaviour {
             return $"{state.Mana:F0}{costStr}/{state.ManaMax}";
         };
         mana.tooltip.OnShow            = () => "魔法值";
-        physicalShield.OnShow          = () => $"{state.PhysicalShield}";
+        physicalShield.OnShow          = () => $"{state.PhysicalShield:F0}";
         physicalShield.tooltip.OnShow  = () => "物理护盾";
         physicalAmplify.OnShow         = () => $"{state.PhysicalDamageAmplify}%";
         physicalAmplify.tooltip.OnShow = () => "物理伤害增幅";
         physicalReduce.OnShow          = () => $"{state.PhysicalDamageReduce}%";
         physicalReduce.tooltip.OnShow  = () => "物理伤害减免";
-        magicShield.OnShow             = () => $"{state.MagicShield}";
+        magicShield.OnShow             = () => $"{state.MagicShield:F0}";
         magicShield.tooltip.OnShow     = () => "魔法护盾";
         magicAmplify.OnShow            = () => $"{state.MagicDamageAmplify}%";
         magicAmplify.tooltip.OnShow    = () => "魔法伤害增幅";
@@ -85,6 +86,7 @@ public class StateBarView : MonoBehaviour {
         elementSeals.ForEach((element, i) =>
         {
             var type = (ElementType)i;
+            // Todo 显示破碎效果
             element.OnShow         = () => $"{state.ElementAttach[type]}";
             element.tooltip.OnShow = () => $"{type.ToDescription()}元素法印";
         });

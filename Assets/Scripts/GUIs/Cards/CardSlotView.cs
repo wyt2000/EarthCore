@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Combat;
 using Combat.Cards;
+using GUIs.Common;
 using UnityEngine;
 using Utils;
 
@@ -83,7 +84,7 @@ public class CardSlotView : MonoBehaviour {
             }));
         }
         m_cards.ForEach(
-            (c, i) => c.GetComponent<Canvas>().sortingOrder = 1 + (c.Index = i)
+            (c, i) => c.GetComponent<Canvas>().SetOrder(SortOrder.Card, c.Index = i)
         );
     }
 
