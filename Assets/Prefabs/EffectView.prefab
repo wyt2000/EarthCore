@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 7316242481833977607}
   - component: {fileID: 3125407616541272761}
   - component: {fileID: 3101025809506921202}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -566,9 +566,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2633608525029456203}
-  - component: {fileID: 7271469585912562138}
-  - component: {fileID: 26516571378551827}
-  m_Layer: 5
+  - component: {fileID: 7215005572369726492}
+  - component: {fileID: 4300669472717508814}
+  m_Layer: 0
   m_Name: Tips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -597,7 +597,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0, y: 0}
---- !u!223 &7271469585912562138
+--- !u!223 &7215005572369726492
 Canvas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -618,7 +618,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!210 &26516571378551827
+--- !u!210 &4300669472717508814
 SortingGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -626,7 +626,7 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7148164070417399412}
   m_Enabled: 1
-  m_SortingLayerID: 686151669
+  m_SortingLayerID: 902983401
   m_SortingLayer: 2
   m_SortingOrder: 0
 --- !u!1 &7160315985767332925

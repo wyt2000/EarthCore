@@ -163,4 +163,3 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 }
 }
-// Todo 彻底解决sortOrder问题

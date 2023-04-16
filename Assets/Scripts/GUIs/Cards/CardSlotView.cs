@@ -83,7 +83,7 @@ public class CardSlotView : MonoBehaviour {
             }));
         }
         m_cards.ForEach(
-            (c, i) => c.transform.SetSiblingIndex(c.Index = i)
+            (c, i) => c.GetComponent<Canvas>().sortingOrder = 1 + (c.Index = i)
         );
     }
 
