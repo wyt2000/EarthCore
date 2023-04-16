@@ -29,7 +29,7 @@ public class RequestGetCard : CombatRequest {
     public override IEnumerator Execute() {
         var cards = Causer.Heap.GetCards(this);
         Causer.Cards.AddRange(cards);
-        return cards.Select(card => Causer.cardSlot.AddCard(card)).GetEnumerator();
+        return Causer.cardSlot.AddCards(cards);
     }
 
     public override string Description() {

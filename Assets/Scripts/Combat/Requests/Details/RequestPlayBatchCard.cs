@@ -108,9 +108,15 @@ public class RequestPlayBatchCard : CombatRequest {
         // 扣除法力值
         Causer.State.Mana -= TotalManaCost;
 
+        // 出牌动画
+        Add(new RequestAnimation {
+            Anim = () => Causer.cardSlot.Discards(Cards)
+        });
+
         // 计算元素联动
         var (link, other) = PreviewElementLink();
         if (link != null) {
+            // Todo 元素联动动画
             Judge.logger.AddLog($"触发元素联动{link.UiName}");
             // 元素联动摸牌
             Causer.GetCard(1);
@@ -151,11 +157,6 @@ public class RequestPlayBatchCard : CombatRequest {
         // 出牌前回调
         Cards.ForEach(c => c.OnBeforePlayBatchCard(this));
         Causer.BoardCast(e => e.BeforePlayBatchCard(this));
-
-        // 出牌动画
-        Add(new RequestAnimation {
-            Anim = () => Causer.cardSlot.Discards(Cards)
-        });
 
         // 依次出牌
         foreach (var card in Cards) {

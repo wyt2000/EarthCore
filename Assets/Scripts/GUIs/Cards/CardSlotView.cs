@@ -8,6 +8,7 @@ using UnityEngine;
 using Utils;
 
 namespace GUIs.Cards {
+// 卡槽视图 Todo 加背景
 public class CardSlotView : MonoBehaviour {
 #region prefab配置
 
@@ -55,17 +56,20 @@ public class CardSlotView : MonoBehaviour {
         return selectWidth + unselectOffset * (index - selectCnt);
     }
 
-    // Todo 改成AddCards接口
-    public IEnumerator AddCard(Card data) {
-        var card = Instantiate(cardPrefab, transform);
+    public IEnumerator AddCards(IEnumerable<Card> cards) {
+        cards.ForEach((data, i) =>
+        {
+            var card = Instantiate(cardPrefab, transform);
 
-        card.Container = this;
-        card.Data      = data;
-        card.Style     = isOtherPlayer ? CardStyle.Other : CardStyle.Valid;
+            card.Container = this;
+            card.Data      = data;
+            card.NewIndex  = i;
+            card.Style     = isOtherPlayer ? CardStyle.Other : CardStyle.Valid;
 
-        m_cards.Add(card);
+            m_cards.Add(card);
 
-        card.transform.position = combatant.cardHeap.transform.position;
+            card.transform.position = combatant.cardHeap.transform.position;
+        });
 
         return FreshUI();
     }
@@ -85,9 +89,9 @@ public class CardSlotView : MonoBehaviour {
                 return (!c.Data.IsSelected, !c.IsSelectable, index, c.Data.UiName);
             }));
         }
-        m_cards.ForEach(
-            (c, i) => c.GetComponent<Canvas>().SetOrder(SortOrder.Card, c.Index = i)
-        );
+        m_cards.ForEach((c, i) => c.GetComponent<Canvas>().SetOrder(SortOrder.Card, c.Index = i));
+        var newIndex = 0;
+        m_cards.Where(c => c.NewIndex != -1).Reverse().ForEach(c => c.NewIndex = newIndex++);
     }
 
     public IEnumerator FreshUI() {

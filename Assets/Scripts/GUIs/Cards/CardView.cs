@@ -77,6 +77,10 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     // 绑定的数据
     public Card Data;
 
+    // 新加的卡
+    [NonSerialized]
+    public int NewIndex = -1;
+
     // 数据索引
     [NonSerialized]
     public int Index;
@@ -103,13 +107,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         return Container.transform.TransformPoint(target);
     }
 
-    public void FreshUI() {
-        if (Style == CardStyle.Other) {
-            cardBack.gameObject.SetActive(true);
-            return;
-        }
-        cardBack.gameObject.SetActive(false);
-        cardBorder.color = Data.LgElement switch {
+    private static Color MainColor(ElementType? type) {
+        return type switch {
             ElementType.Huo  => new Color(0.78f, 0.24f, 0.1f),
             ElementType.Shui => new Color(0.41f, 0.68f, 0.74f),
             ElementType.Mu   => new Color(0.34f, 0.76f, 0.53f),
@@ -118,6 +117,19 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
             _ => new Color(0.38f, 0.39f, 0.42f),
         };
+    }
+
+    public void FreshUI() {
+        if (Style == CardStyle.Other) {
+            cardBack.gameObject.SetActive(true);
+            return;
+        }
+        cardBack.gameObject.SetActive(false);
+
+        var main = MainColor(Data.LgElement);
+
+        cardBorder.color = main;
+
         var imageUrl = Data.UiImagePath;
         cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
 
@@ -135,7 +147,17 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public IEnumerator MoveToTarget() {
-        yield return this.MoveTo(m_locker, TargetPosition(), 0.3f);
+        if (NewIndex != -1) {
+            yield return GAnimation.Wait(NewIndex * 0.1f);
+            NewIndex = -1;
+            var first = Container.transform.position;
+            var final = TargetPosition();
+            yield return this.MoveTo(m_locker, first, 0.3f);
+            yield return this.MoveTo(m_locker, final, 0.5f);
+        }
+        else {
+            yield return this.MoveTo(m_locker, TargetPosition(), 0.3f);
+        }
     }
 
     public IEnumerator MoveToHeap(float index, float duration) {
