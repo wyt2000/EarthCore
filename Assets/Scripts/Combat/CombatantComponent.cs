@@ -6,9 +6,9 @@ using Combat.Effects;
 using Combat.Enums;
 using Combat.Requests.Details;
 using Combat.States;
-using GUIs;
 using GUIs.Cards;
 using GUIs.Effects;
+using GUIs.States;
 using UnityEngine;
 using Utils;
 

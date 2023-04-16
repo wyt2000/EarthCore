@@ -25,10 +25,7 @@ public class EffectView : MonoBehaviour {
     public TextMeshProUGUI layerCount;
 
     // 提示栏
-    public TooltipView tooltip;
-
-    // 提示文本
-    public TextMeshProUGUI tipText;
+    public TooltipHandler tooltip;
 
 #endregion
 
@@ -46,9 +43,9 @@ public class EffectView : MonoBehaviour {
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
 
     private void Start() {
-        effectName.text   =  Data.UiName;
-        effectIcon.sprite =  Resources.Load<Sprite>(Data.UiIconPath);
-        tooltip.OnShow    += () => tipText.text = Data.UiDescription;
+        effectName.text   = Data.UiName;
+        effectIcon.sprite = Resources.Load<Sprite>(Data.UiIconPath);
+        tooltip.OnShow    = () => Data.UiDescription;
     }
 
     private void Update() {

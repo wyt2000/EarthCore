@@ -89,8 +89,6 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     private void Start() {
         if (Data == null) return;
-        // Todo 修复卡牌被对方ui遮挡的bug,加了canvas后会导致检测不到鼠标事件
-        // this.InitRenderOrder(200);
         FreshUI();
     }
 

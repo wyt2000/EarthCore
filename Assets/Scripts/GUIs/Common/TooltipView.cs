@@ -1,22 +1,21 @@
-﻿using System;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace GUIs.Common {
-// 通用工具栏
-public class TooltipView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+// tooltip视图
+public class TooltipView : MonoBehaviour {
+#region prefab绑定
+
+    // tooltip文本
     [SerializeField]
-    private GameObject tipView;
+    private TextMeshProUGUI text;
 
-    public event Action OnShow;
+    // Todo 被card遮挡的问题
 
-    public void OnPointerEnter(PointerEventData eventData) {
-        tipView.SetActive(true);
-        OnShow?.Invoke();
-    }
+#endregion
 
-    public void OnPointerExit(PointerEventData eventData) {
-        tipView.SetActive(false);
+    public void FreshUI(string str) {
+        text.text = str;
     }
 }
 }
