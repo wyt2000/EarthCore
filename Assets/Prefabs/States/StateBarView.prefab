@@ -226,9 +226,9 @@ MonoBehaviour:
   elementSeals:
   - {fileID: 378361202075144298}
   - {fileID: 8688812772385179915}
+  - {fileID: 980520555904298391}
   - {fileID: 8839387832950203039}
   - {fileID: 2470813595699342534}
-  - {fileID: 980520555904298391}
 --- !u!210 &3599080166757511201
 SortingGroup:
   m_ObjectHideFlags: 0

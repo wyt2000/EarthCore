@@ -4,19 +4,19 @@ namespace Combat.Enums {
 // 卡牌附带的五行元素
 public enum ElementType {
     [Description("金")]
-    Jin = 0,
+    Jin,
 
     [Description("木")]
-    Mu = 1,
-
-    [Description("水")]
-    Shui = 2,
-
-    [Description("火")]
-    Huo = 3,
+    Mu,
 
     [Description("土")]
-    Tu = 4,
+    Tu,
+
+    [Description("水")]
+    Shui,
+
+    [Description("火")]
+    Huo,
 }
 
 public static class ElementTypeFunc {
