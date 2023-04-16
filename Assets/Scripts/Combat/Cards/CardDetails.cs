@@ -285,7 +285,7 @@ public static class CardDetails {
             LgManaCost = 8,
             LgElement  = ElementType.Shui,
 
-            OnAfterPlayBatchCard = req => req.Causer.AddOpBuff(EffectPrefabs.QingSuan((int)req.TotalManaCost))
+            OnAfterPlayBatchCard = req => req.Causer.AddBuff(EffectPrefabs.QingSuan((int)req.TotalManaCost))
         };
     }
 
@@ -328,7 +328,7 @@ public static class CardDetails {
             UiImagePath   = "Textures/Card/Details/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
-            OnExecute     = req => req.Causer.AddOpBuff(EffectPrefabs.QingSuan(70))
+            OnExecute     = req => req.Causer.AddBuff(EffectPrefabs.QingSuan(70))
         };
     }
 

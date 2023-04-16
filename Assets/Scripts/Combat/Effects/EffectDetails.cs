@@ -50,7 +50,7 @@ public static class EffectLinks {
         return GetElementLink(types);
     }
 
-    public static (Effect, bool) GetElementLink(IEnumerable<ElementType> types) {
+    private static (Effect, bool) GetElementLink(IEnumerable<ElementType> types) {
         var arr = types.OrderBy(t => (int)t).ToArray();
         foreach (var (attr, func) in Links) {
             if (attr.Types.SequenceEqual(arr)) {
@@ -378,7 +378,7 @@ public static class EffectPrefabs {
             UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
             UiIconPath    = "",
 
-            LgTags      = { EffectTag.DeBuff },
+            LgTags      = { EffectTag.Buff },
             LgOverlay   = layer,
             LgOpenMerge = true,
 
@@ -444,8 +444,6 @@ public static class EffectFixed {
             ret.Causer = target;
             ret.Target = target;
 
-            ret.UiHidde = true;
-
             ret.LgTags = new HashSet<EffectTag> { EffectTag.Fixed };
 
             ret.LgRemainingRounds = 0;
@@ -460,16 +458,21 @@ public static class EffectFixed {
 
     // 摸牌
     private static Effect MoPai() => new() {
+        UiHidde             = true,
         OnImpAfterTurnStart = self => self.Target.GetCard(2)
     };
 
     // 回复法力25%
     private static Effect HuiFuFaLi() => new() {
+        UiHidde             = true,
         OnImpAfterTurnStart = self => self.Target.State.Mana += self.Target.State.ManaMax * 0.25f
     };
 
     // 护甲
     private static Effect HuJia() => new() {
+        UiName            = "护甲",
+        UiDescription     = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
+        OnImpBeforeRender = (self, view) => view.effectName.text = $"{self.UiName}x{(int)(self.Target.State.PhysicalArmor)}",
         OnImpAfterTurnStart = self =>
         {
             var state = self.Target.State;
@@ -479,14 +482,16 @@ public static class EffectFixed {
 
     // 魔法护盾 
     private static Effect MoFaHuDun() => new() {
+        UiName        = "魔力屏障",
+        UiDescription = "使用魔法护盾抵消魔法伤害时,对敌人造成等量土属性物理伤害",
         OnImpAfterSelfHpChange = (self, req) =>
         {
             if (req.IsHeal || req.OutShieldChange <= 0) return;
-            // 护盾值表示能够阻挡的魔法伤害值，且表示受到伤害时对敌人造成等量土属性魔法伤害
             self.Target.Attack(new RequestHpChange {
                 Value   = req.OutShieldChange,
                 Type    = DamageType.Physical,
                 Element = ElementType.Tu,
+                Reason  = "魔力屏障"
             });
         }
     };

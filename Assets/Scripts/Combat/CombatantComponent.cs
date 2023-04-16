@@ -77,7 +77,7 @@ public class CombatantComponent : MonoBehaviour {
 
         // 加载固有buff
         foreach (var effect in EffectFixed.GetAll(this)) {
-            effect.DoAttach();
+            AddBuff(effect);
         }
     }
 

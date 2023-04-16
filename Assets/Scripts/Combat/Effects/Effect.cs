@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Combat.Requests.Details;
+using GUIs.Effects;
 using UnityEngine;
 
 namespace Combat.Effects {
@@ -258,6 +259,11 @@ public class Effect : IComparable<Effect> {
     /// </example>
     protected virtual void OnAfterPlayBatchCard(RequestPlayBatchCard request) { }
 
+    /// <summary>
+    /// 渲染前调用
+    /// </summary>
+    protected virtual void OnBeforeRender(EffectView view) { }
+
 #endregion
 
 #region 快捷重写事件
@@ -291,6 +297,8 @@ public class Effect : IComparable<Effect> {
     public Action<Effect, RequestPlayBatchCard> OnImpBeforePlayBatchCard;
 
     public Action<Effect, RequestPlayBatchCard> OnImpAfterPlayBatchCard;
+
+    public Action<Effect, EffectView> OnImpBeforeRender;
 
 #endregion
 
@@ -421,6 +429,11 @@ public class Effect : IComparable<Effect> {
     public void AfterPlayBatchCard(RequestPlayBatchCard request) {
         OnAfterPlayBatchCard(request);
         OnImpAfterPlayBatchCard?.Invoke(this, request);
+    }
+
+    public void BeforeRender(EffectView view) {
+        OnBeforeRender(view);
+        OnImpBeforeRender?.Invoke(this, view);
     }
 
 #endregion

@@ -18,7 +18,7 @@ public class RequestEffect : CombatRequest {
                 "无效的效果请求"
             ) &&
             Require(
-                Effect != null && !Effect.LgTags.Contains(EffectTag.Fixed),
+                Effect != null && (Attach || !Effect.LgTags.Contains(EffectTag.Fixed)),
                 "固定效果不可移除"
             );
     }
