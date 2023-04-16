@@ -14,6 +14,7 @@ public class JudgeLogView : MonoBehaviour {
 
     private int m_index;
 
+    // Todo 改成用滚动条实现
     public void AddLog(string str) {
         StartCoroutine(AddLogNoOverflow(str));
     }

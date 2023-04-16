@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 
 namespace GUIs.Cards {
-// 牌堆视图
+// 牌堆视图 Todo 加背景,若干card堆叠
 public class CardHeapView : MonoBehaviour {
 #region prefab配置
 
