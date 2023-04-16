@@ -55,6 +55,7 @@ public class CardSlotView : MonoBehaviour {
         return selectWidth + unselectOffset * (index - selectCnt);
     }
 
+    // Todo 改成AddCards接口
     public IEnumerator AddCard(Card data) {
         var card = Instantiate(cardPrefab, transform);
 
@@ -73,8 +74,9 @@ public class CardSlotView : MonoBehaviour {
         if (!isOtherPlayer) {
             m_cards.ForEach(c =>
             {
-                if (c.Style == CardStyle.Played || c.Data.IsSelected) return;
-                c.Style = combatant.CanSelectCardToPlay(c.Data) ? CardStyle.Valid : CardStyle.Ban;
+                if (c.Style != CardStyle.Played && !c.Data.IsSelected) {
+                    c.Style = combatant.CanSelectCardToPlay(c.Data) ? CardStyle.Valid : CardStyle.Ban;
+                }
                 c.FreshUI();
             });
             m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>

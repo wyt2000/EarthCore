@@ -5,6 +5,17 @@ using Combat.States;
 using Utils;
 
 namespace Combat.Requests.Details {
+public enum BatchCardState {
+    // 能出
+    CanPlay,
+
+    // 能选但不能出
+    CannotPlay,
+
+    // 不能选也不能出
+    CannotSelect
+}
+
 // 批量出牌请求
 public class RequestPlayBatchCard : CombatRequest {
 #region 配置项
@@ -29,11 +40,18 @@ public class RequestPlayBatchCard : CombatRequest {
 #region 重写
 
     public override bool CanEnqueue() {
+        return EvaluateState() == BatchCardState.CanPlay;
+    }
+
+    // 评估状态
+    public BatchCardState EvaluateState() {
         var can =
-            // Require(
-            //     Judge.Requests.Count == 0,
-            //     "不能在有任务在队列中时出牌"
-            // ) &&
+            Require(
+                Judge.Requests.Count == 0,
+                "不能在有任务在队列中时出牌"
+            );
+        if (!can) return BatchCardState.CannotPlay;
+        can =
             Require(
                 Cards.Length is >= 1 and <= 5,
                 "只能出1~5张牌"
@@ -43,44 +61,47 @@ public class RequestPlayBatchCard : CombatRequest {
                 "出牌人或目标为空"
             ) &&
             Require(
-                !Causer.State.BlockTags.ContainsKey(CombatBlockTag.BlockPlayCard),
-                "当前状态不能出牌"
-            ) &&
-            Require(
                 !(Cards.Length > 1 && Cards.Any(c => c.LgUnique)),
                 "存在有唯一效果的卡牌"
-            ) &&
-            Require(
-                PreviewManaCost() <= Causer.State.Mana,
-                "法力值不足"
             ) &&
             Require(
                 Cards.Count(c => !c.LgElement.HasValue) <= 1,
                 "最多只能有一张无属性牌"
             );
-        if (!can) return false;
+        if (!can) return BatchCardState.CannotSelect;
+        can =
+            Require(
+                !Causer.State.BlockTags.ContainsKey(CombatBlockTag.BlockPlayCard),
+                "当前状态不能出牌"
+            );
+        if (!can) return BatchCardState.CannotPlay;
+        var manaEnough = Require(
+            PreviewManaCost() <= Causer.State.Mana,
+            "法力值不足"
+        );
         // 无属性不参与计算
         var elements = Cards.Where(c => c.LgElement.HasValue).ToArray();
-        if (elements.Length == 0) return true;
+        if (elements.Length == 0) return BatchCardState.CanPlay;
         var typeCnt = elements.Select(e => e.LgElement!).Distinct().Count();
         // 判断元素叠加(只有一种元素) 
         if (typeCnt == 1) {
             // 2/3/4/5一次增幅5%/10%/15%/20%
             Scale = 1 + (elements.Length - 1) * 0.05f;
-            return true;
         }
         // 有多种元素,则必须触发元素联动
         else {
-            return
-                Require(
-                    elements.Length == typeCnt,
-                    "不能有重复卡"
-                ) &&
-                Require(
-                    typeCnt == 4 || PreviewElementLink().Item1 != null,
-                    "元素联动未触发"
-                );
+            can = Require(
+                elements.Length == typeCnt,
+                "不能有重复卡"
+            );
+            if (!can) return BatchCardState.CannotSelect;
+            can = Require(
+                PreviewElementLink().Item1 != null,
+                "元素联动未触发"
+            );
+            if (!can) return typeCnt == 4 ? BatchCardState.CannotPlay : BatchCardState.CannotSelect;
         }
+        return manaEnough ? BatchCardState.CanPlay : BatchCardState.CannotPlay;
     }
 
     protected override void ExecuteNoCross() {
@@ -131,16 +152,18 @@ public class RequestPlayBatchCard : CombatRequest {
         Cards.ForEach(c => c.OnBeforePlayBatchCard(this));
         Causer.BoardCast(e => e.BeforePlayBatchCard(this));
 
+        // 出牌动画
+        Add(new RequestAnimation {
+            Anim = () => Causer.cardSlot.Discards(Cards)
+        });
+
+        // 依次出牌
         foreach (var card in Cards) {
             Add(new RequestPlayCard {
                 Batch   = this,
                 Current = card
             });
         }
-
-        Add(new RequestAnimation {
-            Anim = () => Causer.cardSlot.Discards(Cards)
-        });
 
         // 监听伤害
         var listener = new ListenDamageEffect {
@@ -149,6 +172,8 @@ public class RequestPlayBatchCard : CombatRequest {
             UiHidde    = true,
             LgPriority = 1
         };
+
+        // 挂数据统计buff
         AddFirst(new RequestEffect {
             Effect = listener,
             Attach = true

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Combat.Cards;
 using Combat.Enums;
+using Combat.Requests.Details;
 using GUIs.Animations;
 using TMPro;
 using UnityEngine;
@@ -124,9 +125,13 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
         cardCost.text        = $"{Data.ManaCost:F0}";
-        // Todo 加伤害text
 
-        cardBanFilter.gameObject.SetActive(Style == CardStyle.Ban);
+        // Todo 加伤害预览text
+
+        cardBanFilter.gameObject.SetActive(
+            Style == CardStyle.Ban ||
+            Style != CardStyle.Played && Data.IsSelected && !Data.Owner.PreviewBatch.CanEnqueue()
+        );
     }
 
     public IEnumerator MoveToTarget() {
@@ -154,8 +159,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         if (Data.IsSelected) {
             // Todo 游戏侧边加个详细信息面板 
         }
-        else if (!Data.Owner.PreviewBatch.CanEnqueue()) {
-            Data.Owner.UnSelectAllCardToPlay();
+        else if (Data.Owner.PreviewBatch.EvaluateState() == BatchCardState.CannotSelect) {
+            Data.Owner.Cards.ForEach(card => card.IsSelected = false);
         }
         StartCoroutine(Container.FreshUI());
     }

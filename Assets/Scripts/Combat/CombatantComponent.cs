@@ -58,6 +58,8 @@ public class CombatantComponent : MonoBehaviour {
         }
     };
 
+    // Todo 将effect/card/heap集成到CombatState中
+
     // 玩家的效果
     public readonly ISet<Effect> Effects = new SortedSet<Effect>();
 
@@ -162,14 +164,9 @@ public class CombatantComponent : MonoBehaviour {
     // 能否选择一张牌预备出牌
     public bool CanSelectCardToPlay(Card card) {
         card.IsSelected = true;
-        var ret = PreviewBatch.CanEnqueue();
+        var ret = PreviewBatch.EvaluateState();
         card.IsSelected = false;
-        return ret;
-    }
-
-    // 取消选择所有牌
-    public void UnSelectAllCardToPlay() {
-        Cards.ForEach(c => c.IsSelected = false);
+        return ret != BatchCardState.CannotSelect;
     }
 
     // 弃牌
