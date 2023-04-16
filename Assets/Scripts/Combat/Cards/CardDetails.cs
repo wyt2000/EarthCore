@@ -5,7 +5,7 @@ using System.Reflection;
 using Combat.Effects;
 using Combat.Enums;
 using Combat.Requests.Details;
-using UnityEngine;
+using Utils;
 
 // Todo 测试卡牌逻辑
 namespace Combat.Cards {
@@ -573,7 +573,7 @@ public static class CardDetails {
                 req.Causer.GetCard(new RequestGetCard {
                     Count       = 1,
                     Filter      = c => c.LgElement == ElementType.Huo,
-                    SelectIndex = n => Random.Range(0, n)
+                    SelectIndex = n => GRandom.Range(0, n)
                 });
             }
         };

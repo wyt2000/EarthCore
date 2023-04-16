@@ -54,8 +54,10 @@ public class Card {
     // 卡牌是否有浸染效果(染色)
     public bool LgInfect = false;
 
-    // 卡牌是否有唯一(不能搭配其他牌)效果 Todo 处理唯一效果
+    // 卡牌是否有唯一(不能搭配其他牌)效果
     public bool LgUnique = false;
+
+    // Todo 添加执行优先级(选中顺序),计算执行顺序
 
 #endregion
 

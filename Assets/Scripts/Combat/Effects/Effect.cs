@@ -81,7 +81,7 @@ public class Effect : IComparable<Effect> {
     // 叠加层数
     public int LgOverlay = 1;
 
-    // 是否开启合并功能
+    // 是否开启合并功能(开启合并的功能必须填写Ui字段)
     public bool LgOpenMerge = false;
 
     // 结算优先级(越小越优先)
@@ -130,8 +130,12 @@ public class Effect : IComparable<Effect> {
     /// 燃烧效果
     /// </example>
     protected virtual bool OnCheckMergeAble(Effect effect) {
-        // Todo 优化判断逻辑
-        return GetType() == effect.GetType() && UiName == effect.UiName;
+        // Todo 为匿名类生成guid
+        return
+            UiName == effect.UiName &&
+            UiDescription == effect.UiDescription &&
+            UiIconPath == effect.UiIconPath
+            ;
     }
 
     /// <summary>

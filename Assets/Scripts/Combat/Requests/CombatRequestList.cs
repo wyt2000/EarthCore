@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Combat.Requests.Details;
 using UnityEngine;
 
 namespace Combat.Requests {
+// Todo 添加沙盒模式,预判任务执行完的结果
 public class CombatRequestList {
     private readonly LinkedList<CombatRequest> m_requests   = new();
     private readonly Queue<RequestPostLogic>   m_postLogics = new();

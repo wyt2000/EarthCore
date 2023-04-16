@@ -63,8 +63,10 @@ public class StateBarView : MonoBehaviour {
         health.tooltip.OnShow = () => "生命值";
         mana.OnShow = () =>
         {
-            var cost = combatant.PreviewBatch.PreviewManaCost();
-            var costStr = cost <= 0 ? "" : $"(-{cost:F0})";
+            var batch = combatant.PreviewBatch;
+            var cost = batch.PreviewManaCost();
+            var sign = cost >= 0 ? '-' : '+';
+            var costStr = batch.Cards.Length == 0 ? "" : $"({sign}{Mathf.Abs(cost):F0})";
             return $"{state.Mana:F0}{costStr}/{state.ManaMax}";
         };
         mana.tooltip.OnShow            = () => "魔法值";

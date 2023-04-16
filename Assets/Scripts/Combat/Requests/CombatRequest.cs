@@ -10,6 +10,9 @@ namespace Combat.Requests {
 public abstract class CombatRequest {
 #region 配置项
 
+    // 是否位于沙盒模式 Todo 实现沙盒模式
+    public bool IsSandbox;
+
     // 所处上下文
     public CombatJudge Judge;
 
