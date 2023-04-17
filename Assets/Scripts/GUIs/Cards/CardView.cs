@@ -107,18 +107,6 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         return Container.transform.TransformPoint(target);
     }
 
-    private static Color MainColor(ElementType? type) {
-        return type switch {
-            ElementType.Huo  => new Color(0.78f, 0.24f, 0.1f),
-            ElementType.Shui => new Color(0.41f, 0.68f, 0.74f),
-            ElementType.Mu   => new Color(0.34f, 0.76f, 0.53f),
-            ElementType.Jin  => new Color(0.65f, 0.51f, 0.29f),
-            ElementType.Tu   => new Color(0.43f, 0.27f, 0.18f),
-
-            _ => new Color(0.38f, 0.39f, 0.42f),
-        };
-    }
-
     public void FreshUI() {
         if (Style == CardStyle.Other) {
             cardBack.gameObject.SetActive(true);
@@ -126,7 +114,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         }
         cardBack.gameObject.SetActive(false);
 
-        var main = MainColor(Data.LgElement);
+        var main = Data.LgElement.MainColor();
 
         cardBorder.color = main;
 
