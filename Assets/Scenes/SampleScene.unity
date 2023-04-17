@@ -134,14 +134,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeapA
       objectReference: {fileID: 0}
-    - target: {fileID: 4786917415864182132, guid: d7034866d17b03541a8066d316bb69a8, type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
-    - target: {fileID: 4786917415864182132, guid: d7034866d17b03541a8066d316bb69a8, type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 660632147882524155, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
     - target: {fileID: 5658423227464586112, guid: d7034866d17b03541a8066d316bb69a8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4376,14 +4368,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeapB
       objectReference: {fileID: 0}
-    - target: {fileID: 4786917415864182132, guid: d7034866d17b03541a8066d316bb69a8, type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
-    - target: {fileID: 4786917415864182132, guid: d7034866d17b03541a8066d316bb69a8, type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 660632147882524155, guid: 383c4d7a731c30447abb45f9a6d9ae20, type: 2}
     - target: {fileID: 5658423227464586112, guid: d7034866d17b03541a8066d316bb69a8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
