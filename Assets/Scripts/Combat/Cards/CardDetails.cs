@@ -213,6 +213,7 @@ public static class CardDetails {
             UiName        = "疗养",
             UiDescription = "回合开始时,回复50点生命和5点法力.",
             UiIconPath    = "Textures/Effect/疗养",
+            UiIconColor   = ElementType.Mu.MainColor(),
 
             LgTags      = { EffectTag.Buff },
             LgOverlay   = 3,

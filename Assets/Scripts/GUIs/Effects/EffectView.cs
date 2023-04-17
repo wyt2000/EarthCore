@@ -43,10 +43,8 @@ public class EffectView : MonoBehaviour {
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
 
     private void Start() {
-        effectName.text   = Data.UiName;
         effectIcon.sprite = Resources.Load<Sprite>(Data.UiIconPath);
-        if (effectIcon.sprite) effectIcon.color = Color.black;
-        tooltip.OnShow = () => Data.UiDescription;
+        tooltip.OnShow    = () => $"{Data.UiName}:{Data.UiDescription}";
     }
 
     private void FreshUI() {

@@ -43,7 +43,7 @@ public class EffectListView : MonoBehaviour {
         var cnt = m_views.Count;
         for (var i = 0; i < cnt; i++) {
             var view = m_views[i];
-            view.IndexVertical   = i / 10;
+            view.IndexVertical   = combatant.isOtherPlayer ? i / 10 : 1 - i / 10;
             view.IndexHorizontal = i % 10;
         }
 

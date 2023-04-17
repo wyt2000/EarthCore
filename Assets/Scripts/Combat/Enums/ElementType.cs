@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using UnityEngine;
 
 namespace Combat.Enums {
@@ -23,15 +24,41 @@ public enum ElementType {
 public static class ElementTypeFunc {
     private const int N = 5;
 
+    public static Color MainColor(this ElementType type) {
+        return type switch {
+            ElementType.Huo  => new Color(0.86f, 0.24f, 0.2f),
+            ElementType.Shui => new Color(0.14f, 0.59f, 0.76f),
+            ElementType.Mu   => new Color(0.45f, 0.59f, 0.16f),
+            ElementType.Jin  => new Color(0.76f, 0.61f, 0.14f),
+            ElementType.Tu   => new Color(0.46f, 0.34f, 0.28f),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
     public static Color MainColor(this ElementType? type) {
         return type switch {
-            ElementType.Huo  => new Color(0.78f, 0.24f, 0.1f),
-            ElementType.Shui => new Color(0.41f, 0.68f, 0.74f),
-            ElementType.Mu   => new Color(0.34f, 0.76f, 0.53f),
-            ElementType.Jin  => new Color(0.65f, 0.51f, 0.29f),
-            ElementType.Tu   => new Color(0.43f, 0.27f, 0.18f),
+            null => new Color(0.38f, 0.39f, 0.42f),
+            _    => type.Value.MainColor(),
+        };
+    }
 
-            _ => new Color(0.38f, 0.39f, 0.42f),
+    private static int TextIndex(this ElementType type) {
+        return type switch {
+            ElementType.Jin  => 0,
+            ElementType.Mu   => 1,
+            ElementType.Shui => 2,
+            ElementType.Huo  => 3,
+            ElementType.Tu   => 4,
+
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
+    public static int TextIndex(this ElementType? type) {
+        return type switch {
+            null => 5,
+            _    => type.Value.TextIndex(),
         };
     }
 

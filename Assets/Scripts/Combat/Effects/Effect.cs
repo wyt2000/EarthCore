@@ -62,6 +62,9 @@ public class Effect : IComparable<Effect> {
     // 效果图标路径
     public string UiIconPath = "";
 
+    // 效果色调
+    public Color UiIconColor = Color.white;
+
     // 是否隐藏UI显示(例如立即伤害那种就不需要)
     public bool UiHidde = false;
 
@@ -309,6 +312,7 @@ public class Effect : IComparable<Effect> {
     {
         view.remainTurns.text = self.LgRemainingRounds > 0 ? $"{self.LgRemainingRounds}" : "";
         view.layerCount.text  = self.LgOverlay > 1 ? $"{self.LgOverlay}" : "";
+        view.effectIcon.color = self.UiIconColor;
     };
 
     public Action<Effect, CombatState> OnImpAfterStateChange;

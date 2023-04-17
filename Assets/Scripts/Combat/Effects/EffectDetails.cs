@@ -284,10 +284,9 @@ public static class EffectBroken {
             UiName        = "法印冷却",
             UiDescription = $"{elementType.ToDescription()}元素法印冷却",
             UiIconPath    = "Textures/Effect/冷却",
+            UiIconColor   = elementType.MainColor(),
 
             LgRemainingRounds = layer,
-
-            // Todo 加个对应元素的色调
 
             OnImpAfterDetach = self =>
             {
@@ -392,6 +391,7 @@ public static class EffectPrefabs {
             UiName        = "清算",
             UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
             UiIconPath    = "Textures/Effect/清算",
+            UiIconColor   = ElementType.Shui.MainColor(),
 
             LgTags      = { EffectTag.Buff },
             LgOverlay   = layer,
@@ -418,6 +418,7 @@ public static class EffectPrefabs {
             UiName        = "淬炼",
             UiDescription = "每回合开始时消耗一层淬炼对敌方造成（1%*淬炼层数）最大生命值物理伤害。",
             UiIconPath    = "Textures/Effect/淬炼",
+            UiIconColor   = ElementType.Huo.MainColor(),
 
             LgTags      = { EffectTag.DeBuff },
             LgOverlay   = layer,
@@ -485,18 +486,25 @@ public static class EffectFixed {
     };
 
     // 护甲
-    private static Effect HuJia() => new() {
-        UiName        = "护甲",
-        UiDescription = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
-        UiIconPath    = "Textures/Effect/护甲",
+    private static Effect HuJia() {
+        var super = new Effect().OnImpViewRender;
+        return new Effect {
+            UiName        = "护甲",
+            UiDescription = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
+            UiIconPath    = "Textures/Effect/护甲",
 
-        OnImpViewRender = (self, view) => view.effectName.text = $"{self.UiName}x{(int)self.Target.State.PhysicalArmor}",
-        OnImpAfterTurnStart = self =>
-        {
-            var state = self.Target.State;
-            state.PhysicalShield = Math.Max(state.PhysicalArmor, state.PhysicalShield);
-        }
-    };
+            OnImpViewRender = (self, view) =>
+            {
+                super(self, view);
+                view.remainTurns.text = $"{self.Target.State.PhysicalArmor}";
+            },
+            OnImpAfterTurnStart = self =>
+            {
+                var state = self.Target.State;
+                state.PhysicalShield = Math.Max(state.PhysicalArmor, state.PhysicalShield);
+            }
+        };
+    }
 
     // 魔法护盾 
     private static Effect MoFaHuDun() => new() {
