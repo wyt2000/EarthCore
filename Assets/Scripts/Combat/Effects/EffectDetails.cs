@@ -169,29 +169,15 @@ public static class EffectLinks {
     // 金+土+水：洞察：无效敌方下一次的伤害和控制效果（分两部分，分别持续到下次伤害到来和下次控制到来）
     [ElementLink(ElementType.Jin, ElementType.Tu, ElementType.Shui)]
     private static Effect JinTuShui() {
-        // Todo 转成一个buff
-        Effect damage, control;
-        {
-            var trigger = new EffectTrigger();
-            damage = trigger.Bind(new Effect {
-                UiName        = "洞察",
-                UiDescription = "金土水联动,无效敌方下一次的伤害效果",
-                LgTags        = { EffectTag.Buff },
+        var trigger = new EffectMultipleTrigger(true, 1, 1);
+        return trigger.Bind(new Effect {
+            UiName        = "洞察",
+            UiDescription = "金土水联动,无效敌方下一次的伤害和控制效果",
+            LgTags        = { EffectTag.Buff },
 
-                OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal && req.Value > 0),
-            });
-        }
-        {
-            var trigger = new EffectTrigger();
-            control = trigger.Bind(new Effect {
-                UiName        = "洞察",
-                UiDescription = "金土水联动,无效敌方下一次的控制效果",
-                LgTags        = { EffectTag.Buff },
-
-                OnImpRejectAttach = (_, effect) => trigger.Trigger(effect.LgTags.Contains(EffectTag.Control))
-            });
-        }
-        return EffectCombine.Create(damage, control);
+            OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal && req.Value > 0,                 0),
+            OnImpRejectAttach       = (_, effect) => trigger.Trigger(effect.LgTags.Contains(EffectTag.Control), 1)
+        });
     }
 
     [ElementLink(ElementType.Jin, ElementType.Shui, ElementType.Mu)]
@@ -254,6 +240,7 @@ public static class EffectLinks {
                     causer.Attack(new RequestHpChange {
                         Value  = state.HealthMax,
                         IsReal = true,
+                        Reason = "元素联动斩杀"
                     });
                 });
             }
@@ -472,7 +459,7 @@ public static class EffectFixed {
     private static Effect HuJia() => new() {
         UiName            = "护甲",
         UiDescription     = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
-        OnImpBeforeRender = (self, view) => view.effectName.text = $"{self.UiName}x{(int)(self.Target.State.PhysicalArmor)}",
+        OnImpBeforeRender = (self, view) => view.effectName.text = $"{self.UiName}x{(int)self.Target.State.PhysicalArmor}",
         OnImpAfterTurnStart = self =>
         {
             var state = self.Target.State;
