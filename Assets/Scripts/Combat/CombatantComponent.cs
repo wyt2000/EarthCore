@@ -70,6 +70,13 @@ public class CombatantComponent : MonoBehaviour {
     public readonly CardHeap Heap = new();
 
     private void Start() {
+        State.OnStateChange += delta =>
+        {
+            // Todo 刷新effect ui
+            stateBar.FreshUI();
+            BoardCast(effect => effect.AfterStateChange(delta));
+        };
+
         State.Health = State.HealthMax / 2;
         State.Mana   = State.ManaMax / 2;
 
@@ -79,6 +86,8 @@ public class CombatantComponent : MonoBehaviour {
         foreach (var effect in EffectFixed.GetAll(this)) {
             AddBuff(effect);
         }
+
+        stateBar.FreshUI();
     }
 
 #region 发起快捷请求

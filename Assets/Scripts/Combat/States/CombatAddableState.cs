@@ -40,47 +40,72 @@ public enum CombatBlockTag {
 public class CombatAddableState {
 #region 可加性属性
 
-    // 最大生命值
+#region 最大生命值
+
+    [ListenChange]
     public float HealthMaxBase;
+
+    [ListenChange]
     public float HealthMaxPercent;
+
+    [ListenChange]
     public float HealthMaxExtra;
 
-    // 最大法力值
+#endregion
+
+#region 最大法力值
+
+    [ListenChange]
     public float ManaMaxBase;
+
+    [ListenChange]
     public float ManaMaxPercent;
+
+    [ListenChange]
     public float ManaMaxExtra;
 
+#endregion
+
     // 物理护盾
+    [ListenChange]
     public float PhysicalShield;
 
     // 物理护甲(恢复物理护盾)
+    [ListenChange]
     public float PhysicalArmor;
 
     // 魔法护盾(反伤物理伤害)
+    [ListenChange]
     public float MagicShield;
 
     // 增加造成的物理伤害
+    [ListenChange]
     public float PhysicalDamageAmplify;
 
     //  减少收到的物理伤害
+    [ListenChange]
     public float PhysicalDamageReduce;
 
     // 增加造成的魔法伤害
+    [ListenChange]
     public float MagicDamageAmplify;
 
     //  减少收到的魔法伤害
+    [ListenChange]
     public float MagicDamageReduce;
 
     // 玩家结束时最大手牌数
     public int MaxCardCnt;
 
     // 元素法印层数
+    [ListenChange]
     public CompactDict<ElementType, int> ElementAttach = new();
 
     // 元素法印最大层数
-    public CompactDict<ElementType, int> ElementMaxAttach = new();
+    public readonly CompactDict<ElementType, int> ElementMaxAttach = new();
 
     // tag容器
+    [ListenChange]
     public CompactDict<CombatBlockTag, int> BlockTags = new();
 
 #endregion

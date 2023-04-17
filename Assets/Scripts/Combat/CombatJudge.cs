@@ -18,20 +18,21 @@ public class CombatJudge : MonoBehaviour {
     [SerializeField]
     private CombatantComponent playerB;
 
-    // 战斗双方
-    private readonly CombatantComponent[] m_combatants = new CombatantComponent[2];
-
     // 是否开始
     private bool m_start;
 
     // 当前回合
     private int m_round;
 
-    private CombatantComponent CurrentComp => m_combatants[m_round % 2];
-
-    private CombatantComponent NextComp => m_combatants[(m_round + 1) % 2];
-
+    // 请求队列
     public readonly CombatRequestList Requests = new();
+
+    // 战斗双方
+    public readonly CombatantComponent[] Players = new CombatantComponent[2];
+
+    private CombatantComponent CurrentComp => Players[m_round % 2];
+
+    private CombatantComponent NextComp => Players[(m_round + 1) % 2];
 
     public CombatJudge() {
         Requests.Judge = this;
@@ -41,8 +42,8 @@ public class CombatJudge : MonoBehaviour {
 
     // 设置战斗双方
     private void Init(CombatantComponent combatant1, CombatantComponent combatant2) {
-        m_combatants[0] = combatant1;
-        m_combatants[1] = combatant2;
+        Players[0] = combatant1;
+        Players[1] = combatant2;
 
         combatant1.Judge    = combatant2.Judge = this;
         combatant1.Opponent = combatant2;

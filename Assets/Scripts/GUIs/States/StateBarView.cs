@@ -40,12 +40,13 @@ public class StateBarView : MonoBehaviour {
 
 #endregion
 
-    // Todo 改成响应式更新
-    private void Update() {
+    private void Start() {
+        BindAll();
         FreshUI();
     }
 
-    private void FreshUI() {
+    // Todo 监听StateChange,统一所有字段的动画
+    public void FreshUI() {
         health.FreshUI();
         mana.FreshUI();
         physicalShield.FreshUI();
@@ -57,7 +58,7 @@ public class StateBarView : MonoBehaviour {
         elementSeals.ForEach(element => element.FreshUI());
     }
 
-    private void Start() {
+    private void BindAll() {
         var state = combatant.State;
         health.OnShow         = () => $"{state.Health:F0}/{state.HealthMax}";
         health.tooltip.OnShow = () => "生命值";
@@ -82,8 +83,6 @@ public class StateBarView : MonoBehaviour {
         magicAmplify.tooltip.OnShow    = () => "魔法伤害增幅";
         magicReduce.OnShow             = () => $"{state.MagicDamageReduce}%";
         magicReduce.tooltip.OnShow     = () => "魔法伤害减免";
-
-        // Todo 显示Armor
 
         elementSeals.ForEach((element, i) =>
         {

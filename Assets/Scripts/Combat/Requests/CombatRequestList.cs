@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Combat.Requests.Details;
 using UnityEngine;
+using Utils;
 
 namespace Combat.Requests {
 // Todo 添加沙盒模式,预判任务执行完的结果
@@ -22,12 +23,11 @@ public class CombatRequestList {
         }
         request.Judge = Judge;
         var reject = !request.CanEnqueue();
-        if (reject) {
-            var msg = $"Request {request} rejected: {request.RejectReason}";
-            Debug.Log(msg);
-            Judge.logger.AddLog(msg);
-        }
-        return reject;
+        if (!reject) return false;
+        var msg = $"Request {request} rejected: {request.RejectReason}";
+        Debug.Log(msg);
+        Judge.logger.AddLog(msg);
+        return true;
     }
 
     public void Add(CombatRequest request) {
@@ -81,7 +81,9 @@ public class CombatRequestList {
             var task = PopFirst();
             var desc = task.Description();
             if (!string.IsNullOrEmpty(desc)) Judge.logger.AddLog(desc);
+            Judge.Players.ForEach(p => p.State.BeginRecord());
             yield return task.Execute();
+            Judge.Players.ForEach(p => p.State.EndRecord());
         }
         Running = false;
     }

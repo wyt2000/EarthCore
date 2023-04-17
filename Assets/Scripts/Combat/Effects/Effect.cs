@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Combat.Requests.Details;
+using Combat.States;
 using GUIs.Effects;
 using UnityEngine;
 
@@ -107,7 +108,7 @@ public class Effect : IComparable<Effect> {
     - 计算法力消耗后(法力消耗减半)
     - 出牌前(如 不竭:本次出牌法力消耗减半,抽一张牌)
     - 出牌后(如 生命汲取:本次出牌造成伤害的50%转化为生命)
-    - Todo 状态修改事件
+    - 状态修改后(如 增加物理护盾)
     */
 
     /// <summary>
@@ -260,9 +261,15 @@ public class Effect : IComparable<Effect> {
     protected virtual void OnAfterPlayBatchCard(RequestPlayBatchCard request) { }
 
     /// <summary>
-    /// 渲染前调用
+    /// 渲染前调用,用于实现一些自定义ui
     /// </summary>
     protected virtual void OnBeforeRender(EffectView view) { }
+
+    /// <summary>
+    /// 状态修改后调用,用于监听通用属性修改(必须走state的BoardCast才能监听到)
+    /// </summary>
+    /// <param name="delta"></param>
+    protected virtual void OnAfterStateChange(CombatState delta) { }
 
 #endregion
 
@@ -299,6 +306,8 @@ public class Effect : IComparable<Effect> {
     public Action<Effect, RequestPlayBatchCard> OnImpAfterPlayBatchCard;
 
     public Action<Effect, EffectView> OnImpBeforeRender;
+
+    public Action<Effect, CombatState> OnImpAfterStateChange;
 
 #endregion
 
@@ -434,6 +443,11 @@ public class Effect : IComparable<Effect> {
     public void BeforeRender(EffectView view) {
         OnBeforeRender(view);
         OnImpBeforeRender?.Invoke(this, view);
+    }
+
+    public void AfterStateChange(CombatState delta) {
+        OnAfterStateChange(delta);
+        OnImpAfterStateChange?.Invoke(this, delta);
     }
 
 #endregion
