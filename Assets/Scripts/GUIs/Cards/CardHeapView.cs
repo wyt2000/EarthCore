@@ -14,6 +14,8 @@ public class CardHeapView : MonoBehaviour {
     [SerializeField]
     private TextMeshProUGUI text;
 
+    public int previewCnt = 3;
+
 #endregion
 
     public void Update() {
@@ -21,5 +23,8 @@ public class CardHeapView : MonoBehaviour {
         var discard = combatant.Heap.DiscardCount;
         text.text = $"剩余/弃牌:{cnt}/{discard}";
     }
+
+    // Todo 预览牌堆
+    private void OnDrawGizmos() { }
 }
 }

@@ -14,19 +14,10 @@ public class JudgeLogView : MonoBehaviour {
 
     private int m_index;
 
-    // Todo 改成用滚动条实现
+    // Todo 加滚动条,监听鼠标
     public void AddLog(string str) {
-        StartCoroutine(AddLogNoOverflow(str));
-    }
-
-    private IEnumerator AddLogNoOverflow(string str) {
         m_strings.AddLast((++m_index, str));
-        do {
-            LoadString();
-            yield return null;
-            if (!text.isTextOverflowing || m_strings.Count <= 0) break;
-            m_strings.RemoveFirst();
-        } while (true);
+        LoadString();
     }
 
     private void LoadString() {

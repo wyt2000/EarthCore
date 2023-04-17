@@ -22,6 +22,9 @@ public class CombatantComponent : MonoBehaviour {
     public StateBarView   stateBar;   // 状态栏
     public EffectListView effectList; // 效果列表
 
+    // 是否为对面的玩家
+    public bool isOtherPlayer;
+
 #endregion
 
     [NonSerialized]

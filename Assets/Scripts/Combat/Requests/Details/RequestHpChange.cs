@@ -93,7 +93,8 @@ public class RequestHpChange : CombatRequest {
         state.Health += IsHeal ? value : -value;
         var change = state.Health - old;
 
-        Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{change}点{(IsHeal ? "治疗" : "伤害")}");
+        var changeText = IsHeal ? "治疗" : $"{Element.ToDescription()}属性{Type.ToDescription()}伤害";
+        Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{-change}点{changeText}");
 
         Value = Math.Abs(change);
         target.BoardCast(effect => effect.AfterSelfHpChange(this));

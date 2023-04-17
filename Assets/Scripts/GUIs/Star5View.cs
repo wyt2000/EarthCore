@@ -46,11 +46,11 @@ public class Star5View : MonoBehaviour {
 
         var cos = Mathf.Cos(angle / 2);
         var x = radius * (2 * Mathf.Sin(angle));
-        var y = radius * (1 + cos);
+        // var y = radius * (1 + cos);
 
-        rect.sizeDelta = new Vector2(x, y);
+        rect.sizeDelta = new Vector2(x + iconSize, x + iconSize);
 
-        rect.pivot = new Vector2(0.5f, cos / (1 + cos));
+        rect.pivot = new Vector2(0.5f, (cos * radius + iconSize / 2) / ((1 + cos) * radius + iconSize));
     }
 }
 }

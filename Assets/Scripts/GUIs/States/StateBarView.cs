@@ -47,14 +47,17 @@ public class StateBarView : MonoBehaviour {
 
     // Todo 监听StateChange,统一所有字段的动画
     public void FreshUI() {
+        // Todo 血条滚动特效
         health.FreshUI();
         mana.FreshUI();
+        // Todo 数字滚动特效
         physicalShield.FreshUI();
         physicalAmplify.FreshUI();
         physicalReduce.FreshUI();
         magicShield.FreshUI();
         magicAmplify.FreshUI();
         magicReduce.FreshUI();
+        // Todo 法印破碎/重置特效
         elementSeals.ForEach(element => element.FreshUI());
     }
 

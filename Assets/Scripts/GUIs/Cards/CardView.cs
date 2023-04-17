@@ -141,7 +141,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
             var first = Container.transform.position;
             var final = TargetPosition();
             yield return this.MoveTo(m_locker, first, 0.3f);
-            yield return this.MoveTo(m_locker, final, 0.5f);
+            yield return this.MoveTo(m_locker, final, 0.3f);
         }
         else {
             yield return this.MoveTo(m_locker, TargetPosition(), 0.3f);

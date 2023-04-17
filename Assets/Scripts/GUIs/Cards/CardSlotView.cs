@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Combat;
 using Combat.Cards;
+using Combat.Enums;
 using GUIs.Common;
 using UnityEngine;
 using Utils;
@@ -13,8 +14,6 @@ public class CardSlotView : MonoBehaviour {
 #region prefab配置
 
     public CombatantComponent combatant;
-
-    public bool isOtherPlayer;
 
     // 卡牌最大间距
     public float inner = 10;
@@ -64,7 +63,7 @@ public class CardSlotView : MonoBehaviour {
             card.Container = this;
             card.Data      = data;
             card.NewIndex  = i;
-            card.Style     = isOtherPlayer ? CardStyle.Other : CardStyle.Valid;
+            card.Style     = combatant.isOtherPlayer ? CardStyle.Other : CardStyle.Valid;
 
             m_cards.Add(card);
 
@@ -75,7 +74,7 @@ public class CardSlotView : MonoBehaviour {
     }
 
     private void FreshOrder() {
-        if (!isOtherPlayer) {
+        if (!combatant.isOtherPlayer) {
             m_cards.ForEach(c =>
             {
                 if (c.Style != CardStyle.Played && !c.Data.IsSelected) {
@@ -85,7 +84,7 @@ public class CardSlotView : MonoBehaviour {
             });
             m_cards.Sort(GTools.ExtractorToComparer<CardView>(c =>
             {
-                var index = c.Data.LgElement.HasValue ? (int)c.Data.LgElement.Value : int.MaxValue;
+                var index = c.Data.LgElement.TextIndex();
                 return (!c.Data.IsSelected, !c.IsSelectable, index, c.Data.UiName);
             }));
         }
