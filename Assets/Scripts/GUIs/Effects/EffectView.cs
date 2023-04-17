@@ -45,13 +45,12 @@ public class EffectView : MonoBehaviour {
     private void Start() {
         effectName.text   = Data.UiName;
         effectIcon.sprite = Resources.Load<Sprite>(Data.UiIconPath);
-        tooltip.OnShow    = () => Data.UiDescription;
+        if (effectIcon.sprite) effectIcon.color = Color.black;
+        tooltip.OnShow = () => Data.UiDescription;
     }
 
     private void FreshUI() {
-        Data.BeforeRender(this);
-        remainTurns.text = Data.LgRemainingRounds > 0 ? $"{Data.LgRemainingRounds}" : "";
-        layerCount.text  = Data.LgOverlay > 1 ? $"{Data.LgOverlay}" : "";
+        Data.ViewRender(this);
     }
 
     private void Update() {

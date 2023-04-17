@@ -212,9 +212,11 @@ public static class CardDetails {
         var effect = new Effect {
             UiName        = "疗养",
             UiDescription = "回合开始时,回复50点生命和5点法力.",
-            LgTags        = { EffectTag.Buff },
-            LgOverlay     = 3,
-            LgOpenMerge   = true,
+            UiIconPath    = "Textures/Effect/疗养",
+
+            LgTags      = { EffectTag.Buff },
+            LgOverlay   = 3,
+            LgOpenMerge = true,
 
             OnImpAfterTurnStart = self =>
             {
@@ -497,10 +499,12 @@ public static class CardDetails {
      */
     private static Card EYun() {
         var effect = new Effect {
-            UiName            = "厄运",
-            UiDescription     = "三回合后生效造成100点土属性魔法伤害（生效于敌方回合开始时）",
-            UiIconPath        = "",
+            UiName        = "厄运",
+            UiDescription = "三回合后生效造成100点土属性魔法伤害（生效于敌方回合开始时）",
+            UiIconPath    = "Textures/Effect/厄运",
+
             LgRemainingRounds = 3,
+
             OnImpAfterTurnStart = self =>
             {
                 if (self.LgRemainingRounds > 1) return;
@@ -591,7 +595,8 @@ public static class CardDetails {
         var effect = new Effect {
             UiName        = "铁甲加固",
             UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
-            UiIconPath    = "",
+            UiIconPath    = "Textures/Effect/铁甲加固",
+
             OnImpAfterStateChange = (self, delta) =>
             {
                 var change = delta.PhysicalShield;

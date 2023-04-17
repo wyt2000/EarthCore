@@ -69,7 +69,9 @@ public static class EffectLinks {
         return trigger.Bind(new Effect {
             UiName        = "免疫",
             UiDescription = "金土联动,免疫下一次伤害",
-            LgTags        = { EffectTag.Buff },
+            UiIconPath    = "Textures/Effect/免疫",
+
+            LgTags = { EffectTag.Buff },
 
             OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal)
         });
@@ -80,7 +82,8 @@ public static class EffectLinks {
         return new EffectOnce {
             UiName        = "固定",
             UiDescription = "火土联动,令自身魔法护盾值增加20%",
-            LgTags        = { EffectTag.Buff },
+
+            LgTags = { EffectTag.Buff },
 
             OnImpAfterAttach = self =>
             {
@@ -92,10 +95,11 @@ public static class EffectLinks {
 
     [ElementLink(ElementType.Shui, ElementType.Jin)]
     private static Effect ShuiJin() {
-        return new Effect {
+        return new EffectOnce {
             UiName        = "滋润",
             UiDescription = "水金联动,令自身物理护盾值增加20%",
-            LgTags        = { EffectTag.Buff },
+
+            LgTags = { EffectTag.Buff },
 
             OnImpAfterAttach = self =>
             {
@@ -110,9 +114,11 @@ public static class EffectLinks {
         return new Effect {
             UiName        = "引燃",
             UiDescription = "火木联动,令敌方获得5层燃烧,每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害（额外伤害小于1时改为1，属性与触发燃烧效果的攻击相同）（永久）",
-            LgTags        = { EffectTag.DeBuff },
-            LgOverlay     = 5,
-            LgOpenMerge   = true,
+            UiIconPath    = "Textures/Effect/燃烧",
+
+            LgTags      = { EffectTag.DeBuff },
+            LgOverlay   = 5,
+            LgOpenMerge = true,
 
             OnImpAfterTakeHpChange = (self, req) =>
             {
@@ -137,7 +143,8 @@ public static class EffectLinks {
         return new EffectBatch {
             UiName        = "宁静",
             UiDescription = "水木联动,本次出牌法力消耗减半",
-            LgTags        = { EffectTag.Buff },
+
+            LgTags = { EffectTag.Buff },
 
             OnImpAfterPreviewMana = (_, req) => req.TotalManaCost /= 2
         };
@@ -148,7 +155,9 @@ public static class EffectLinks {
         return new Effect {
             UiName        = "自燃",
             UiDescription = "火木土联动,下次受到的伤害时敌人受到等量对应属性对应类型的伤害（持续到下次伤害到来）",
-            LgTags        = { EffectTag.Buff },
+            UiIconPath    = "Textures/Effect/自燃",
+
+            LgTags = { EffectTag.Buff },
 
             OnImpAfterSelfHpChange = (self, req) =>
             {
@@ -173,10 +182,13 @@ public static class EffectLinks {
         return trigger.Bind(new Effect {
             UiName        = "洞察",
             UiDescription = "金土水联动,无效敌方下一次的伤害和控制效果",
-            LgTags        = { EffectTag.Buff },
+            UiIconPath    = "Textures/Effect/洞察",
 
-            OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal && req.Value > 0,                 0),
-            OnImpRejectAttach       = (_, effect) => trigger.Trigger(effect.LgTags.Contains(EffectTag.Control), 1)
+            LgTags = { EffectTag.Buff },
+
+            OnImpBeforeSelfHpChange = (_, req) => trigger.Trigger(!req.IsHeal && req.Value > 0, 0),
+
+            OnImpRejectAttach = (_, effect) => trigger.Trigger(effect.LgTags.Contains(EffectTag.Control), 1)
         });
     }
 
@@ -185,7 +197,8 @@ public static class EffectLinks {
         return new EffectBatch {
             UiName        = "不竭",
             UiDescription = "金水木联动,本次出牌法力消耗减半，抽一张牌",
-            LgTags        = { EffectTag.Buff },
+
+            LgTags = { EffectTag.Buff },
 
             OnImpAfterPreviewMana   = (_,    req) => req.TotalManaCost /= 2,
             OnImpAfterPlayBatchCard = (self, _) => self.Target.GetCard(1)
@@ -204,7 +217,6 @@ public static class EffectLinks {
         return new EffectOnce {
             UiName        = "击碎",
             UiDescription = "水火木联动,令敌方物理和魔法护盾值各减少20%",
-            UiHidde       = true,
 
             LgTags = { EffectTag.DeBuff },
             LgAction = self =>
@@ -222,8 +234,8 @@ public static class EffectLinks {
         return new EffectOnce {
             UiName        = "净化",
             UiDescription = "金木水火土联动,直接击碎全部敌方法印，斩杀生命值低于10%的敌人。",
-            LgTags        = { EffectTag.Buff },
 
+            LgTags = { EffectTag.Buff },
             LgAction = self =>
             {
                 var causer = self.Causer;
@@ -271,9 +283,11 @@ public static class EffectBroken {
         return new EffectTemporary {
             UiName        = "法印冷却",
             UiDescription = $"{elementType.ToDescription()}元素法印冷却",
-            UiIconPath    = "",
+            UiIconPath    = "Textures/Effect/冷却",
 
             LgRemainingRounds = layer,
+
+            // Todo 加个对应元素的色调
 
             OnImpAfterDetach = self =>
             {
@@ -287,9 +301,12 @@ public static class EffectBroken {
 
     private static Effect Jin(int layer) {
         return new EffectTemporary {
-            UiName            = "枯竭",
-            UiDescription     = "造成的物理伤害降低20%",
-            UiIconPath        = "",
+            UiName        = "枯竭",
+            UiDescription = "造成的物理伤害降低20%",
+            UiIconPath    = "Textures/Effect/枯竭",
+
+            LgTags = { EffectTag.DeBuff },
+
             LgRemainingRounds = layer,
             LgAddState = {
                 PhysicalDamageAmplify = -20
@@ -299,9 +316,11 @@ public static class EffectBroken {
 
     private static Effect Mu(int layer) {
         return new EffectOnce {
-            UiName            = "粉碎",
-            UiDescription     = "对对方造成10%当前生命值金元素伤害",
-            UiHidde           = true,
+            UiName        = "粉碎",
+            UiDescription = "对对方造成10%当前生命值金元素伤害",
+
+            LgTags = { EffectTag.DeBuff },
+
             LgRemainingRounds = layer,
             LgAction = e =>
             {
@@ -319,9 +338,12 @@ public static class EffectBroken {
 
     private static Effect Shui(int layer) {
         return new EffectTemporary {
-            UiName            = "破魔",
-            UiDescription     = "受到的魔法伤害增加20%",
-            UiIconPath        = "",
+            UiName        = "破魔",
+            UiDescription = "受到的魔法伤害增加20%",
+            UiIconPath    = "Textures/Effect/破魔",
+
+            LgTags = { EffectTag.DeBuff },
+
             LgRemainingRounds = layer,
             LgAddState = {
                 MagicDamageReduce = -20
@@ -331,9 +353,12 @@ public static class EffectBroken {
 
     private static Effect Huo(int layer) {
         return new EffectTemporary {
-            UiName            = "破甲",
-            UiDescription     = "受到的物理伤害增加20%",
-            UiIconPath        = "",
+            UiName        = "破甲",
+            UiDescription = "受到的物理伤害增加20%",
+            UiIconPath    = "Textures/Effect/破甲",
+
+            LgTags = { EffectTag.DeBuff },
+
             LgRemainingRounds = layer,
             LgAddState = {
                 PhysicalDamageReduce = -20
@@ -343,9 +368,12 @@ public static class EffectBroken {
 
     private static Effect Tu(int layer) {
         return new EffectTemporary {
-            UiName            = "弱化",
-            UiDescription     = "造成的魔法伤害降低20%",
-            UiIconPath        = "",
+            UiName        = "弱化",
+            UiDescription = "造成的魔法伤害降低20%",
+            UiIconPath    = "Textures/Effect/弱化",
+
+            LgTags = { EffectTag.DeBuff },
+
             LgRemainingRounds = layer,
             LgAddState = {
                 MagicDamageAmplify = -20
@@ -363,7 +391,7 @@ public static class EffectPrefabs {
         return new Effect {
             UiName        = "清算",
             UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
-            UiIconPath    = "",
+            UiIconPath    = "Textures/Effect/清算",
 
             LgTags      = { EffectTag.Buff },
             LgOverlay   = layer,
@@ -389,6 +417,7 @@ public static class EffectPrefabs {
         return new Effect {
             UiName        = "淬炼",
             UiDescription = "每回合开始时消耗一层淬炼对敌方造成（1%*淬炼层数）最大生命值物理伤害。",
+            UiIconPath    = "Textures/Effect/淬炼",
 
             LgTags      = { EffectTag.DeBuff },
             LgOverlay   = layer,
@@ -457,9 +486,11 @@ public static class EffectFixed {
 
     // 护甲
     private static Effect HuJia() => new() {
-        UiName            = "护甲",
-        UiDescription     = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
-        OnImpBeforeRender = (self, view) => view.effectName.text = $"{self.UiName}x{(int)self.Target.State.PhysicalArmor}",
+        UiName        = "护甲",
+        UiDescription = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
+        UiIconPath    = "Textures/Effect/护甲",
+
+        OnImpViewRender = (self, view) => view.effectName.text = $"{self.UiName}x{(int)self.Target.State.PhysicalArmor}",
         OnImpAfterTurnStart = self =>
         {
             var state = self.Target.State;
@@ -471,6 +502,8 @@ public static class EffectFixed {
     private static Effect MoFaHuDun() => new() {
         UiName        = "魔力屏障",
         UiDescription = "使用魔法护盾抵消魔法伤害时,对敌人造成等量土属性物理伤害",
+        UiIconPath    = "Textures/Effect/屏障",
+
         OnImpAfterSelfHpChange = (self, req) =>
         {
             if (req.IsHeal || req.OutShieldChange <= 0) return;

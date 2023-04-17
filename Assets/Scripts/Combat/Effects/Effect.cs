@@ -261,9 +261,9 @@ public class Effect : IComparable<Effect> {
     protected virtual void OnAfterPlayBatchCard(RequestPlayBatchCard request) { }
 
     /// <summary>
-    /// 渲染前调用,用于实现一些自定义ui
+    /// 渲染调用,用于实现一些自定义ui
     /// </summary>
-    protected virtual void OnBeforeRender(EffectView view) { }
+    protected virtual void OnViewRender(EffectView view) { }
 
     /// <summary>
     /// 状态修改后调用,用于监听通用属性修改(必须走state的BoardCast才能监听到)
@@ -305,7 +305,11 @@ public class Effect : IComparable<Effect> {
 
     public Action<Effect, RequestPlayBatchCard> OnImpAfterPlayBatchCard;
 
-    public Action<Effect, EffectView> OnImpBeforeRender;
+    public Action<Effect, EffectView> OnImpViewRender = (self, view) =>
+    {
+        view.remainTurns.text = self.LgRemainingRounds > 0 ? $"{self.LgRemainingRounds}" : "";
+        view.layerCount.text  = self.LgOverlay > 1 ? $"{self.LgOverlay}" : "";
+    };
 
     public Action<Effect, CombatState> OnImpAfterStateChange;
 
@@ -440,9 +444,9 @@ public class Effect : IComparable<Effect> {
         OnImpAfterPlayBatchCard?.Invoke(this, request);
     }
 
-    public void BeforeRender(EffectView view) {
-        OnBeforeRender(view);
-        OnImpBeforeRender?.Invoke(this, view);
+    public void ViewRender(EffectView view) {
+        OnViewRender(view);
+        OnImpViewRender?.Invoke(this, view);
     }
 
     public void AfterStateChange(CombatState delta) {
