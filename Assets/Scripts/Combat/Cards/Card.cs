@@ -94,7 +94,7 @@ public class Card {
     // 快捷造成伤害
     public void TakeDamage(RequestPlayCard request, bool real = false) {
         var damage = Damage;
-        if (damage <= 0) return;
+        if (damage <= 0 && !LgInfect) return;
         request.Causer.Attack(new RequestHpChange {
             Value   = damage * request.Scale,
             Type    = LgDamageType,

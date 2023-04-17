@@ -496,7 +496,7 @@ public static class EffectFixed {
             OnImpViewRender = (self, view) =>
             {
                 super(self, view);
-                view.remainTurns.text = $"{self.Target.State.PhysicalArmor}";
+                view.layerCount.text = $"{self.Target.State.PhysicalArmor}";
             },
             OnImpAfterTurnStart = self =>
             {
