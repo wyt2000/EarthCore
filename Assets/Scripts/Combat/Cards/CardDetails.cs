@@ -7,7 +7,6 @@ using Combat.Enums;
 using Combat.Requests.Details;
 using Utils;
 
-// Todo 测试卡牌逻辑
 namespace Combat.Cards {
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 public static class CardDetails {
@@ -589,19 +588,22 @@ public static class CardDetails {
     | 效果   | 唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害<br/>OnAfterSelfHpChange:对敌人造成本次获得30%护盾值的金属性物理伤害 |
      */
     private static Card TieJiaJiaGu() {
-        // Todo 铁甲加固效果
         var effect = new Effect {
             UiName        = "铁甲加固",
             UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
             UiIconPath    = "",
-            // Todo 监听状态修改事件
-            // OnImpStateChange = (req, delta) =>
-            // {
-            //     if (delta > 0) {
-            //         var damage = delta * 0.3f;
-            //        // req.Batch.Target.TakeDamage(damage, ElementType.Jin, DamageType.Physical);
-            //     }
-            // }
+            OnImpAfterStateChange = (self, delta) =>
+            {
+                var change = delta.PhysicalShield;
+                if (change <= 0) return;
+                var damage = change * 0.3f;
+                self.Causer.Attack(new RequestHpChange {
+                    Value   = damage,
+                    Element = ElementType.Jin,
+                    Type    = DamageType.Physical,
+                    Reason  = "铁甲加固"
+                });
+            }
         };
         return new Card {
             Clone         = TieJiaJiaGu,
