@@ -14,7 +14,7 @@ public static class GRandom {
         var n = list.Count;
         while (n > 1) {
             n--;
-            var k = GRandom.Range(0, n);
+            var k = Range(0, n);
             (list[k], list[n]) = (list[n], list[k]);
         }
     }

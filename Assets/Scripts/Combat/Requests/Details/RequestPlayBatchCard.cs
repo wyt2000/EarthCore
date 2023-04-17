@@ -28,7 +28,7 @@ public class RequestPlayBatchCard : CombatRequest {
 
 #endregion
 
-    // 本次出牌的效果增幅
+    // 本次出牌的效果增幅 Todo 适配到所有card效果中
     public float Scale = 1;
 
     // 本次出牌消耗的总法力

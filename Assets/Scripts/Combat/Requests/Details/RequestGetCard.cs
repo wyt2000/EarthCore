@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using Combat.Cards;
 
 namespace Combat.Requests.Details {

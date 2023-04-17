@@ -1,8 +1,8 @@
 ﻿using System.Linq;
+using GUIs.Cards;
 using UnityEngine;
 
 namespace GUIs {
-// Todo 上个高亮特效
 public class Star5View : MonoBehaviour {
 #region prefab配置
 
@@ -19,6 +19,10 @@ public class Star5View : MonoBehaviour {
     // 自身矩形
     [SerializeField]
     private RectTransform rect;
+
+    // 绑定玩家的slot Todo 预览元素联动,给选中元素上个高亮特效
+    [SerializeField]
+    private CardSlotView slot;
 
 #endregion
 

@@ -40,10 +40,15 @@ public class RequestHpChange : CombatRequest {
 #endregion
 
     public override bool CanEnqueue() {
-        return Require(
-            Target != null && Causer != null && Value >= 0,
-            "非法的生命请求"
-        );
+        return
+            Require(
+                Target != null && Causer != null && Value >= 0,
+                "非法的生命请求"
+            ) &&
+            Require(
+                !string.IsNullOrWhiteSpace(Reason),
+                "请求原因不能为空"
+            );
     }
 
     // Todo 加动画
@@ -85,20 +90,14 @@ public class RequestHpChange : CombatRequest {
         if (Element.HasValue) Target.TryApplyElementBreak(Causer, Element.Value, 1);
 
         var old = state.Health;
-        var cur = old + (IsHeal ? value : -value);
+        state.Health += IsHeal ? value : -value;
+        var change = state.Health - old;
 
-        // Todo 加个scale动画
-        yield return GAnimation.Lerp(0.5f, t => state.Health = Mathf.Lerp(old, cur, t));
-
-        var change = cur - old;
+        Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{change}点{(IsHeal ? "治疗" : "伤害")}");
 
         Value = Math.Abs(change);
         target.BoardCast(effect => effect.AfterSelfHpChange(this));
         causer.BoardCast(effect => effect.AfterTakeHpChange(this));
-    }
-
-    public override string Description() {
-        return $"由于{Reason},{Causer.name}对{Target.name}造成{Value}点{(IsHeal ? "治疗" : "伤害")}";
     }
 }
 }
