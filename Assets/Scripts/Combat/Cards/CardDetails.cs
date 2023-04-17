@@ -120,6 +120,46 @@ public static class CardDetails {
         };
     }
 
+    /*
+    | 铁甲加固 |                                          |
+    |------|------------------------------------------|
+    | 元素属性 | 无                                        |
+    | 法力消耗 | 20                                       |
+    | 伤害类型 | 无                                        |
+    | 伤害值  | 无                                        |
+    | 效果   | 唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害 |
+     */
+    private static Card TieJiaJiaGu() {
+        var effect = new Effect {
+            UiName        = "铁甲加固",
+            UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
+            UiIconPath    = "Textures/Effect/铁甲加固",
+            UiIconColor   = ElementType.Jin.MainColor(),
+
+            OnImpAfterStateChange = (self, delta) =>
+            {
+                var change = delta.PhysicalShield;
+                if (change <= 0) return;
+                var damage = change * 0.3f;
+                self.Causer.Attack(new RequestHpChange {
+                    Value   = damage,
+                    Element = ElementType.Jin,
+                    Type    = DamageType.Physical,
+                    Reason  = "铁甲加固"
+                });
+            }
+        };
+        return new Card {
+            Clone         = TieJiaJiaGu,
+            UiName        = "铁甲加固",
+            UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
+            UiImagePath   = "Textures/Card/Details/铁甲加固",
+            LgManaCost    = 20,
+            LgElement     = ElementType.Jin,
+            OnExecute     = req => req.Causer.AddBuff(effect)
+        };
+    }
+
 #endregion
 
 #region 木属性
@@ -580,44 +620,6 @@ public static class CardDetails {
                     SelectIndex = n => GRandom.Range(0, n)
                 });
             }
-        };
-    }
-
-    /*
-    | 铁甲加固 |                                                                                          |
-    |------|------------------------------------------------------------------------------------------|
-    | 元素属性 | 无                                                                                        |
-    | 法力消耗 | 20                                                                                       |
-    | 伤害类型 | 无                                                                                        |
-    | 伤害值  | 无                                                                                        |
-    | 效果   | 唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害<br/>OnAfterSelfHpChange:对敌人造成本次获得30%护盾值的金属性物理伤害 |
-     */
-    private static Card TieJiaJiaGu() {
-        var effect = new Effect {
-            UiName        = "铁甲加固",
-            UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
-            UiIconPath    = "Textures/Effect/铁甲加固",
-
-            OnImpAfterStateChange = (self, delta) =>
-            {
-                var change = delta.PhysicalShield;
-                if (change <= 0) return;
-                var damage = change * 0.3f;
-                self.Causer.Attack(new RequestHpChange {
-                    Value   = damage,
-                    Element = ElementType.Jin,
-                    Type    = DamageType.Physical,
-                    Reason  = "铁甲加固"
-                });
-            }
-        };
-        return new Card {
-            Clone         = TieJiaJiaGu,
-            UiName        = "铁甲加固",
-            UiDescription = "唯一，本场战斗中，每增加一次护盾，对敌人造成30%本次增加护盾值的金属性物理伤害",
-            UiImagePath   = "Textures/Card/Details/铁甲加固",
-            LgManaCost    = 20,
-            OnExecute     = req => req.Causer.AddBuff(effect)
         };
     }
 
