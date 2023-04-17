@@ -156,6 +156,7 @@ public static class EffectLinks {
             UiName        = "自燃",
             UiDescription = "火木土联动,下次受到的伤害时敌人受到等量对应属性对应类型的伤害（持续到下次伤害到来）",
             UiIconPath    = "Textures/Effect/自燃",
+            UiIconColor   = ElementType.Huo.MainColor(),
 
             LgTags = { EffectTag.Buff },
 
@@ -168,7 +169,7 @@ public static class EffectLinks {
                     Type    = DamageType.Physical,
                     Element = req.Element,
 
-                    Reason = "自然"
+                    Reason = "自燃"
                 });
                 self.Remove();
             }
@@ -492,6 +493,7 @@ public static class EffectFixed {
             UiName        = "护甲",
             UiDescription = "每回合开始时,若护甲值小于物理护甲值,则护甲值增加至物理护甲值",
             UiIconPath    = "Textures/Effect/护甲",
+            UiIconColor   = ElementType.Jin.MainColor(),
 
             OnImpViewRender = (self, view) =>
             {
@@ -511,6 +513,7 @@ public static class EffectFixed {
         UiName        = "魔力屏障",
         UiDescription = "使用魔法护盾抵消魔法伤害时,对敌人造成等量土属性物理伤害",
         UiIconPath    = "Textures/Effect/屏障",
+        UiIconColor   = ElementType.Tu.MainColor(),
 
         OnImpAfterSelfHpChange = (self, req) =>
         {
