@@ -498,7 +498,7 @@ public static class EffectFixed {
             OnImpViewRender = (self, view) =>
             {
                 super(self, view);
-                view.layerCount.text = $"{self.Target.State.PhysicalArmor}";
+                view.layerCount.text = $"{self.Target.State.PhysicalArmor:F0}";
             },
             OnImpAfterTurnStart = self =>
             {
@@ -512,7 +512,7 @@ public static class EffectFixed {
     private static Effect MoFaHuDun() => new() {
         UiName        = "魔力屏障",
         UiDescription = "使用魔法护盾抵消魔法伤害时,对敌人造成等量土属性物理伤害",
-        UiIconPath    = "Textures/Effect/屏障",
+        UiIconPath    = "Textures/Effect/魔力屏障",
         UiIconColor   = ElementType.Tu.MainColor(),
 
         OnImpAfterSelfHpChange = (self, req) =>

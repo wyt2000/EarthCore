@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using Combat.Enums;
-using UnityEngine;
 using Utils;
 
 namespace Combat.Requests.Details {
@@ -93,7 +92,7 @@ public class RequestHpChange : CombatRequest {
         state.Health += IsHeal ? value : -value;
         var change = state.Health - old;
 
-        var changeText = IsHeal ? "治疗" : $"{Element.ToDescription()}属性{Type.ToDescription()}伤害";
+        var changeText = IsHeal ? "治疗" : $"{Element?.ToDescription() ?? "无"}属性{Type.ToDescription()}伤害";
         Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{-change}点{changeText}");
 
         Value = Math.Abs(change);

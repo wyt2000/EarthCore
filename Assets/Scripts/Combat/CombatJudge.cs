@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Combat.Requests;
+using Combat.Requests.Details;
 using Controllers;
 using GUIs;
 using UnityEngine;
@@ -88,12 +89,20 @@ public class CombatJudge : MonoBehaviour {
 
     // 回合开始事件
     private void TurnStart() {
-        CurrentComp.BoardCast(e => e.AfterTurnStart());
+        var cur = CurrentComp;
+        Requests.Add(new RequestLogic {
+            Causer = cur,
+            Logic  = () => cur.BoardCast(e => e.AfterTurnStart())
+        });
     }
 
     // 回合结束事件
     private void TurnEnd() {
-        CurrentComp.BoardCast(e => e.AfterTurnEnd());
+        var cur = CurrentComp;
+        Requests.Add(new RequestLogic {
+            Causer = cur,
+            Logic  = () => cur.BoardCast(e => e.AfterTurnEnd())
+        });
     }
 
     // 下一回合

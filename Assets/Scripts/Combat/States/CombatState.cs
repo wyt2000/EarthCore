@@ -41,7 +41,8 @@ public class CombatState : CombatAddableState {
 
 #region 广播修改事件
 
-    public event Action<CombatState> OnStateChange;
+    // old , cur , delta
+    public event Action<CombatState, CombatState, CombatState> OnStateChange;
 
     private static readonly FieldInfo[] Fields = typeof(CombatState)
         .GetFields(BindingFlags.Public | BindingFlags.Instance)
@@ -88,7 +89,7 @@ public class CombatState : CombatAddableState {
             m_anyChange = true;
         }
         if (!m_anyChange) return;
-        OnStateChange?.Invoke(delta);
+        OnStateChange?.Invoke(m_record, this, delta);
     }
 
 #endregion
