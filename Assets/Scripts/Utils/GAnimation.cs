@@ -16,7 +16,7 @@ public enum AnimConflictPolicy {
     Delay,
 }
 
-// 动画锁,一个锁管理一类动画
+// 动画锁,一个锁管理一类动画 Todo 整合Animation到Coroutine,将locker和Coroutine绑定
 public class AnimLocker {
     private int m_id = -1;
 
@@ -81,6 +81,10 @@ public static class GAnimation {
         // 切换当前任务
         locker.Run(id);
 
+        if (duration <= 0) {
+            action(1);
+            yield break;
+        }
         var startTime = Time.time;
         var endTime = startTime + duration;
         float current;
@@ -102,6 +106,10 @@ public static class GAnimation {
 
     // 无lock
     public static IEnumerator Lerp(float duration, Action<float> action, Func<float, float> curve = null) {
+        if (duration <= 0) {
+            action(1);
+            yield break;
+        }
         var startTime = Time.time;
         var endTime = startTime + duration;
         float current;

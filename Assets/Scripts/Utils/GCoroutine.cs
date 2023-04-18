@@ -57,6 +57,11 @@ public static class GCoroutine {
         return new ParallelEnumerator(coroutines);
     }
 
+    // 并行运行多个协程
+    public static IEnumerator Parallel(params IEnumerator[] coroutines) {
+        return new ParallelEnumerator(coroutines);
+    }
+
     // 顺序运行多个协程
     public static IEnumerator Sequence(params IEnumerator[] coroutines) {
         return coroutines.GetEnumerator();
