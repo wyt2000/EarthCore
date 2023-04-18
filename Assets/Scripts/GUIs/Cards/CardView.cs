@@ -186,6 +186,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         // if (GTools.PassEvent(eventData, ExecuteEvents.pointerClickHandler)) return;
         if (!IsSelectable) return;
         Data.IsSelected ^= true;
+        Container.combatant.stateBar.FreshSync();
         if (Data.IsSelected) {
             // Todo 游戏侧边加个详细信息面板 
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -14,7 +13,7 @@ public class JudgeLogView : MonoBehaviour {
 
     private int m_index;
 
-    // Todo 加滚动条,监听鼠标
+    // Todo 加滚动条,优化鼠标滚动倍率
     public void AddLog(string str) {
         m_strings.AddLast((++m_index, str));
         LoadString();

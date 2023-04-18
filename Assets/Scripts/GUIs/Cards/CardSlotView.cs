@@ -9,7 +9,7 @@ using UnityEngine;
 using Utils;
 
 namespace GUIs.Cards {
-// 卡槽视图 Todo 加背景
+// 卡槽视图
 public class CardSlotView : MonoBehaviour {
 #region prefab配置
 

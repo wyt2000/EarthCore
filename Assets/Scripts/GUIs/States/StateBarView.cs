@@ -1,5 +1,8 @@
-﻿using Combat;
+﻿using System.Collections;
+using System.Linq;
+using Combat;
 using Combat.Enums;
+using Combat.States;
 using UnityEngine;
 using Utils;
 
@@ -40,58 +43,59 @@ public class StateBarView : MonoBehaviour {
 
 #endregion
 
-    private void Start() {
-        BindAll();
-        FreshUI();
+    private float m_duration = 1.0f;
+
+    public void FreshSync() {
+        var old = m_duration;
+        m_duration = 0;
+        FreshUI(combatant.State, combatant.State, new CombatState());
+        m_duration = old;
     }
 
-    // Todo 监听StateChange,统一所有字段的动画
-    public void FreshUI() {
-        // Todo 血条滚动特效
-        health.FreshUI();
-        mana.FreshUI();
-        // Todo 数字滚动特效
-        physicalShield.FreshUI();
-        physicalAmplify.FreshUI();
-        physicalReduce.FreshUI();
-        magicShield.FreshUI();
-        magicAmplify.FreshUI();
-        magicReduce.FreshUI();
-        // Todo 法印破碎/重置特效
-        elementSeals.ForEach(element => element.FreshUI());
+    public void Init() {
+        BindAll();
+        FreshSync();
+        combatant.State.OnStateChange += FreshUI;
+    }
+
+    private void FreshUI(CombatState old, CombatState cur, CombatState delta) {
+        StartCoroutine(ImpFreshUI(old, cur, delta));
+    }
+
+    private IEnumerator ImpFreshUI(CombatState old, CombatState cur, CombatState delta) {
+        // Todo 加锁
+        return GCoroutine.Parallel(
+            health.FreshHealthBar(m_duration, old.Health, cur.Health, old.HealthMax, cur.HealthMax),
+            mana.FreshManaBar(m_duration, old.Mana, cur.Mana, old.ManaMax, cur.ManaMax, combatant),
+            physicalShield.FreshField(m_duration, old.PhysicalShield, cur.PhysicalShield),
+            physicalAmplify.FreshField(m_duration, old.PhysicalDamageAmplify, cur.PhysicalDamageAmplify),
+            physicalReduce.FreshField(m_duration, old.PhysicalDamageReduce, cur.PhysicalDamageReduce),
+            magicShield.FreshField(m_duration, old.MagicShield, cur.MagicShield),
+            magicAmplify.FreshField(m_duration, old.MagicDamageAmplify, cur.MagicDamageAmplify),
+            magicReduce.FreshField(m_duration, old.MagicDamageReduce, cur.MagicDamageReduce),
+            GCoroutine.Parallel(elementSeals.Select((element, i) =>
+            {
+                var type = (ElementType)i;
+                return element.FreshSeal(m_duration, old.ElementAttach[type], cur.ElementAttach[type]);
+            }))
+        );
     }
 
     private void BindAll() {
-        var state = combatant.State;
-        health.OnShow         = () => $"{state.Health:F0}/{state.HealthMax}";
-        health.tooltip.OnShow = () => "生命值";
-        mana.OnShow = () =>
-        {
-            var batch = combatant.PreviewBatch;
-            var cost = batch.PreviewManaCost();
-            var sign = cost >= 0 ? '-' : '+';
-            var costStr = batch.Cards.Length == 0 ? "" : $"({sign}{Mathf.Abs(cost):F0})";
-            return $"{state.Mana:F0}{costStr}/{state.ManaMax}";
-        };
+        health.tooltip.OnShow          = () => "生命值";
         mana.tooltip.OnShow            = () => "魔法值";
-        physicalShield.OnShow          = () => $"{state.PhysicalShield:F0}";
         physicalShield.tooltip.OnShow  = () => "物理护盾";
-        physicalAmplify.OnShow         = () => $"{state.PhysicalDamageAmplify}%";
         physicalAmplify.tooltip.OnShow = () => "物理伤害增幅";
-        physicalReduce.OnShow          = () => $"{state.PhysicalDamageReduce}%";
         physicalReduce.tooltip.OnShow  = () => "物理伤害减免";
-        magicShield.OnShow             = () => $"{state.MagicShield:F0}";
         magicShield.tooltip.OnShow     = () => "魔法护盾";
-        magicAmplify.OnShow            = () => $"{state.MagicDamageAmplify}%";
         magicAmplify.tooltip.OnShow    = () => "魔法伤害增幅";
-        magicReduce.OnShow             = () => $"{state.MagicDamageReduce}%";
         magicReduce.tooltip.OnShow     = () => "魔法伤害减免";
 
         elementSeals.ForEach((element, i) =>
         {
             var type = (ElementType)i;
             // Todo 显示破碎效果
-            element.OnShow         = () => $"{state.ElementAttach[type]}";
+            // element.OnShow         = state => $"{state.ElementAttach[type]}";
             element.tooltip.OnShow = () => $"{type.ToDescription()}元素法印";
         });
     }
