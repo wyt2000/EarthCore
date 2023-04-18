@@ -23,7 +23,7 @@ public class Card {
     // 卡牌名称
     public string UiName = "_None_";
 
-    // 卡牌描述 Todo 支持解析$xxx$,表示专有名词信息
+    // 卡牌描述
     public string UiDescription = "_None_";
 
     // 卡牌图片路径

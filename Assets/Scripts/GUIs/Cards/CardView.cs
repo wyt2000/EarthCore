@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Text.RegularExpressions;
 using Combat.Cards;
 using Combat.Enums;
 using Combat.Requests.Details;
 using GUIs.Animations;
+using GUIs.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -75,7 +77,17 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     public CardSlotView Container;
 
     // 绑定的数据
-    public Card Data;
+    public Card Data {
+        get => m_data;
+        set
+        {
+            m_data = value;
+            InitUI();
+            FreshUI();
+        }
+    }
+
+    private Card m_data;
 
     // 新加的卡
     [NonSerialized]
@@ -92,9 +104,26 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
 
-    private void Start() {
+    private void InitUI() {
         if (Data == null) return;
-        FreshUI();
+        var main = Data.LgElement.MainColor();
+
+        cardBorder.color = main;
+
+        var imageUrl = Data.UiImagePath;
+        cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
+
+        cardName.text = Data.UiName;
+        var desc = Data.UiDescription;
+        desc = Regex.Replace(desc, @"\$([\s\S]+?)\$", @"<link><u>$1</u></link>");
+        cardDescription.GetComponent<TextLinkHandler>().OnClickLink += (text, url) =>
+        {
+            // Todo 显示关键字描述
+            Container.combatant.Judge.logger.AddLog($"点击了 {text} 关键字");
+        };
+
+        cardDescription.text = desc;
+        cardElementType.text = Data.LgElement?.ToDescription() ?? "";
     }
 
     // 目标位置
@@ -114,19 +143,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         }
         cardBack.gameObject.SetActive(false);
 
-        var main = Data.LgElement.MainColor();
-
-        cardBorder.color = main;
-
-        var imageUrl = Data.UiImagePath;
-        cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
-
-        cardName.text        = Data.UiName;
-        cardDescription.text = Data.UiDescription;
-        cardElementType.text = Data.LgElement?.ToDescription() ?? "";
-        cardCost.text        = $"{Data.ManaCost:F0}";
-
-        // Todo 加伤害预览text
+        if (Data == null) return;
+        cardCost.text = $"{Data.ManaCost:F0}";
 
         cardBanFilter.gameObject.SetActive(
             Style == CardStyle.Ban ||
@@ -164,6 +182,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
+        // Todo 处理穿透点击
+        // if (GTools.PassEvent(eventData, ExecuteEvents.pointerClickHandler)) return;
         if (!IsSelectable) return;
         Data.IsSelected ^= true;
         if (Data.IsSelected) {

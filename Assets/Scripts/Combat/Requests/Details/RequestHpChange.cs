@@ -51,7 +51,7 @@ public class RequestHpChange : CombatRequest {
             );
     }
 
-    // Todo 加动画
+    // Todo 加打击/治疗动画
     public override IEnumerator Execute() {
         var causer = Causer;
         var target = Target;
