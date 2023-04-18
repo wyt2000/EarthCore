@@ -52,7 +52,7 @@ public static class CardDetails {
             LgElement     = ElementType.Jin,
             OnExecute = req =>
             {
-                req.Causer.State.PhysicalShield += 25;
+                req.Causer.State.PhysicalShield += 25 * req.Scale;
                 req.TakeDamage();
             }
         };
@@ -74,7 +74,7 @@ public static class CardDetails {
             UiDescription = "为自身添加15护甲",
             UiImagePath   = "Textures/Card/Details/格挡",
             LgElement     = ElementType.Jin,
-            OnExecute     = req => req.Causer.State.PhysicalArmor += 15
+            OnExecute     = req => req.Causer.State.PhysicalArmor += 15 * req.Scale
         };
     }
 
@@ -187,7 +187,7 @@ public static class CardDetails {
             OnAfterPlayBatchCard = req =>
             {
                 req.Causer.Heal(new RequestHpChange {
-                    Value  = req.TotalDamage * 0.5f,
+                    Value  = req.TotalDamage * 0.5f * req.Scale,
                     Reason = "生命汲取"
                 });
             }
@@ -211,7 +211,7 @@ public static class CardDetails {
             UiImagePath   = "Textures/Card/Details/清醒",
             LgManaCost    = 0,
             LgElement     = ElementType.Mu,
-            OnExecute     = req => req.Causer.State.Mana += 10
+            OnExecute     = req => req.Causer.State.Mana += 10 * req.Scale
         };
     }
 
@@ -233,7 +233,7 @@ public static class CardDetails {
             LgManaCost    = 5,
             LgElement     = ElementType.Mu,
             OnExecute = req => req.Causer.Heal(new RequestHpChange {
-                Value  = 50,
+                Value  = 50 * req.Scale,
                 Reason = "包扎"
             })
         };
@@ -327,7 +327,7 @@ public static class CardDetails {
             LgManaCost = 8,
             LgElement  = ElementType.Shui,
 
-            OnAfterPlayBatchCard = req => req.Causer.AddBuff(EffectPrefabs.QingSuan((int)req.TotalManaCost))
+            OnAfterPlayBatchCard = req => req.Causer.AddBuff(EffectPrefabs.QingSuan((int)(req.TotalManaCost * req.Scale)))
         };
     }
 
@@ -366,11 +366,11 @@ public static class CardDetails {
         return new Card {
             Clone         = AnChaoYongDong,
             UiName        = "暗潮涌动",
-            UiDescription = "获得70点【清算】值",
+            UiDescription = "获得70点$【清算】$值",
             UiImagePath   = "Textures/Card/Details/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
-            OnExecute     = req => req.Causer.AddBuff(EffectPrefabs.QingSuan(70))
+            OnExecute     = req => req.Causer.AddBuff(EffectPrefabs.QingSuan((int)(70 * req.Scale)))
         };
     }
 
@@ -498,7 +498,7 @@ public static class CardDetails {
             LgManaCost    = 10,
             LgElement     = ElementType.Tu,
             LgInfect      = true,
-            OnExecute     = req => req.Causer.State.MagicShield += 50
+            OnExecute     = req => req.Causer.State.MagicShield += 50 * req.Scale
         };
     }
 
@@ -524,7 +524,7 @@ public static class CardDetails {
                 var state = req.Causer.State;
                 var cost = state.Health * 0.15f;
                 state.Health      -= cost;
-                state.MagicShield += cost * 2;
+                state.MagicShield += cost * 2 * req.Scale;
             }
         };
     }

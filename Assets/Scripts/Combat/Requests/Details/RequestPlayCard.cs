@@ -16,7 +16,6 @@ public class RequestPlayCard : CombatRequest {
 
 #region 中间项
 
-    // Todo 修改所有卡牌的数值计算方式
     public float Scale => Batch.Scale;
 
 #endregion
