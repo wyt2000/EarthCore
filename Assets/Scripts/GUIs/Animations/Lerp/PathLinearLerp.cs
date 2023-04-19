@@ -22,5 +22,9 @@ public sealed class PathLinearLerp : PathLerp {
             ? Paths.Last()
             : Vector3.Lerp(Paths[index], Paths[index + 1], t);
     }
+
+    public override float PredictDistance() {
+        return m_preSum.Last();
+    }
 }
 }

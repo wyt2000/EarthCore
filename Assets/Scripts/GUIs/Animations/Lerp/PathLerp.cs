@@ -12,5 +12,8 @@ public abstract class PathLerp {
     }
 
     public abstract Vector3 Lerp(float t);
+
+    // 预测距离
+    public abstract float PredictDistance();
 }
 }
