@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 namespace GUIs.Animations {
@@ -21,6 +22,13 @@ public static class GAnimation {
         } while (current < endTime);
     }
 
+    // DOTWeen转迭代器
+    public static IEnumerator Wait(this Tween tween) {
+        var finish = false;
+        tween.OnComplete(() => finish = true);
+        while (!finish) yield return null;
+    }
+
     // 动画转迭代器
     public static IEnumerator Wait(this Animation animation) {
         animation.Play();
@@ -32,7 +40,7 @@ public static class GAnimation {
         animation.Play(name);
         while (animation.IsPlaying(name)) yield return null;
     }
-    
+
     // 粒子系统转迭代器
     public static IEnumerator Wait(this ParticleSystem particleSystem) {
         particleSystem.Play();
