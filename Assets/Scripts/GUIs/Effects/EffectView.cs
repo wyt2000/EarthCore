@@ -40,7 +40,7 @@ public class EffectView : MonoBehaviour {
     [NonSerialized]
     public int IndexHorizontal; // 列
 
-    private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
+    private readonly CoroutineLocker m_locker = new(ResolvePolicy.Overwrite);
 
     private void Start() {
         effectIcon.sprite = Resources.Load<Sprite>(Data.UiIconPath);
@@ -65,7 +65,7 @@ public class EffectView : MonoBehaviour {
     }
 
     public IEnumerator MoveToTarget(float duration) {
-        return this.MoveTo(m_locker, TargetPosition(), duration);
+        return this.MoveWithDuration(TargetPosition(), duration).Lock(m_locker);
     }
 }
 }

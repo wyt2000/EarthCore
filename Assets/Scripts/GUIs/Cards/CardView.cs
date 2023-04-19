@@ -102,7 +102,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
 
     public bool IsSelectable => Style == CardStyle.Valid;
 
-    private readonly AnimLocker m_locker = new(AnimConflictPolicy.Overwrite);
+    private readonly CoroutineLocker m_locker = new(ResolvePolicy.Overwrite);
 
     private void InitUI() {
         if (Data == null) return;
@@ -116,7 +116,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         cardName.text = Data.UiName;
         var desc = Data.UiDescription;
         desc = Regex.Replace(desc, @"\$([\s\S]+?)\$", @"<link><u>$1</u></link>");
-        cardDescription.GetComponent<TextLinkHandler>().OnClickLink += (text, url) =>
+        cardDescription.GetComponent<TextLinkHandler>().OnClickLink += (text, _) =>
         {
             // Todo 显示关键字描述
             Container.combatant.Judge.logger.AddLog($"点击了 {text} 关键字");
@@ -153,16 +153,20 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public IEnumerator MoveToTarget() {
+        return ImpMoveToTarget().Lock(m_locker);
+    }
+
+    private IEnumerator ImpMoveToTarget() {
         if (NewIndex != -1) {
             yield return GAnimation.Wait(NewIndex * 0.1f);
             NewIndex = -1;
             var first = Container.transform.position;
             var final = TargetPosition();
-            yield return this.MoveTo(m_locker, first, 0.3f);
-            yield return this.MoveTo(m_locker, final, 0.3f);
+            yield return this.MoveWithDuration(first, 0.3f);
+            yield return this.MoveWithDuration(final, 0.3f);
         }
         else {
-            yield return this.MoveTo(m_locker, TargetPosition(), 0.3f);
+            yield return this.MoveWithDuration(TargetPosition(), 0.3f);
         }
     }
 
@@ -174,11 +178,26 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         var mid = new Vector2(0.5f, 0.5f);
         var first = trans.GetPosition(mid, heap.center.position + Vector3.right * (trans.lossyScale.x * index * rect.rect.width));
         var final = trans.GetPosition(mid, heap.transform);
-        yield return this.MoveTo(null, first, duration);
+        yield return this.MoveWithDuration(first, duration);
         yield return GAnimation.Wait(1.0f);
-        yield return this.MoveTo(null, final, 0.2f);
-        // Todo 加缩放动画
+        yield return GCoroutine.Parallel(
+            this.MoveWithDuration(final, 0.2f),
+            FadeOut(0.2f)
+        );
         Destroy(gameObject);
+    }
+
+    private IEnumerator FadeOut(float duration) {
+        var images = GetComponentsInChildren<Image>();
+        return GAnimation.Lerp(duration, t =>
+        {
+            foreach (var image in images) {
+                var color = image.color;
+                color.a = Mathf.Lerp(1, 0, t);
+
+                image.color = color;
+            }
+        });
     }
 
     public void OnPointerDown(PointerEventData eventData) {

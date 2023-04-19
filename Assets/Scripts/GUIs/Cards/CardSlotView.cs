@@ -99,8 +99,9 @@ public class CardSlotView : MonoBehaviour {
     }
 
     public IEnumerator Discards(IEnumerable<Card> cards) {
-        combatant.stateBar.FreshSync();
         var set = cards.ToHashSet();
+        set.ForEach(c => c.IsSelected = false);
+        combatant.stateBar.FreshSync();
         var remove = m_cards.Extract(card => set.Contains(card.Data));
         var sub = (remove.Count - 1) / 2.0f;
         combatant.Heap.RecycleCard(set);
