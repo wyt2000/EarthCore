@@ -43,40 +43,38 @@ public class StateBarView : MonoBehaviour {
 
 #endregion
 
-    private float m_duration = 1.0f;
+    private const float Duration = 0.5f;
+
+    private readonly CoroutineLocker m_locker = new(ResolvePolicy.Delay);
 
     public void FreshSync() {
-        var old = m_duration;
-        m_duration = 0;
-        FreshUI(combatant.State, combatant.State, new CombatState());
-        m_duration = old;
+        FreshUI(0, combatant.State, combatant.State);
     }
 
     public void Init() {
         BindAll();
         FreshSync();
-        combatant.State.OnStateChange += FreshUI;
+        combatant.State.OnStateChange += (old, cur, _) => FreshUI(Duration, old, cur);
     }
 
-    private void FreshUI(CombatState old, CombatState cur, CombatState delta) {
-        StartCoroutine(ImpFreshUI(old, cur, delta));
+    private void FreshUI(float duration, CombatState old, CombatState cur) {
+        StartCoroutine(ImpFreshUI(duration, old, cur).Lock(m_locker));
     }
 
-    private IEnumerator ImpFreshUI(CombatState old, CombatState cur, CombatState delta) {
-        // Todo 加锁
+    private IEnumerator ImpFreshUI(float duration, CombatState old, CombatState cur) {
         return GCoroutine.Parallel(
-            health.FreshHealthBar(m_duration, old.Health, cur.Health, old.HealthMax, cur.HealthMax),
-            mana.FreshManaBar(m_duration, old.Mana, cur.Mana, old.ManaMax, cur.ManaMax, combatant),
-            physicalShield.FreshField(m_duration, old.PhysicalShield, cur.PhysicalShield),
-            physicalAmplify.FreshField(m_duration, old.PhysicalDamageAmplify, cur.PhysicalDamageAmplify),
-            physicalReduce.FreshField(m_duration, old.PhysicalDamageReduce, cur.PhysicalDamageReduce),
-            magicShield.FreshField(m_duration, old.MagicShield, cur.MagicShield),
-            magicAmplify.FreshField(m_duration, old.MagicDamageAmplify, cur.MagicDamageAmplify),
-            magicReduce.FreshField(m_duration, old.MagicDamageReduce, cur.MagicDamageReduce),
+            health.FreshHealthBar(duration, old.Health, cur.Health, old.HealthMax, cur.HealthMax),
+            mana.FreshManaBar(duration, old.Mana, cur.Mana, old.ManaMax, cur.ManaMax, combatant),
+            physicalShield.FreshField(duration, old.PhysicalShield, cur.PhysicalShield),
+            physicalAmplify.FreshField(duration, old.PhysicalDamageAmplify, cur.PhysicalDamageAmplify),
+            physicalReduce.FreshField(duration, old.PhysicalDamageReduce, cur.PhysicalDamageReduce),
+            magicShield.FreshField(duration, old.MagicShield, cur.MagicShield),
+            magicAmplify.FreshField(duration, old.MagicDamageAmplify, cur.MagicDamageAmplify),
+            magicReduce.FreshField(duration, old.MagicDamageReduce, cur.MagicDamageReduce),
             GCoroutine.Parallel(elementSeals.Select((element, i) =>
             {
                 var type = (ElementType)i;
-                return element.FreshSeal(m_duration, old.ElementAttach[type], cur.ElementAttach[type]);
+                return element.FreshSeal(duration, old.ElementAttach[type], cur.ElementAttach[type]);
             }))
         );
     }
