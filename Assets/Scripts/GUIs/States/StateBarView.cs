@@ -48,7 +48,8 @@ public class StateBarView : MonoBehaviour {
     private readonly CoroutineLocker m_locker = new(ResolvePolicy.Delay);
 
     public void FreshSync() {
-        FreshUI(0, combatant.State, combatant.State);
+        var iter = ImpFreshUI(0, combatant.State, combatant.State);
+        while (iter.MoveNext()) { }
     }
 
     public void Init() {

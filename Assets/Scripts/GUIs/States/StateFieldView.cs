@@ -51,13 +51,13 @@ public class StateFieldView : MonoBehaviour {
     // 刷新蓝条 Todo 蓝条滚动特效
     public IEnumerator FreshManaBar(float duration, float old, float cur, float oldLimit, float curLimit, CombatantComponent combatant) {
         if (duration > 0 && Mathf.Approximately(old, cur) && Mathf.Approximately(oldLimit, curLimit)) return null;
-        var batch = combatant.PreviewBatch;
-        var cost = batch.PreviewManaCost();
-        var sign = cost >= 0 ? '-' : '+';
-        var costStr = batch.Cards.Length == 0 ? "" : $"({sign}{Mathf.Abs(cost):F0})";
         return GCoroutine.Parallel(
             GAnimation.Lerp(duration, t =>
             {
+                var batch = combatant.PreviewBatch;
+                var cost = batch.PreviewManaCost();
+                var sign = cost >= 0 ? '-' : '+';
+                var costStr = batch.Cards.Length == 0 ? "" : $"({sign}{Mathf.Abs(cost):F0})";
                 FreshUI($"{Mathf.Lerp(old, cur, t):F0}{costStr}/{Mathf.Lerp(oldLimit, curLimit, t):F0}");
             }),
             PlayShakeAnimation(duration)
