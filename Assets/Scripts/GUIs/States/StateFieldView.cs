@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Combat;
+using DG.Tweening;
 using GUIs.Animations;
 using GUIs.Common;
 using TMPro;
@@ -8,6 +9,7 @@ using UnityEngine.UI;
 using Utils;
 
 namespace GUIs.States {
+// Todo 修复播放了动画但没有刷新ui数值的bug
 public class StateFieldView : MonoBehaviour {
 #region prefab绑定
 
@@ -26,9 +28,12 @@ public class StateFieldView : MonoBehaviour {
         text.text = str;
     }
 
-    // 播放scale+滚动动画
+    // 播放scale+滚动动画 Todo 根据增减播放不同动画
     private IEnumerator PlayShakeAnimation(float duration) {
-        return duration <= 0 ? null : text.GetComponent<Animation>().Wait();
+        if (duration <= 0) return null;
+        return GCoroutine.Parallel(
+            text.transform.DOShakePosition(duration, new Vector3(10f, 10f)).Wait()
+        );
     }
 
     // 刷新血条 Todo 血条滚动特效
@@ -71,12 +76,21 @@ public class StateFieldView : MonoBehaviour {
         );
     }
 
-    // 刷新法印 Todo 法印破碎/重置特效
+    // 刷新法印
     public IEnumerator FreshSeal(float duration, int old, int cur) {
-        if (duration > 0 && old == cur) yield break;
+        if (duration > 0 && old == cur) return null;
         FreshUI($"{cur}");
-        // Todo icon加个单独的shake动画和粒子
-        // yield return icon.GetComponent<Animation>().Wait();
+        if (old == cur) return null;
+        // Todo 加破碎/重置的粒子特效
+        return old < cur
+            // 法印重置
+            ? GCoroutine.Parallel(
+                icon.transform.DOShakeScale(duration, new Vector3(0.5f, 0.5f)).Wait()
+            )
+            // 法印破碎
+            : GCoroutine.Parallel(
+                icon.transform.DOShakePosition(duration, new Vector3(10f, 10f)).Wait()
+            );
     }
 }
 }

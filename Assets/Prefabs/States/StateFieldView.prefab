@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6364614371482903725}
   - component: {fileID: 8392833839856237545}
   - component: {fileID: 870090207590996611}
-  - component: {fileID: 4170873227220117785}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -136,22 +135,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!111 &4170873227220117785
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1351786743941697881}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: eed8f37a5574f0b4ab5ef9abdd12061b, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: eed8f37a5574f0b4ab5ef9abdd12061b, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &1495435149027374385
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +190,6 @@ MonoBehaviour:
   tooltip: {fileID: 3102829902203419490}
   icon: {fileID: 7357132029238915989}
   text: {fileID: 870090207590996611}
-  anim: {fileID: 4170873227220117785}
 --- !u!1 &3677534316106353845
 GameObject:
   m_ObjectHideFlags: 0
