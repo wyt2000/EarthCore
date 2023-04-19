@@ -22,11 +22,13 @@ public static class GAnimation {
         } while (current < endTime);
     }
 
-    // DOTWeen转迭代器
+    // DOTWeen转迭代器 Todo! 重复执行会有冲突,导致各种奇奇怪怪的bug(如shake后不归位)
     public static IEnumerator Wait(this Tween tween) {
         var finish = false;
         tween.OnComplete(() => finish = true);
         while (!finish) yield return null;
+        // Todo! 改成直接返回YieldInstruction
+        // yield return tween.WaitForCompletion();
     }
 
     // 动画转迭代器
