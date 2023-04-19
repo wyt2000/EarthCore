@@ -112,15 +112,15 @@ public static class EffectLinks {
     [ElementLink(true, ElementType.Huo, ElementType.Mu)]
     private static Effect HuoMu() {
         return new Effect {
-            UiName        = "引燃",
-            UiDescription = "火木联动,令敌方获得5层燃烧,每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害（额外伤害小于1时改为1，属性与触发燃烧效果的攻击相同）（永久）",
+            UiName        = "燃烧",
+            UiDescription = "火木联动,令敌方获得5层燃烧,每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害,附带元素与本次攻击相同",
             UiIconPath    = "Textures/Effect/燃烧",
 
             LgTags      = { EffectTag.DeBuff },
             LgOverlay   = 5,
             LgOpenMerge = true,
 
-            OnImpAfterTakeHpChange = (self, req) =>
+            OnImpAfterSelfHpChange = (self, req) =>
             {
                 if (req.IsHeal || req.Reason == "燃烧") return;
                 var state = self.Target.State;
@@ -390,7 +390,7 @@ public static class EffectPrefabs {
     public static Effect QingSuan(int layer) {
         return new Effect {
             UiName        = "清算",
-            UiDescription = "回合结束时对敌人造成等量清算值的水属性魔法伤害",
+            UiDescription = "回合结束时,对敌人造成当前清算值的水属性魔法伤害,并消耗一半层数(至少10层)",
             UiIconPath    = "Textures/Effect/清算",
             UiIconColor   = ElementType.Shui.MainColor(),
 
@@ -408,7 +408,10 @@ public static class EffectPrefabs {
 
                     Reason = "清算"
                 });
-                self.Remove();
+                self.LgOverlay -= Math.Min(10, self.LgOverlay / 2);
+                if (self.LgOverlay <= 0) {
+                    self.Remove();
+                }
             }
         };
     }
