@@ -87,7 +87,7 @@ public class RequestHpChange : CombatRequest {
 
         value = Math.Max(0, value);
 
-        if (Element.HasValue) Target.TryApplyElementBreak(Causer, Element.Value, 1);
+        if (Element.HasValue) Target.TryApplyElementBreak(Causer, Element.Value.Next(), 1);
 
         var old = state.Health;
         state.Health += IsHeal ? value : -value;

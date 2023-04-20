@@ -196,20 +196,19 @@ public class CombatantComponent : MonoBehaviour {
     }
 
     // 尝试施加元素击碎
-    public void TryApplyElementBreak(CombatantComponent causer, ElementType attack, int layer) {
+    public void TryApplyElementBreak(CombatantComponent causer, ElementType type, int layer) {
         if (layer <= 0) return;
-        var next = attack.Next();
-        if (!State.ElementAttach.ContainsKey(next)) return;
-        var cur = State.ElementAttach[next];
+        if (!State.ElementAttach.ContainsKey(type)) return;
+        var cur = State.ElementAttach[type];
         layer = Math.Min(layer, cur);
         State.ElementAttach -= new CompactDict<ElementType, int> {
-            { next, layer },
+            { type, layer },
         };
-        if (State.ElementAttach.ContainsKey(next)) return;
+        if (State.ElementAttach.ContainsKey(type)) return;
         // 施加元素击碎效果
-        layer = State.ElementMaxAttach[next];
-        var broken = EffectBroken.GetElementBroken(next, layer);
-        var recover = EffectBroken.GetElementBrokenRecover(next, layer);
+        layer = State.ElementMaxAttach[type];
+        var broken = EffectBroken.GetElementBroken(type, layer);
+        var recover = EffectBroken.GetElementBrokenRecover(type, layer);
         AddBuffFrom(broken,  causer);
         AddBuffFrom(recover, causer);
     }
