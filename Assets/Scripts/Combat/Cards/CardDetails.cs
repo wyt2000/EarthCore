@@ -553,6 +553,7 @@ public static class CardDetails {
                     Value   = 100,
                     Element = ElementType.Tu,
                     Type    = DamageType.Magical,
+                    Reason  = "厄运"
                 });
                 self.Remove();
             }

@@ -408,7 +408,7 @@ public static class EffectPrefabs {
 
                     Reason = "清算"
                 });
-                self.LgOverlay -= Math.Min(10, self.LgOverlay / 2);
+                self.LgOverlay -= Math.Max(10, self.LgOverlay / 2);
                 if (self.LgOverlay <= 0) {
                     self.Remove();
                 }
@@ -520,12 +520,12 @@ public static class EffectFixed {
 
         OnImpAfterSelfHpChange = (self, req) =>
         {
-            if (req.IsHeal || req.OutShieldChange <= 0) return;
+            if (req.IsHeal || req.OutShieldChange <= 0 || req.Type != DamageType.Magical || req.Reason == self.UiName) return;
             self.Target.Attack(new RequestHpChange {
                 Value   = req.OutShieldChange,
                 Type    = DamageType.Physical,
                 Element = ElementType.Tu,
-                Reason  = "魔力屏障"
+                Reason  = self.UiName
             });
         }
     };
