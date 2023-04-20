@@ -97,7 +97,7 @@ public static class GCoroutine {
         public object Current => null;
     }
 
-    // 并行运行多个协程 Todo! 支持YieldInstruction
+    // 并行运行多个协程
     public static IEnumerator Parallel(IEnumerable<IEnumerator> coroutines) {
         return new ParallelEnumerator(coroutines);
     }
