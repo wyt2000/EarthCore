@@ -316,6 +316,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   page: {fileID: 2655298514974477942}
   fadeMask: {fileID: 0}
+  saveButton: {fileID: 7454935649567891035, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
+  saveList: {fileID: 517290461833188672}
 --- !u!1 &3296978451718062768
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,6 +329,8 @@ GameObject:
   - component: {fileID: 2495386077447698602}
   - component: {fileID: 1782868726581966758}
   - component: {fileID: 2631947362312920691}
+  - component: {fileID: 2494206245814532112}
+  - component: {fileID: 4849659491930074426}
   m_Layer: 0
   m_Name: Scoll
   m_TagString: Untagged
@@ -374,7 +378,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 10
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -399,6 +403,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!222 &2494206245814532112
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3296978451718062768}
+  m_CullTransparentMesh: 1
+--- !u!114 &4849659491930074426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3296978451718062768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1001 &871952916069840046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -678,7 +720,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1165801923677993602, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_fontSize
-      value: 72
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5729477390089138287, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_Name
@@ -1082,7 +1124,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1165801923677993602, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_fontSize
-      value: 72
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5729477390089138287, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_Name
@@ -1321,7 +1363,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1165801923677993602, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_fontSize
-      value: 72
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5729477390089138287, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_Name
@@ -1454,7 +1496,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1165801923677993602, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_fontSize
-      value: 72
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5729477390089138287, guid: 5aa69e949faeb8641ab48012b685e2e4, type: 3}
       propertyPath: m_Name
@@ -1958,6 +2000,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2495386077447698602}
     m_Modifications:
+    - target: {fileID: 256499553805058567, guid: 0952d01b7ae9a474dbd3c3d2c481e7fd, type: 3}
+      propertyPath: m_Spacing
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3716400857269792362, guid: 0952d01b7ae9a474dbd3c3d2c481e7fd, type: 3}
       propertyPath: m_Name
       value: List

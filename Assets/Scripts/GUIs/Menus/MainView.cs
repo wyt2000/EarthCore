@@ -2,9 +2,12 @@
 using Combat.Enums;
 using DG.Tweening;
 using GUIs.Common;
+using Stores;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utils;
 
 namespace GUIs.Menus {
 // 主界面ui
@@ -17,6 +20,12 @@ public class MainView : MonoBehaviour {
     [SerializeField]
     private Image fadeMask;
 
+    [SerializeField]
+    private Button saveButton;
+
+    [SerializeField]
+    private RectTransform saveList;
+
 #endregion
 
     private enum PageType {
@@ -27,8 +36,16 @@ public class MainView : MonoBehaviour {
     };
 
     private void Start() {
-        // Todo 加载存档
         DontDestroyOnLoad(transform.parent);
+        // 加载当前存档
+        StoreManager.All(10).ForEach(AddSaveButton);
+    }
+
+    private void AddSaveButton(int index) {
+        var button = Instantiate(saveButton, saveList);
+        button.onClick.AddListener(() => OnSaveTo(index));
+        button.GetComponentInChildren<TextMeshProUGUI>().text = $"存档{index + 1}";
+        button.transform.SetAsFirstSibling();
     }
 
 #region 入口按钮
@@ -99,9 +116,27 @@ public class MainView : MonoBehaviour {
 
 #region 存档选择
 
+    // Todo 存档读写界面分离
+    // Todo 特化存档列表界面(根据时间戳排序)
+
     // 新建存档/覆盖存档 , -1为新建
     public void OnSaveTo(int index) {
-        // Todo 实现存档机制
+        if (index == -1) {
+            index = StoreManager.NewIndex(10);
+            if (index == -1) {
+                Debug.LogError("存档已满");
+                return;
+            }
+            AddSaveButton(index);
+        }
+        var success = StoreManager.SaveCurrent(index);
+        Debug.Log(success ? "写入存档成功" : "写入存档失败");
+    }
+
+    // 加载存档
+    public void OnLoadFrom(int index) {
+        // Todo 加载存档
+        Debug.Log(StoreManager.LoadCurrent(index) ? "加载存档成功" : "加载存档失败");
     }
 
 #endregion
