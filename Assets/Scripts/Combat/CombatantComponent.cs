@@ -6,6 +6,7 @@ using Combat.Effects;
 using Combat.Enums;
 using Combat.Requests.Details;
 using Combat.States;
+using GUIs.Audios;
 using GUIs.Cards;
 using GUIs.Effects;
 using GUIs.States;
@@ -186,6 +187,7 @@ public class CombatantComponent : MonoBehaviour {
         var card = Cards.Extract(c => c.IsSelected);
         // 超过上限的也弃掉 Todo 优化自动弃牌逻辑 
         card.AddRange(Cards.Extract((_, i) => i >= State.MaxCardCnt));
+        GAudio.PlayDiscardCard();
         Judge.Requests.Add(new RequestAnimation {
             Causer = this,
             Anim   = () => cardSlot.Discards(card)

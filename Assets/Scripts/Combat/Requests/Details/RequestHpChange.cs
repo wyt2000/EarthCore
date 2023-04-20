@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Combat.Enums;
+using GUIs.Audios;
 using Utils;
 
 namespace Combat.Requests.Details {
@@ -90,12 +91,14 @@ public class RequestHpChange : CombatRequest {
 
         var old = state.Health;
         state.Health += IsHeal ? value : -value;
-        var change = state.Health - old;
+        var change = Math.Abs(state.Health - old);
+        Value = change;
+
+        if (IsHeal) GAudio.PlayHeal();
+        else GAudio.PlayDamage();
 
         var changeText = IsHeal ? "治疗" : $"{Element?.ToDescription() ?? "无"}属性{Type.ToDescription()}伤害";
-        Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{-change}点{changeText}");
-
-        Value = Math.Abs(change);
+        Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{Math.Abs(change)}点{changeText}");
         target.BoardCast(effect => effect.AfterSelfHpChange(this));
         causer.BoardCast(effect => effect.AfterTakeHpChange(this));
     }

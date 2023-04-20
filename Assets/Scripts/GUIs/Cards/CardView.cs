@@ -5,6 +5,7 @@ using Combat.Cards;
 using Combat.Enums;
 using Combat.Requests.Details;
 using GUIs.Animations;
+using GUIs.Audios;
 using GUIs.Common;
 using TMPro;
 using UnityEngine;
@@ -160,6 +161,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         if (NewIndex != -1) {
             yield return GAnimation.Wait(NewIndex * 0.1f);
             NewIndex = -1;
+            GAudio.PlayDrawCard();
             var first = Container.transform.position;
             var final = TargetPosition();
             yield return this.MoveWithDuration(first, 0.3f);
@@ -203,7 +205,11 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     public void OnPointerDown(PointerEventData eventData) {
         // Todo 处理穿透点击
         // if (GTools.PassEvent(eventData, ExecuteEvents.pointerClickHandler)) return;
-        if (!IsSelectable) return;
+        if (!IsSelectable) {
+            GAudio.PlayInvalidCard();
+            return;
+        }
+        GAudio.PlaySelectCard();
         Data.IsSelected ^= true;
         Container.combatant.stateBar.FreshSync();
         if (Data.IsSelected) {

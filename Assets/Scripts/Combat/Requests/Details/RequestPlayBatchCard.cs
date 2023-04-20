@@ -2,6 +2,7 @@
 using Combat.Cards;
 using Combat.Effects;
 using Combat.States;
+using GUIs.Audios;
 using Utils;
 
 namespace Combat.Requests.Details {
@@ -107,6 +108,8 @@ public class RequestPlayBatchCard : CombatRequest {
     protected override void ExecuteNoCross() {
         // 扣除法力值
         Causer.State.Mana -= TotalManaCost;
+
+        GAudio.PlayPlayCard();
 
         // 出牌动画
         Add(new RequestAnimation {

@@ -3,6 +3,7 @@ using System.Collections;
 using Combat;
 using DG.Tweening;
 using GUIs.Animations;
+using GUIs.Audios;
 using GUIs.Common;
 using TMPro;
 using UnityEngine;
@@ -82,7 +83,10 @@ public class StateFieldView : MonoBehaviour {
         FreshUI($"{cur}");
         if (old == cur) return null;
         // Todo 加破碎/重置的粒子特效
-        return old < cur
+        var recover = old < cur;
+        if (recover) GAudio.PlaySealRecover();
+        else GAudio.PlaySealBreak();
+        return recover
             // 法印重置
             ? GCoroutine.Parallel(
                 icon.transform.DOShakeScale(duration, new Vector3(0.5f, 0.5f)).Wait()
