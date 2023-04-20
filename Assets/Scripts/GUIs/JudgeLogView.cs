@@ -13,7 +13,6 @@ public class JudgeLogView : MonoBehaviour {
 
     private int m_index;
 
-    // Todo 加滚动条,优化鼠标滚动倍率
     public void AddLog(string str) {
         m_strings.AddLast((++m_index, str));
         LoadString();
