@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Combat;
 using DG.Tweening;
 using GUIs.Animations;
@@ -9,7 +10,6 @@ using UnityEngine.UI;
 using Utils;
 
 namespace GUIs.States {
-// Todo 修复播放了动画但没有刷新ui数值的bug
 public class StateFieldView : MonoBehaviour {
 #region prefab绑定
 
@@ -65,12 +65,12 @@ public class StateFieldView : MonoBehaviour {
     }
 
     // 刷新小字段
-    public IEnumerator FreshField(float duration, float old, float cur) {
+    public IEnumerator FreshField(float duration, float old, float cur, Func<float, string> formatter) {
         if (duration > 0 && Mathf.Approximately(old, cur)) return null;
         return GCoroutine.Parallel(
             GAnimation.Lerp(duration, t =>
             {
-                FreshUI($"{Mathf.Lerp(old, cur, t):F0}");
+                FreshUI($"{formatter(Mathf.Lerp(old, cur, t))}");
             }),
             PlayShakeAnimation(duration)
         );

@@ -30,21 +30,19 @@ public static class GAnimation {
             .GetMethod("WaitForCompletion", BindingFlags.Instance | BindingFlags.NonPublic)?
             .CreateDelegate(typeof(Func<Tween, IEnumerator>), DOTween.instance);
 
-    // DOTWeen转迭代器 Todo! 重复执行会有冲突,导致各种奇奇怪怪的bug(如shake后不归位)
+    // DOTWeen转迭代器
     public static IEnumerator Wait(this Tween tween) {
-        // var finish = false;
-        // tween.OnComplete(() => finish = true);
-        // while (!finish) yield return null;
-        // // Todo! 改成直接返回YieldInstruction
-        //
-        //
-        //
-        // yield return tween.WaitForCompletion();
-        var id = tween.GetHashCode();
-        Debug.Log($"begin : {id}");
-        yield return WaitForCompletion?.Invoke(tween);
-        Debug.Log($"end : {id}");
+        // 先暂停再延迟play,避免delay无效
+        tween.Pause();
+        // 此处不用yield防止延迟执行
+        return ImpWait(tween);
     }
+
+    private static IEnumerator ImpWait(Tween tween) {
+        tween.Play();
+        yield return WaitForCompletion?.Invoke(tween);
+    }
+
 
     // 动画转迭代器
     public static IEnumerator Wait(this Animation animation) {
