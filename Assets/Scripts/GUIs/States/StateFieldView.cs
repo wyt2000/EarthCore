@@ -29,12 +29,14 @@ public class StateFieldView : MonoBehaviour {
         text.text = str;
     }
 
-    // 播放scale+滚动动画 Todo 根据增减播放不同动画
-    private IEnumerator PlayShakeAnimation(float duration) {
+    // 播放字段修改动画
+    private IEnumerator PlayShakeAnimation(float duration, bool isAdd) {
         if (duration <= 0) return null;
-        return GCoroutine.Parallel(
-            text.transform.DOShakePosition(duration, new Vector3(10f, 10f)).Wait()
-        );
+        return isAdd
+            ? null // Todo 实现此特化
+            : GCoroutine.Parallel(
+                text.transform.DOShakePosition(duration, new Vector3(10f, 10f)).Wait()
+            );
     }
 
     // 刷新血条 Todo 血条滚动特效
@@ -45,7 +47,7 @@ public class StateFieldView : MonoBehaviour {
             {
                 FreshUI($"{Mathf.Lerp(old, cur, t):F0}/{Mathf.Lerp(oldLimit, curLimit, t):F0}");
             }),
-            PlayShakeAnimation(duration)
+            PlayShakeAnimation(duration, cur > old)
         );
     }
 
@@ -61,7 +63,7 @@ public class StateFieldView : MonoBehaviour {
                 var costStr = batch.Cards.Length == 0 ? "" : $"({sign}{Mathf.Abs(cost):F0})";
                 FreshUI($"{Mathf.Lerp(old, cur, t):F0}{costStr}/{Mathf.Lerp(oldLimit, curLimit, t):F0}");
             }),
-            PlayShakeAnimation(duration)
+            PlayShakeAnimation(duration, cur > old)
         );
     }
 
@@ -73,7 +75,7 @@ public class StateFieldView : MonoBehaviour {
             {
                 FreshUI($"{formatter(Mathf.Lerp(old, cur, t))}");
             }),
-            PlayShakeAnimation(duration)
+            PlayShakeAnimation(duration, cur > old)
         );
     }
 
