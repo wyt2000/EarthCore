@@ -27,7 +27,8 @@ public class StoreMonster : StoreCombatant {
         };
         ret.Health = ret.HealthMax;
         ret.Mana   = ret.ManaMax;
-        ret.ElementAttach.Add(ret.ElementMaxAttach);
+
+        ret.ElementAttach += ret.ElementMaxAttach;
         return ret;
     }
 }

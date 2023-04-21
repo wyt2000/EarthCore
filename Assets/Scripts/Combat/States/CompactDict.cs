@@ -18,7 +18,7 @@ where TV : struct, IComparable, IConvertible, IEquatable<TV>, IFormattable {
         }
     }
 
-    public CompactDict<TK, TV> Clone() {
+    private CompactDict<TK, TV> Clone() {
         var result = new CompactDict<TK, TV>();
         foreach (var (key, value) in this) {
             result[key] = value;
@@ -27,13 +27,13 @@ where TV : struct, IComparable, IConvertible, IEquatable<TV>, IFormattable {
         return result;
     }
 
-    public void Add(CompactDict<TK, TV> rhs) {
+    private void Add(CompactDict<TK, TV> rhs) {
         foreach (var (key, value) in rhs) {
             this[key] = DynamicOperator.ForceAdd(this[key], value);
         }
     }
 
-    public void Sub(CompactDict<TK, TV> rhs) {
+    private void Sub(CompactDict<TK, TV> rhs) {
         foreach (var (key, value) in rhs) {
             this[key] = DynamicOperator.ForceSub(this[key], value);
         }
