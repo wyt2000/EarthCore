@@ -13,18 +13,12 @@ public class CardHeap {
 
     public int DiscardCount => m_discards.Count;
 
-    private void Shuffle() {
-        GRandom.Shuffle(AllCards);
-        // Todo 加洗牌动画
-        GAudio.PlayShuffleCard();
-    }
-
     public CardHeap() {
         for (var i = 0; i < 1; ++i) {
             AllCards.AddRange(CardDetails.CloneAll());
         }
 
-        Shuffle();
+        GRandom.Shuffle(AllCards);
     }
 
     private void ReuseCard() {
@@ -32,7 +26,9 @@ public class CardHeap {
         // 洗牌
         AllCards.AddRange(m_discards.Select(card => card.Clone()));
         m_discards.Clear();
-        Shuffle();
+        GRandom.Shuffle(AllCards);
+        // Todo 加洗牌动画
+        GAudio.PlayShuffleCard();
     }
 
     // 回收卡牌
