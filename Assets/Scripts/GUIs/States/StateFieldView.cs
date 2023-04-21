@@ -86,15 +86,15 @@ public class StateFieldView : MonoBehaviour {
         if (old == cur) return null;
         // Todo 加破碎/重置的粒子特效
         var recover = old < cur;
-        if (recover) GAudio.PlaySealRecover();
-        else GAudio.PlaySealBreak();
         return recover
             // 法印重置
             ? GCoroutine.Parallel(
+                GAudio.PlaySealRecover(),
                 icon.transform.DOShakeScale(duration, new Vector3(0.5f, 0.5f)).Wait()
             )
             // 法印破碎
             : GCoroutine.Parallel(
+                GAudio.PlaySealBreak(),
                 icon.transform.DOShakePosition(duration, new Vector3(10f, 10f)).Wait()
             );
     }

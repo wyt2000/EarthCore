@@ -94,9 +94,9 @@ public class RequestHpChange : CombatRequest {
         Value = change;
 
         // Todo 加打击/治疗动画
-        if (IsHeal) GAudio.PlayHeal();
-        else if (Type == DamageType.Physical) GAudio.PlayPhysicalDamage();
-        else GAudio.PlayMagicDamage();
+        if (IsHeal) yield return GAudio.PlayHeal();
+        else if (Type == DamageType.Physical) yield return GAudio.PlayPhysicalDamage();
+        else yield return GAudio.PlayMagicDamage();
 
         var changeText = IsHeal ? "治疗" : $"{Element?.ToDescription() ?? "无"}属性{Type.ToDescription()}伤害";
         Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{Math.Abs(change)}点{changeText}");
