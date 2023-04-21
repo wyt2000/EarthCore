@@ -68,8 +68,8 @@ public class CombatJudge : MonoBehaviour {
         logger.AddLog("游戏开始");
 
         // 初始摸牌
-        CurrentComp.GetCard(InitCardCount);
-        NextComp.GetCard(InitCardCount);
+        CurrentComp.GetCard(CurrentComp.State.InitCardCnt);
+        NextComp.GetCard(NextComp.State.InitCardCnt);
 
         TurnStart();
     }

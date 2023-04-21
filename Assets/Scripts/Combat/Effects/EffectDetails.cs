@@ -7,10 +7,9 @@ using Combat.Cards;
 using Combat.Effects.Templates;
 using Combat.Enums;
 using Combat.Requests.Details;
+using Combat.States;
 using Utils;
 
-// Todo 检查tag和causer&target的使用是否合理
-// Todo 测试effect逻辑
 namespace Combat.Effects {
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 // 元素联动相关效果
@@ -482,7 +481,7 @@ public static class EffectFixed {
     // 摸牌
     private static Effect MoPai() => new() {
         UiHidde             = true,
-        OnImpAfterTurnStart = self => self.Target.GetCard(2)
+        OnImpAfterTurnStart = self => self.Target.GetCard(self.Target.State.GetCardCnt)
     };
 
     // 回复法力25%

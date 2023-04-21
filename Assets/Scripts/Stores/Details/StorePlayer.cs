@@ -22,7 +22,7 @@ public class StorePlayer : StoreCombatant {
 
             ManaMaxBase = 50,
 
-            InitCardCnt = 1,
+            InitCardCnt = 3,
             GetCardCnt  = 2,
             MaxCardCnt  = 5,
 

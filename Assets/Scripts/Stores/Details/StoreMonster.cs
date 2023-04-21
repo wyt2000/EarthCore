@@ -13,7 +13,7 @@ public class StoreMonster : StoreCombatant {
 
             ManaMaxBase = 100,
 
-            InitCardCnt = 0,
+            InitCardCnt = 3,
             GetCardCnt  = 3,
             MaxCardCnt  = int.MaxValue,
 
