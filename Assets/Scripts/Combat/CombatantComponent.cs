@@ -131,7 +131,7 @@ public class CombatantComponent : MonoBehaviour {
             Judge  = Judge,
             Cards  = arr
         };
-        if (!isOtherPlayer && batch.CanEnqueue()) {
+        if (!isOtherPlayer && !batch.CanEnqueue()) {
             GAudio.PlayInvalidCard();
         }
         else {
