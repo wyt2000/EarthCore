@@ -94,19 +94,25 @@ public class CombatAddableState {
     [ListenChange]
     public float MagicDamageReduce;
 
+    // 玩家初始手牌
+    public int InitCardCnt;
+
+    // 每回合抽牌数
+    public int GetCardCnt;
+
     // 玩家结束时最大手牌数
     public int MaxCardCnt;
 
     // 元素法印层数
     [ListenChange]
-    public CompactDict<ElementType, int> ElementAttach = new();
+    public readonly CompactDict<ElementType, int> ElementAttach = new();
 
     // 元素法印最大层数
     public readonly CompactDict<ElementType, int> ElementMaxAttach = new();
 
     // tag容器
     [ListenChange]
-    public CompactDict<CombatBlockTag, int> BlockTags = new();
+    public readonly CompactDict<CombatBlockTag, int> BlockTags = new();
 
 #endregion
 

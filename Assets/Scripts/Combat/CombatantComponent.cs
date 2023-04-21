@@ -10,6 +10,7 @@ using GUIs.Audios;
 using GUIs.Cards;
 using GUIs.Effects;
 using GUIs.States;
+using Stores.Details;
 using UnityEngine;
 using Utils;
 
@@ -34,33 +35,7 @@ public class CombatantComponent : MonoBehaviour {
     [NonSerialized]
     public CombatantComponent Opponent;
 
-    public readonly CombatState State = new() {
-        HealthMaxBase    = 1000,
-        HealthMaxPercent = 0,
-        HealthMaxExtra   = 0,
-
-        ManaMaxBase    = 150,
-        ManaMaxPercent = 0,
-        ManaMaxExtra   = 0,
-
-        PhysicalShield        = 0,
-        PhysicalDamageAmplify = 0,
-        PhysicalDamageReduce  = 0,
-
-        MagicShield        = 0,
-        MagicDamageAmplify = 0,
-        MagicDamageReduce  = 0,
-
-        MaxCardCnt = 10,
-
-        ElementMaxAttach = {
-            { ElementType.Jin, 2 },
-            { ElementType.Mu, 2 },
-            { ElementType.Shui, 2 },
-            { ElementType.Huo, 2 },
-            { ElementType.Tu, 2 },
-        }
-    };
+    public CombatState State;
 
     // Todo 将effect/card/heap集成到CombatState中
 
@@ -74,10 +49,8 @@ public class CombatantComponent : MonoBehaviour {
     public readonly CardHeap Heap = new();
 
     private void Start() {
-        State.Health = State.HealthMax / 2;
-        State.Mana   = State.ManaMax / 2;
-
-        State.ElementAttach += State.ElementMaxAttach;
+        StoreCombatant store = isOtherPlayer ? new StoreMonster() : new StorePlayer();
+        State = store.InitState();
 
         stateBar.Init();
         // Todo effect ui改成响应式
@@ -198,13 +171,13 @@ public class CombatantComponent : MonoBehaviour {
     // 尝试施加元素击碎
     public void TryApplyElementBreak(CombatantComponent causer, ElementType type, int layer) {
         if (layer <= 0) return;
-        if (!State.ElementAttach.ContainsKey(type)) return;
-        var cur = State.ElementAttach[type];
+        var attach = State.ElementAttach;
+        if (!attach.ContainsKey(type)) return;
+        var cur = attach[type];
         layer = Math.Min(layer, cur);
-        State.ElementAttach -= new CompactDict<ElementType, int> {
-            { type, layer },
-        };
-        if (State.ElementAttach.ContainsKey(type)) return;
+        // 移除元素层数
+        attach[type] -= layer;
+        if (attach.ContainsKey(type)) return;
         // 施加元素击碎效果
         layer = State.ElementMaxAttach[type];
         var broken = EffectBroken.GetElementBroken(type, layer);

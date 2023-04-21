@@ -33,7 +33,7 @@ public class MainView : MonoBehaviour {
         模式选择,
         存档选择,
         游戏设置,
-    };
+    }
 
     private void Start() {
         DontDestroyOnLoad(transform.parent);
@@ -67,12 +67,12 @@ public class MainView : MonoBehaviour {
 
     // 退出游戏
     public void OnExitGame() {
-    #if UNITY_STANDALONE
+#if UNITY_STANDALONE
         Application.Quit();
-    #endif
-    #if UNITY_EDITOR
+#endif
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-    #endif
+#endif
     }
 
 #endregion

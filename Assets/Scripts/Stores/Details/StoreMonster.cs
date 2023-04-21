@@ -2,29 +2,20 @@
 using Combat.States;
 
 namespace Stores.Details {
-public class StorePlayer : StoreCombatant {
-    // 玩家名
-    public string Name = "Player";
+// 怪物状态 
+public class StoreMonster : StoreCombatant {
+    // 怪物名
+    public string Name = "Monster";
 
-    // 玩家经验值
-    public int Exp = 0;
-
-    // 玩家关卡进度
-    public int Process = 0;
-
-    // 玩家等级
-    public int Level => Exp / 100;
-
-    // 玩家初始战斗状态
     public override CombatState InitState() {
         var ret = new CombatState {
-            HealthMaxBase = 1000,
+            HealthMaxBase = 2000,
 
-            ManaMaxBase = 50,
+            ManaMaxBase = 100,
 
-            InitCardCnt = 1,
-            GetCardCnt  = 2,
-            MaxCardCnt  = 5,
+            InitCardCnt = 0,
+            GetCardCnt  = 3,
+            MaxCardCnt  = int.MaxValue,
 
             ElementMaxAttach = {
                 { ElementType.Jin, 2 },
@@ -32,9 +23,7 @@ public class StorePlayer : StoreCombatant {
                 { ElementType.Shui, 2 },
                 { ElementType.Huo, 2 },
                 { ElementType.Tu, 2 },
-            },
-
-            // Todo 配置固有效果
+            }
         };
         ret.Health = ret.HealthMax;
         ret.Mana   = ret.ManaMax;

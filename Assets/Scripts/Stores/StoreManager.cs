@@ -71,6 +71,19 @@ public static class StoreManager {
         return true;
     }
 
+    // 删除一个存档
+    public static bool Delete(int index) {
+        var path = GetStorePath(index);
+        try {
+            File.Delete(path);
+        }
+        catch (Exception e) {
+            Debug.LogError(e);
+            return false;
+        }
+        return true;
+    }
+
     // 当前游戏的全局唯一存档
     public static StoreGame Current { get; private set; }
 
