@@ -292,7 +292,9 @@ public static class EffectBroken {
             OnImpAfterDetach = self =>
             {
                 var state = self.Target.State;
-                state.ElementAttach[elementType] = state.ElementMaxAttach[elementType];
+                state.ElementAttach += new CompactDict<ElementType, int> {
+                    { elementType, state.ElementMaxAttach[elementType] }
+                };
             }
         };
     }

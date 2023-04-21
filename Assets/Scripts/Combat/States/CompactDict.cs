@@ -7,7 +7,7 @@ public class CompactDict<TK, TV> : Dictionary<TK, TV>
 where TV : struct, IComparable, IConvertible, IEquatable<TV>, IFormattable {
     public new TV this[TK key] {
         get => ContainsKey(key) ? base[key] : default;
-        set
+        private set
         {
             if (value.Equals(default)) {
                 Remove(key);

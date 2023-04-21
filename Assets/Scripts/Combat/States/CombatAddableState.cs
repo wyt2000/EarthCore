@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Combat.Enums;
 
@@ -37,6 +38,9 @@ public enum CombatBlockTag {
 }
 
 // 满足可加性的战斗属性,可以自动附着和脱离
+[SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
+[SuppressMessage("ReSharper", "MemberCanBeProtected.Global")]
+[SuppressMessage("ReSharper", "UnassignedField.Global")]
 public class CombatAddableState {
 #region 可加性属性
 
@@ -103,16 +107,16 @@ public class CombatAddableState {
     // 玩家结束时最大手牌数
     public int MaxCardCnt;
 
+    // 当前tag封锁
+    [ListenChange]
+    public CompactDict<CombatBlockTag, int> BlockTags = new();
+
     // 元素法印层数
     [ListenChange]
-    public readonly CompactDict<ElementType, int> ElementAttach = new();
+    public CompactDict<ElementType, int> ElementAttach = new();
 
     // 元素法印最大层数
     public readonly CompactDict<ElementType, int> ElementMaxAttach = new();
-
-    // tag容器
-    [ListenChange]
-    public readonly CompactDict<CombatBlockTag, int> BlockTags = new();
 
 #endregion
 

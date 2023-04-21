@@ -177,12 +177,12 @@ public class CombatantComponent : MonoBehaviour {
     // 尝试施加元素击碎
     public void TryApplyElementBreak(CombatantComponent causer, ElementType type, int layer) {
         if (layer <= 0) return;
-        var attach = State.ElementAttach;
+        ref var attach = ref State.ElementAttach;
         if (!attach.ContainsKey(type)) return;
         var cur = attach[type];
         layer = Math.Min(layer, cur);
         // 移除元素层数
-        attach[type] -= layer;
+        attach -= new CompactDict<ElementType, int> { { type, layer } };
         if (attach.ContainsKey(type)) return;
         // 施加元素击碎效果
         layer = State.ElementMaxAttach[type];
