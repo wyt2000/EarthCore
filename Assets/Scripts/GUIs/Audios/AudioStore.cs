@@ -4,7 +4,7 @@ namespace GUIs.Audios {
 public class AudioStore : MonoBehaviour {
 #region prefab配置
 
-    // 不可选牌
+    // 不可选&出牌
     public AudioClip invalidCard;
 
     // 选牌 
@@ -19,8 +19,14 @@ public class AudioStore : MonoBehaviour {
     // 抽牌
     public AudioClip drawCard;
 
-    // 造成伤害
-    public AudioClip damage;
+    // 洗牌
+    public AudioClip shuffleCard;
+
+    // 造成物理伤害
+    public AudioClip damagePhysical;
+
+    // 造成魔法伤害
+    public AudioClip damageMagic;
 
     // 回血
     public AudioClip heal;

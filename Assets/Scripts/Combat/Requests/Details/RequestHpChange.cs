@@ -51,7 +51,6 @@ public class RequestHpChange : CombatRequest {
             );
     }
 
-    // Todo 加打击/治疗动画
     public override IEnumerator Execute() {
         var causer = Causer;
         var target = Target;
@@ -94,8 +93,10 @@ public class RequestHpChange : CombatRequest {
         var change = Math.Abs(state.Health - old);
         Value = change;
 
+        // Todo 加打击/治疗动画
         if (IsHeal) GAudio.PlayHeal();
-        else GAudio.PlayDamage();
+        else if (Type == DamageType.Physical) GAudio.PlayPhysicalDamage();
+        else GAudio.PlayMagicDamage();
 
         var changeText = IsHeal ? "治疗" : $"{Element?.ToDescription() ?? "无"}属性{Type.ToDescription()}伤害";
         Judge.logger.AddLog($"由于{Reason},{Causer.name}对{Target.name}造成{Math.Abs(change)}点{changeText}");

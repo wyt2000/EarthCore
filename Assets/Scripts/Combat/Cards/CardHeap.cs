@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Combat.Requests.Details;
+using GUIs.Audios;
 using Utils;
 
 namespace Combat.Cards {
@@ -12,20 +13,26 @@ public class CardHeap {
 
     public int DiscardCount => m_discards.Count;
 
+    private void Shuffle() {
+        GRandom.Shuffle(AllCards);
+        // Todo 加洗牌动画
+        GAudio.PlayShuffleCard();
+    }
+
     public CardHeap() {
         for (var i = 0; i < 1; ++i) {
             AllCards.AddRange(CardDetails.CloneAll());
         }
 
-        GRandom.Shuffle(AllCards);
+        Shuffle();
     }
 
     private void ReuseCard() {
         if (m_discards.Count == 0) return;
         // 洗牌
-        GRandom.Shuffle(m_discards);
         AllCards.AddRange(m_discards.Select(card => card.Clone()));
         m_discards.Clear();
+        Shuffle();
     }
 
     // 回收卡牌

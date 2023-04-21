@@ -125,12 +125,18 @@ public class CombatantComponent : MonoBehaviour {
 
     public void PlayCard(IEnumerable<Card> cards) {
         var arr = cards.ToArray();
-        Judge.Requests.Add(new RequestPlayBatchCard {
+        var batch = new RequestPlayBatchCard {
             Causer = this,
             Target = Opponent,
             Judge  = Judge,
             Cards  = arr
-        });
+        };
+        if (!isOtherPlayer && batch.CanEnqueue()) {
+            GAudio.PlayInvalidCard();
+        }
+        else {
+            Judge.Requests.Add(batch);
+        }
     }
 
     // 摸牌 

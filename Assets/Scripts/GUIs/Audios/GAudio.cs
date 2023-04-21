@@ -29,8 +29,16 @@ public static class GAudio {
         AudioStore.Instance.drawCard.Play();
     }
 
-    public static void PlayDamage() {
-        AudioStore.Instance.damage.Play();
+    public static void PlayShuffleCard() {
+        AudioStore.Instance.shuffleCard.Play();
+    }
+
+    public static void PlayPhysicalDamage() {
+        AudioStore.Instance.damagePhysical.Play();
+    }
+
+    public static void PlayMagicDamage() {
+        AudioStore.Instance.damageMagic.Play();
     }
 
     public static void PlayHeal() {
