@@ -2407,7 +2407,7 @@ MonoBehaviour:
   discardCard: {fileID: 8300000, guid: 1ece69ad9d07e004583be76c710ed187, type: 3}
   drawCard: {fileID: 8300000, guid: 1c5f2d506c4c7b2409011b593a10dade, type: 3}
   shuffleCard: {fileID: 8300000, guid: 75165427680a9a340b9f720803d8ca93, type: 3}
-  damagePhysical: {fileID: 8300000, guid: ba708dc76c97fce4abd095935a814a24, type: 3}
+  damagePhysical: {fileID: 8300000, guid: 3d1bfa0942fb4d73948781cfa0db3afb, type: 3}
   damageMagic: {fileID: 8300000, guid: 3c59d1a5ff80c94499941142db82658d, type: 3}
   heal: {fileID: 8300000, guid: acbc7d5618c32a9458f0b00a94fe1f63, type: 3}
   sealBreak: {fileID: 8300000, guid: d96fbce349a50404683cb968e3063912, type: 3}
