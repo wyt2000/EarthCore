@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿#if UNITY_EDITOR
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using Utils;
 
-namespace Test {
+namespace ScriptsEditor.Test {
 public static class CoroutineTest {
     [MenuItem("Tests/测试协程锁")]
     // 测试resolvePolicy
@@ -49,3 +50,4 @@ public static class CoroutineTest {
     }
 }
 }
+#endif

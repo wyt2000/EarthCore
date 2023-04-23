@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#if UNITY_EDITOR
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -46,3 +47,4 @@ internal class FontSelector : EditorWindow {
     }
 }
 }
+#endif
