@@ -366,7 +366,7 @@ public static class CardDetails {
         return new Card {
             Clone         = AnChaoYongDong,
             UiName        = "暗潮涌动",
-            UiDescription = "获得70点$【清算】$值",
+            UiDescription = "获得70点【清算】值",
             UiImagePath   = "Textures/Card/Details/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
@@ -543,6 +543,7 @@ public static class CardDetails {
             UiName        = "厄运",
             UiDescription = "三回合后生效造成100点土属性魔法伤害（生效于敌方回合开始时）",
             UiIconPath    = "Textures/Effect/厄运",
+            UiIconColor   = ElementType.Tu.MainColor(),
 
             LgRemainingRounds = 3,
 

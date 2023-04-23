@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Combat.Enums;
 using Combat.Requests.Details;
 using Combat.States;
 using GUIs.Effects;
@@ -54,21 +55,19 @@ public class Effect : IComparable<Effect> {
 #region UI配置
 
     // 效果名
-    public string UiName = "_None_";
+    public string UiName = "";
 
     // 效果描述(鼠标悬浮显示)
-    public string UiDescription = "_None_";
+    public string UiDescription = "";
 
     // 效果图标路径
     public string UiIconPath = "";
 
     // 效果色调
-    public Color UiIconColor = Color.white;
+    public Color UiIconColor = ElementTypeFunc.MainColor(null);
 
     // 是否隐藏UI显示(例如立即伤害那种就不需要)
     public bool UiHidde = false;
-
-    // Todo 完善UI/动画/粒子效果等配置
 
 #endregion
 
@@ -135,7 +134,6 @@ public class Effect : IComparable<Effect> {
     /// 燃烧效果
     /// </example>
     protected virtual bool OnCheckMergeAble(Effect effect) {
-        // Todo 为匿名类生成guid
         return
             UiName == effect.UiName &&
             UiDescription == effect.UiDescription &&

@@ -93,7 +93,6 @@ public class RequestHpChange : CombatRequest {
         var change = Math.Abs(state.Health - old);
         Value = change;
 
-        // Todo 加打击/治疗动画
         if (IsHeal) yield return GAudio.PlayHeal();
         else if (Type == DamageType.Physical) yield return GAudio.PlayPhysicalDamage();
         else yield return GAudio.PlayMagicDamage();

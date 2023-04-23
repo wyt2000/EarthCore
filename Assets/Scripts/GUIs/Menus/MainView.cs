@@ -67,12 +67,12 @@ public class MainView : MonoBehaviour {
 
     // 退出游戏
     public void OnExitGame() {
-#if UNITY_STANDALONE
+    #if UNITY_STANDALONE
         Application.Quit();
-#endif
-#if UNITY_EDITOR
+    #endif
+    #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#endif
+    #endif
     }
 
 #endregion
@@ -84,7 +84,7 @@ public class MainView : MonoBehaviour {
         const float duration = 2.0f;
         yield return fadeMask.DOFade(1.0f, duration).WaitForCompletion();
         gameObject.SetActive(false);
-        SceneManager.LoadScene("CombatScene");
+        SceneManager.LoadScene("Scenes/CombatScene");
         yield return fadeMask.DOFade(0.0f, duration).WaitForCompletion();
     }
 

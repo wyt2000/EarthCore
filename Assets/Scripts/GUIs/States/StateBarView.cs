@@ -7,7 +7,6 @@ using UnityEngine;
 using Utils;
 
 namespace GUIs.States {
-// Todo 使用layout组件优化布局
 public class StateBarView : MonoBehaviour {
 #region prefab配置
 
@@ -95,8 +94,6 @@ public class StateBarView : MonoBehaviour {
         elementSeals.ForEach((element, i) =>
         {
             var type = (ElementType)i;
-            // Todo 显示破碎效果
-            // element.OnShow         = state => $"{state.ElementAttach[type]}";
             element.tooltip.OnShow = () => $"{type.ToDescription()}元素法印";
         });
     }

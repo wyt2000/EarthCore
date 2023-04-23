@@ -27,7 +27,6 @@ public class RequestPlayCard : CombatRequest {
         );
     }
 
-    // Todo 加动画
     public override IEnumerator Execute() {
         Current.OnExecute(this);
         // 元素浸染,施加一次元素打击

@@ -36,7 +36,6 @@ public class CardHeap {
         m_discards.AddRange(cards);
     }
 
-    // Todo 优化摸牌算法到O(n)
     public List<Card> GetCards(RequestGetCard request) {
         // 牌不够时尝试重用卡牌
         if (AllCards.Count == 0) ReuseCard();

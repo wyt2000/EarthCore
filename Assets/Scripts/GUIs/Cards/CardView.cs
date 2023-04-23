@@ -114,16 +114,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         var imageUrl = Data.UiImagePath;
         cardImage.sprite = Resources.Load<Sprite>(imageUrl) ?? cardImage.sprite;
 
-        cardName.text = Data.UiName;
-        var desc = Data.UiDescription;
-        desc = Regex.Replace(desc, @"\$([\s\S]+?)\$", @"<link><u>$1</u></link>");
-        cardDescription.GetComponent<TextLinkHandler>().OnClickLink += (text, _) =>
-        {
-            // Todo 显示关键字描述
-            Container.combatant.Judge.logger.AddLog($"点击了 {text} 关键字");
-        };
-
-        cardDescription.text = desc;
+        cardName.text        = Data.UiName;
+        cardDescription.text = Data.UiDescription;
         cardElementType.text = Data.LgElement?.ToDescription() ?? "";
     }
 
@@ -147,6 +139,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         if (Data == null) return;
         cardCost.text = $"{Data.ManaCost:F0}";
 
+        // Todo 修复filter未及时刷新的bug
         cardBanFilter.gameObject.SetActive(
             Style == CardStyle.Ban ||
             Style != CardStyle.Played && Data.IsSelected && !Data.Owner.PreviewBatch.CanEnqueue()
@@ -203,8 +196,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        // Todo 处理穿透点击
-        // if (GTools.PassEvent(eventData, ExecuteEvents.pointerClickHandler)) return;
+        if (Style is CardStyle.Other or CardStyle.Played) return;
         if (!IsSelectable) {
             GAudio.PlayInvalidCard();
             return;
@@ -212,10 +204,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         GAudio.PlaySelectCard();
         Data.IsSelected ^= true;
         Container.combatant.stateBar.FreshSync();
-        if (Data.IsSelected) {
-            // Todo 游戏侧边加个详细信息面板 
-        }
-        else if (Data.Owner.PreviewBatch.EvaluateState() == BatchCardState.CannotSelect) {
+        // 取消选择出牌时,智能反选
+        if (!Data.IsSelected && Data.Owner.PreviewBatch.EvaluateState() == BatchCardState.CannotSelect) {
             Data.Owner.Cards.ForEach(card => card.IsSelected = false);
         }
         StartCoroutine(Container.FreshUI());

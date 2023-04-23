@@ -114,6 +114,7 @@ public static class EffectLinks {
             UiName        = "燃烧",
             UiDescription = "火木联动,令敌方获得5层燃烧,每次攻击消耗一层燃烧对敌人造成敌人2%当前生命值额外物理伤害,附带元素与本次攻击相同",
             UiIconPath    = "Textures/Effect/燃烧",
+            UiIconColor   = ElementType.Huo.MainColor(),
 
             LgTags      = { EffectTag.DeBuff },
             LgOverlay   = 5,
@@ -183,6 +184,7 @@ public static class EffectLinks {
             UiName        = "洞察",
             UiDescription = "金土水联动,无效敌方下一次的伤害和控制效果",
             UiIconPath    = "Textures/Effect/洞察",
+            UiIconColor   = ElementType.Shui.MainColor(),
 
             LgTags = { EffectTag.Buff },
 

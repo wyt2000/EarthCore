@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using Combat.Requests.Details;
 using UnityEngine;
 
-// Todo 规范配置项命名:In/Out/Io
 namespace Combat.Requests {
 public abstract class CombatRequest {
 #region 配置项
-
-    // 是否位于沙盒模式 Todo 实现沙盒模式
-    public bool IsSandbox;
 
     // 所处上下文
     public CombatJudge Judge;
