@@ -94,6 +94,7 @@ public class CardSlotView : MonoBehaviour {
     }
 
     public IEnumerator FreshUI() {
+        combatant.FreshHeap();
         FreshOrder();
         return GCoroutine.Parallel(m_cards.Select(c => c.MoveToTarget()));
     }

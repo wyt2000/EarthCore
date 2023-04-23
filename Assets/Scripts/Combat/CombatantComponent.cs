@@ -53,7 +53,6 @@ public class CombatantComponent : MonoBehaviour {
         State = store.InitState();
 
         stateBar.Init();
-        // Todo effect ui改成响应式
 
         State.OnStateChange += (_, _, delta) =>
         {
@@ -64,6 +63,15 @@ public class CombatantComponent : MonoBehaviour {
         foreach (var effect in EffectFixed.GetAll(this)) {
             AddBuff(effect);
         }
+
+        FreshHeap();
+    }
+
+    public void FreshHeap() {
+        var view = cardHeap;
+        view.Count    = Heap.AllCards.Count;
+        view.DisCount = Heap.DiscardCount;
+        view.FreshUI();
     }
 
 #region 发起快捷请求
