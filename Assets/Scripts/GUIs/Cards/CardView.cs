@@ -139,7 +139,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         if (Data == null) return;
         cardCost.text = $"{Data.ManaCost:F0}";
 
-        // Todo 修复filter未及时刷新的bug
+        // Todo! 修复filter未及时刷新的bug
         cardBanFilter.gameObject.SetActive(
             Style == CardStyle.Ban ||
             Style != CardStyle.Played && Data.IsSelected && !Data.Owner.PreviewBatch.CanEnqueue()

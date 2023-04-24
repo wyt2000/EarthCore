@@ -37,8 +37,6 @@ public class CombatantComponent : MonoBehaviour {
 
     public CombatState State;
 
-    // Todo 将effect/card/heap集成到CombatState中
-
     // 玩家的效果
     public readonly ISet<Effect> Effects = new SortedSet<Effect>();
 
@@ -172,7 +170,7 @@ public class CombatantComponent : MonoBehaviour {
     public void Discard() {
         // 选中的弃掉
         var card = Cards.Extract(c => c.IsSelected);
-        // 超过上限的也弃掉 Todo 优化自动弃牌逻辑 
+        // 超过上限的也弃掉
         card.AddRange(Cards.Extract((_, i) => i >= State.MaxCardCnt));
         GAudio.PlayDiscardCard();
         Judge.Requests.Add(new RequestAnimation {

@@ -4,7 +4,7 @@ using System.Reflection;
 using Combat.Enums;
 
 namespace Combat.States {
-// Todo 处理封锁标签
+// Todo! 处理封锁标签
 public enum CombatBlockTag {
     // 属性封锁:不能使用某种固定属性卡牌
     BlockElement,

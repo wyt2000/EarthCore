@@ -20,7 +20,7 @@ public class Star5View : MonoBehaviour {
     [SerializeField]
     private RectTransform rect;
 
-    // 绑定玩家的slot Todo 预览元素联动,给选中元素上个高亮特效
+    // 绑定玩家的slot Todo! 预览元素联动,给选中元素上个高亮特效
     [SerializeField]
     private CardSlotView slot;
 
