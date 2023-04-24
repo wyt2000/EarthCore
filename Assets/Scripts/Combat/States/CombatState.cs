@@ -27,14 +27,14 @@ public class CombatState : CombatAddableState {
     [ListenChange]
     public float Health {
         get => m_health;
-        set => m_health = Math.Clamp(value, 0, HealthMax);
+        set => m_health = m_isRecording ? value : Math.Clamp(value, 0, HealthMax);
     }
 
     // 玩家当前法力
     [ListenChange]
     public float Mana {
         get => m_mana;
-        set => m_mana = Math.Clamp(value, 0, ManaMax);
+        set => m_mana = m_isRecording ? value : Math.Clamp(value, 0, ManaMax);
     }
 
 #endregion
@@ -55,10 +55,14 @@ public class CombatState : CombatAddableState {
         .ToArray();
 
     private CombatState m_record;
-    private bool        m_anyChange;
+
+    private bool m_anyChange;
+    private bool m_isRecording;
 
     public void BeginRecord() {
-        m_record    = new CombatState();
+        m_record = new CombatState {
+            m_isRecording = true
+        };
         m_anyChange = false;
         foreach (var field in Fields) {
             var value = field.GetValue(this);
