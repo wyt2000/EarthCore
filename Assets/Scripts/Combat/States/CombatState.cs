@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Combat.Cards;
+using Combat.Effects;
 
 namespace Combat.States {
 // 所有的战斗属性
@@ -39,6 +42,29 @@ public class CombatState : CombatAddableState {
 
 #endregion
 
+#region 复杂状态字段
+
+    // 玩家的效果
+    public readonly SortedSet<Effect> Effects;
+
+    // 玩家的手牌
+    public readonly List<Card> Cards;
+
+    // 玩家的牌堆
+    public readonly CardHeap Heap;
+
+#endregion
+
+    public CombatState() : this(false) { }
+
+    private CombatState(bool isRecording) {
+        m_isRecording = isRecording;
+        if (isRecording) return;
+        Effects = new SortedSet<Effect>();
+        Cards   = new List<Card>();
+        Heap    = new CardHeap();
+    }
+
 #region 广播修改事件
 
     // old , cur , delta
@@ -57,12 +83,11 @@ public class CombatState : CombatAddableState {
     private CombatState m_record;
 
     private bool m_anyChange;
-    private bool m_isRecording;
+
+    private readonly bool m_isRecording;
 
     public void BeginRecord() {
-        m_record = new CombatState {
-            m_isRecording = true
-        };
+        m_record    = new CombatState(true);
         m_anyChange = false;
         foreach (var field in Fields) {
             var value = field.GetValue(this);
@@ -75,7 +100,7 @@ public class CombatState : CombatAddableState {
     }
 
     public void EndRecord() {
-        var delta = new CombatState();
+        var delta = new CombatState(true);
         foreach (var field in Fields) {
             var oldValue = field.GetValue(m_record);
             var newValue = field.GetValue(this);

@@ -37,18 +37,15 @@ public class CombatantComponent : MonoBehaviour {
 
     public CombatState State;
 
-    // 玩家的效果
-    public readonly ISet<Effect> Effects = new SortedSet<Effect>();
+    public SortedSet<Effect> Effects => State.Effects;
 
-    // 玩家的手牌
-    public readonly List<Card> Cards = new();
+    public List<Card> Cards => State.Cards;
 
-    // 玩家的牌堆
-    public readonly CardHeap Heap = new();
+    public CardHeap Heap => State.Heap;
 
     private void Start() {
         StoreCombatant store = isOtherPlayer ? new StoreMonster() : new StorePlayer();
-        State = store.InitState();
+        store.InitState(this);
 
         stateBar.Init();
 
@@ -56,11 +53,6 @@ public class CombatantComponent : MonoBehaviour {
         {
             BoardCast(effect => effect.AfterStateChange(delta));
         };
-
-        // 加载固有buff
-        foreach (var effect in EffectFixed.GetAll(this)) {
-            AddBuff(effect);
-        }
 
         FreshHeap();
     }

@@ -16,7 +16,7 @@ public class StorePlayer : StoreCombatant {
     public int Level => Exp / 100;
 
     // 玩家初始战斗状态
-    public override CombatState InitState() {
+    protected override CombatState OnInitState() {
         var ret = new CombatState {
             HealthMaxBase = 1000,
 
@@ -33,13 +33,7 @@ public class StorePlayer : StoreCombatant {
                 { ElementType.Huo, 2 },
                 { ElementType.Tu, 2 },
             },
-
-            // Todo 配置固有效果
         };
-        ret.Health = ret.HealthMax;
-        ret.Mana   = ret.ManaMax;
-
-        ret.ElementAttach += ret.ElementMaxAttach;
         return ret;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Combat.Enums;
+﻿using Combat.Cards;
+using Combat.Enums;
 using Combat.States;
 
 namespace Stores.Details {
@@ -7,7 +8,7 @@ public class StoreMonster : StoreCombatant {
     // 怪物名
     public string Name = "Monster";
 
-    public override CombatState InitState() {
+    protected override CombatState OnInitState() {
         var ret = new CombatState {
             HealthMaxBase = 2000,
 
@@ -23,12 +24,9 @@ public class StoreMonster : StoreCombatant {
                 { ElementType.Shui, 2 },
                 { ElementType.Huo, 2 },
                 { ElementType.Tu, 2 },
-            }
+            },
         };
-        ret.Health = ret.HealthMax;
-        ret.Mana   = ret.ManaMax;
-
-        ret.ElementAttach += ret.ElementMaxAttach;
+        
         return ret;
     }
 }
