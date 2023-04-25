@@ -38,7 +38,7 @@ public class CardHeapView : MonoBehaviour {
     }
 
     public void FreshUI() {
-        var count = Math.Min(Count, 10);
+        var count = Math.Clamp(Count, 1, 10);
         var children = list.GetComponentsInChildren<CardView>();
         if (children.Length > count) {
             children.ForEach((view, i) =>
