@@ -7,7 +7,29 @@
 @say 伊克斯:你怎么了？快醒醒！
 @say 弗姆:...
 @say 弗姆:！！！
-@start player_jin enemy_jin
+
+@comment Todo 初始化玩家属性
+@init player """
+生命值=90,
+法力值=50,
+初始手牌=0,
+回合抽牌=1,
+最大手牌=5,
+牌堆=火力压制,
+"""
+
+@init enemy """
+生命值=90,
+法力值=0,
+初始手牌=0,
+回合抽牌=1,
+最大手牌=5,
+金法印=5,
+牌堆=试探,
+"""
+
+@start
+
 @say """
 【元素克制】与【元素击碎】
 游戏的战斗是建立在【元素五芒星】基础上的，【元素五芒星】位置如界面中标注所示。
@@ -16,9 +38,8 @@
 """
 @hide
 
-@give player 火力压制
 @wait player 火力压制
-@give enemy 试探
+@next
 @wait enemy 试探
 
 @wait_end

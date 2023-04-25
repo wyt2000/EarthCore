@@ -1,4 +1,4 @@
-﻿namespace Controllers.Story {
+﻿namespace Combat.Story {
 // 剧本行为类型
 public enum StoryActionType {
     Init,    // 设置初始状态
@@ -8,12 +8,15 @@ public enum StoryActionType {
     Hide,    // 隐藏对话框
     Give,    // 发指定牌
     Wait,    // 等待出指定牌(必须出)
+    Next,    // 切换到下一回合
     WaitEnd, // 等待战斗结束
 }
 
 /*
+// 一行注释,不参与解析
+@comment {line}
 
-// 设置初始状态
+// 设置初始状态,设置牌堆可以在顶部额外放置指定的牌
 @init {player|enemy} """
 生命值={value},
 法力值={value},
@@ -27,7 +30,7 @@ public enum StoryActionType {
 // 开始战斗 
 @start
 
-// 某角色说一句话,content是长句,line是短句,content不能包含""",line不能有换行和:号
+// 某角色说一句话,content是长句,line是短句,content不能包含""",line不能有换行,空格,和:号
 @say {name} """
 {content}
 """
@@ -52,6 +55,9 @@ public enum StoryActionType {
 
 // 限制出牌.card_name可以写多个
 @wait {player|enemy} {card_name}*
+
+// 切换到下一回合
+@next
 
 // 等待战斗结束
 @wait_end

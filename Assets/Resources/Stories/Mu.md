@@ -10,10 +10,33 @@
 @say 弗姆:她看上去好像不太对劲
 @say 莫西:...！
 @say 伊克斯:小心！
-@start player_mu enemy_mu
+
+@comment Todo 初始化玩家属性
+@init player """
+生命值=90,
+法力值=50,
+初始手牌=1,
+回合抽牌=0,
+最大手牌=5,
+牌堆=火力压制,重击,
+"""
+
+@init enemy """
+生命值=50,
+法力值=50,
+初始手牌=0,
+回合抽牌=0,
+最大手牌=5,
+金法印=5,
+木法印=1,
+牌堆=,
+"""
+
+@start
+
 @hide
 
-@give player 火力压制
+@give player 
 @wait player 火力压制
 
 @say """
@@ -22,10 +45,8 @@
 """
 @hide
 
-@give enemy 包扎
 @wait enemy 包扎
-
-@give player 重击
+@next
 @wait player 重击
 
 @wait_end
