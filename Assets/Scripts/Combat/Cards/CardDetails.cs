@@ -38,21 +38,21 @@ public static class CardDetails {
     | 元素属性 | 金            |
     | 法力消耗 | 无            |
     | 伤害类型 | 物理           |
-    | 伤害值  | 25           |
-    | 效果   | 为自身添加25物理护盾 |
+    | 伤害值  | 50           |
+    | 效果   | 为自身添加50物理护盾 |
      */
     private static Card ShiTan() {
         return new Card {
             Clone         = ShiTan,
             UiName        = "试探",
-            UiDescription = "为自身添加25物理护盾并造成25点物理伤害",
+            UiDescription = "为自身添加50物理护盾并造成50点物理伤害",
             UiImagePath   = "Textures/Card/Details/试探",
-            LgDamage      = 25,
+            LgDamage      = 50,
             LgDamageType  = DamageType.Physical,
             LgElement     = ElementType.Jin,
             OnExecute = req =>
             {
-                req.Causer.State.PhysicalShield += 25 * req.Scale;
+                req.Causer.State.PhysicalShield += 50 * req.Scale;
                 req.TakeDamage();
             }
         };
@@ -91,9 +91,9 @@ public static class CardDetails {
         return new Card {
             Clone         = ZhongJi,
             UiName        = "重击",
-            UiDescription = "造成50点物理伤害",
+            UiDescription = "造成70点物理伤害",
             UiImagePath   = "Textures/Card/Details/重击",
-            LgDamage      = 50,
+            LgDamage      = 70,
             LgElement     = ElementType.Jin,
             OnExecute     = req => req.TakeDamage()
         };
@@ -290,7 +290,7 @@ public static class CardDetails {
     | 元素属性 | 水                                                                         |
     | 法力消耗 | 50%当前法力值                                                                  |
     | 伤害类型 | 魔法                                                                        |
-    | 伤害值  | 50*（100%+50%当前法力值）                                                        |
+    | 伤害值  | 60*（100%+当前法力值/50）                                                        |
     | 效果   | 无                                                                         |
     | 备注   | 1.伤害增益只对本张卡牌生效（不会对搭配一起出的卡牌生效）<br/>2.法力消耗可被宁静效果减少，但增益伤害不会被影响，伤害增益只与当前法力值有关 |
      */
@@ -298,10 +298,10 @@ public static class CardDetails {
         return new Card {
             Clone          = FaLiKuangYong,
             UiName         = "法力狂涌",
-            UiDescription  = "造成50*(100%+50%当前法力值)伤害",
+            UiDescription  = "造成60*(100%+50%当前法力值)伤害",
             UiImagePath    = "Textures/Card/Details/法力狂涌",
             LgManaCostFunc = card => card.Owner.State.Mana * 0.5f,
-            LgDamageFunc   = card => 50 * (1 + 0.5f * card.Owner.State.Mana / 100),
+            LgDamageFunc   = card => 60 * (1 + card.Owner.State.Mana / 50),
             LgDamageType   = DamageType.Magical,
             LgElement      = ElementType.Shui,
             OnExecute      = req => req.TakeDamage()
@@ -360,17 +360,17 @@ public static class CardDetails {
     | 法力消耗 | 10         |
     | 伤害类型 | 魔法         |
     | 伤害值  | 0          |
-    | 效果   | 获得70点【清算】值 |
+    | 效果   | 获得50点【清算】值 |
      */
     private static Card AnChaoYongDong() {
         return new Card {
             Clone         = AnChaoYongDong,
             UiName        = "暗潮涌动",
-            UiDescription = "获得70点【清算】值",
+            UiDescription = "获得50点【清算】值",
             UiImagePath   = "Textures/Card/Details/暗潮涌动",
             LgManaCost    = 10,
             LgElement     = ElementType.Shui,
-            OnExecute     = req => req.Causer.AddBuff(EffectPrefabs.QingSuan((int)(70 * req.Scale)))
+            OnExecute     = req => req.Causer.AddBuff(EffectPrefabs.QingSuan((int)(50 * req.Scale)))
         };
     }
 
@@ -408,26 +408,27 @@ public static class CardDetails {
     | 元素属性 | 火                                  |
     | 法力消耗 | 无                                  |
     | 伤害类型 | 物理                                 |
-    | 伤害值  | 25                                 |
+    | 伤害值  | 30                                 |
     | 效果   | 减少敌方10点护甲值，若敌方护甲值不足10点，造成溢出部分两倍的伤害 |
      */
     private static Card YuShiJuFen() {
         return new Card {
             Clone         = YuShiJuFen,
             UiName        = "熔铁之刃",
-            UiDescription = "造成25点物理伤害，减少敌方10点护甲值，若敌方护甲值不足10点，造成溢出部分两倍的伤害",
+            UiDescription = "造成30点物理伤害，减少敌方10点护甲值，若敌方护甲值不足10点，造成溢出部分两倍的伤害",
             UiImagePath   = "Textures/Card/Details/熔铁之刃",
-            LgDamage      = 25,
+            LgDamage      = 30,
             LgElement     = ElementType.Huo,
             OnExecute = req =>
             {
                 var state = req.Batch.Target.State;
                 var armor = state.PhysicalArmor;
-                if (armor >= 10) {
-                    state.PhysicalArmor -= 10;
+                const int reduce = 10;
+                if (armor >= reduce) {
+                    state.PhysicalArmor -= reduce;
                 }
                 else {
-                    req.Current.LgDamage += 2 * (10 - armor);
+                    req.Current.LgDamage += 2 * (reduce - armor);
                     state.PhysicalArmor  =  0;
                 }
                 req.TakeDamage();
@@ -441,16 +442,16 @@ public static class CardDetails {
     | 元素属性 | 火  |
     | 法力消耗 | 无  |
     | 伤害类型 | 物理 |
-    | 伤害值  | 35 |
+    | 伤害值  | 50 |
     | 效果   | 穿透 |
      */
     private static Card ChuanCi() {
         return new Card {
             Clone         = ChuanCi,
             UiName        = "穿刺",
-            UiDescription = "造成35点物理伤害，穿透",
+            UiDescription = "造成50点物理伤害，穿透",
             UiImagePath   = "Textures/Card/Details/穿刺",
-            LgDamage      = 35,
+            LgDamage      = 50,
             LgElement     = ElementType.Huo,
             OnExecute     = req => req.TakeDamage(true)
         };
@@ -600,7 +601,7 @@ public static class CardDetails {
     | 火之召唤 |                 |
     |------|-----------------|
     | 元素属性 | 无               |
-    | 法力消耗 | 10              |
+    | 法力消耗 | 0              |
     | 伤害类型 | 无               |
     | 伤害值  | 无               |
     | 效果   | 唯一，从牌组中抽一张火属性卡牌 |
@@ -611,7 +612,7 @@ public static class CardDetails {
             UiName        = "火之召唤",
             UiDescription = "唯一，不计入出牌次数，从牌组随机抽一张火元素卡牌",
             UiImagePath   = "Textures/Card/Details/火之召唤",
-            LgManaCost    = 10,
+            LgManaCost    = 0,
             LgUnique      = true,
             OnExecute = req =>
             {
