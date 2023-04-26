@@ -9,7 +9,5 @@ public class StoreGame {
 
     // 玩家信息
     public StorePlayer Player = new();
-
-    // 进度信息
 }
 }
