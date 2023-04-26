@@ -24,9 +24,8 @@ public class CombatRequestList {
         request.Judge = Judge;
         var reject = !request.CanEnqueue();
         if (!reject) return false;
-        var msg = $"Request {request} rejected: {request.RejectReason}";
-        Debug.Log(msg);
-        Judge.logger.AddLog(msg);
+        Debug.LogException(request.CreateContext);
+        Judge.logger.AddLog($"Request {request} rejected: {request.RejectReason}");
         return true;
     }
 

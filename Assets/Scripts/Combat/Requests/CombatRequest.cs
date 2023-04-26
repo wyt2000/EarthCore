@@ -23,6 +23,9 @@ public abstract class CombatRequest {
     // 结点
     public LinkedListNode<CombatRequest> Node;
 
+    // 创建时的上下文
+    public readonly Exception CreateContext = new("Request created here");
+
 #endregion
 
 #region 虚函数

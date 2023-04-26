@@ -1,12 +1,10 @@
 using System;
 using System.Collections;
-using System.Text.RegularExpressions;
 using Combat.Cards;
 using Combat.Enums;
 using Combat.Requests.Details;
 using GUIs.Animations;
 using GUIs.Audios;
-using GUIs.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -122,7 +120,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     // 目标位置
     private Vector3 TargetPosition() {
         var target = Vector3.right * Container.RealOffset(Index);
-        if (Data.IsSelected) {
+        if (Data.IsSelected && Style != CardStyle.Other) {
             target += Vector3.up * (rect.rect.height * upRate);
         }
 
