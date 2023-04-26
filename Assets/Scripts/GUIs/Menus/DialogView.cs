@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utils;
 
-namespace GUIs.Dialogs {
+namespace GUIs.Menus {
 // Todo! 完善ui
 public class DialogView : MonoBehaviour, IPointerClickHandler {
 #region prefab配置
