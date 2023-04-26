@@ -18,13 +18,13 @@ public enum StoryActionType {
 
 // 设置初始状态,设置牌堆可以在顶部额外放置指定的牌
 @init {player|enemy} """
-生命值={value},
-法力值={value},
-初始手牌={value},
-回合抽牌={value},
-最大手牌={value},
-[金木水火土]法印={value},
-牌堆={card_name}*,
+生命值={value};
+法力值={value};
+初始手牌={value};
+回合抽牌={value};
+最大手牌={value};
+[金木水火土]法印={value};
+牌堆={card_name,}*;
 """
 
 // 开始战斗 
@@ -51,10 +51,10 @@ public enum StoryActionType {
 @hide
 
 // 发指定牌.card_name可以写多个
-@give {player|enemy} {card_name}*
+@give {player|enemy} {card_name,}*
 
 // 限制出牌.card_name可以写多个
-@wait {player|enemy} {card_name}*
+@wait {player|enemy} {card_name,}*
 
 // 切换到下一回合
 @next

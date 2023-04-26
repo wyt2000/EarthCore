@@ -12,6 +12,9 @@ namespace Combat.Cards {
 public static class CardDetails {
     private static readonly Card[] All;
 
+    // UiName 到 Card 的映射
+    public static readonly Dictionary<string, Card> NameToCard = new();
+
     static CardDetails() {
         // 反射获取所有card
         var type = typeof(CardDetails);
@@ -20,7 +23,8 @@ public static class CardDetails {
         ).ToArray();
         All = new Card[methods.Length];
         for (var i = 0; i < methods.Length; i++) {
-            All[i] = (Card)methods[i].Invoke(null, null);
+            var cur = (Card)methods[i].Invoke(null, null);
+            NameToCard.Add(cur.UiName, All[i] = cur);
         }
     }
 
