@@ -1,36 +1,38 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Combat.States;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Combat.Story.Actions;
+using Controllers;
 
 namespace Combat.Story {
-public class StoryAction {
-    public StoryActionType Type;
+public abstract class StoryAction {
+    private static readonly Dictionary<string, Type> ActionTypes = new() {
+        { "init", typeof(ActionInit) },
+        { "start", typeof(ActionStart) },
+        { "say", typeof(ActionSay) },
+        { "show", typeof(ActionShow) },
+        { "hide", typeof(ActionHide) },
+        { "wait", typeof(ActionWait) },
+        { "play", typeof(ActionPlay) },
+        { "next", typeof(ActionNext) },
+    };
 
-#region start
+    public static StoryAction GetAction(string command) {
+        if (ActionTypes.TryGetValue(command, out var type)) {
+            return Activator.CreateInstance(type) as StoryAction;
+        }
 
-    public CombatState Player; // 玩家初始状态
-    public CombatState Enemy;  // 怪物初始状态
+        return null;
+    }
 
-#endregion
+    public abstract StoryAction Build(IReadOnlyList<string> args);
 
-#region say
+    public abstract IEnumerator Execute(CombatController controller);
 
-    public string Character; // 说话的角色
-    public string Content;   // 说的内容
+    protected abstract string ToDescription();
 
-#endregion
-
-#region show
-
-    public string ImageName; // 立绘的名字
-
-#endregion
-
-#region give/wait
-
-    public bool     IsPlayer;  // 是否是玩家
-    public string[] CardNames; // 牌的名字
-
-#endregion
+    public override sealed string ToString() {
+        return ToDescription();
+    }
 }
 }
