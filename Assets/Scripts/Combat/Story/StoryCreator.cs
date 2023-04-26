@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEditor;
 using UnityEngine;
 
 namespace Combat.Story {
@@ -52,19 +51,6 @@ public static class StoryCreator {
             Debug.LogException(e);
             return new StoryAction[] { };
         }
-    }
-
-    [MenuItem("Tests/剧本加载测试")]
-    public static void Test() {
-        // Debug.Log(Parser(@"
-        //     @say 神秘文字 """"""
-        //     *%￥#）@(^#@$*^驭素*#$(@^))%*@……
-        //     （%￥&（￥）%元素……#
-        //     @￥%……@诅咒*@￥*￥
-        //     ）#%多疑（%￥￥（
-        //     """"""
-        // ").Count());
-        Debug.Log(Load("Jin").Length);
     }
 }
 }

@@ -1,14 +1,17 @@
 ﻿#if UNITY_EDITOR
 using System.Collections;
+using Combat.Story;
 using UnityEditor;
 using UnityEngine;
 using Utils;
 
-namespace ScriptsEditor.Test {
+namespace ScriptsEditor {
 public static class CoroutineTest {
+#region 协程测试
+
     [MenuItem("Tests/测试协程锁")]
     // 测试resolvePolicy
-    private static void RunTest() {
+    private static void TestCoroutine() {
         // ignore 测试
         {
             Debug.Log("ignore 测试");
@@ -48,6 +51,17 @@ public static class CoroutineTest {
             yield return null;
         }
     }
+
+#endregion
+
+#region 剧本测试
+
+    [MenuItem("Tests/剧本加载测试")]
+    private static void TestStory() {
+        Debug.Log(StoryCreator.Load("Jin").Length);
+    }
+
+#endregion
 }
 }
 #endif
