@@ -31,7 +31,7 @@ public abstract class StoryAction {
 
     protected abstract string ToDescription();
 
-    public override sealed string ToString() {
+    public sealed override string ToString() {
         return ToDescription();
     }
 }

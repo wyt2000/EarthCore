@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Controllers {
 public class PlayerController : CombatController {
     // 用户输入 Todo! 实现超时后自动弃牌
-    protected override IEnumerator OnUserInput() {
+    public override IEnumerator OnUserInput() {
         // 摸牌
         if (Input.GetKeyDown(KeyCode.G)) {
             combatant.GetCard(1);

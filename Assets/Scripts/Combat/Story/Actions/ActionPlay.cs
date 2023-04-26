@@ -28,7 +28,7 @@ public class ActionPlay : StoryAction {
         var needs = new HashSet<Card>();
 
         if (!combatant.isOtherPlayer) {
-            yield return combatant.Judge.dialog.Say("教程", $"请出牌:{string.Join(",", m_cards)}");
+            combatant.Judge.logger.AddLog($"请出牌:{string.Join(",", m_cards)}");
         }
         m_cards.ForEach(c =>
         {
@@ -43,9 +43,6 @@ public class ActionPlay : StoryAction {
             while (!(Input.GetKeyDown(KeyCode.Space) && combatant.Cards.All(c => c.IsSelected == needs.Contains(c)))) yield return null;
             combatant.PlayCard(needs);
         }
-        combatant.PlaySelectedCard();
-        yield return null;
-        combatant.Discard();
     }
 
     protected override string ToDescription() {

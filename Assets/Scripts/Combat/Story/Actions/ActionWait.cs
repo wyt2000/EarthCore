@@ -15,7 +15,7 @@ public class ActionWait : StoryAction {
         var a = controller.combatant;
         var b = a.Opponent;
         while (!(a.State.IsDead || b.State.IsDead)) {
-            yield return null;
+            yield return controller.OnUserInput();
         }
         yield return a.Judge.CombatEnd();
     }

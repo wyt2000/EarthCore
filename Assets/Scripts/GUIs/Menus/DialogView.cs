@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using Utils;
 
 namespace GUIs.Menus {
-// Todo! 完善ui
+// Todo! 完善ui,加全屏遮罩
 public class DialogView : MonoBehaviour, IPointerClickHandler {
 #region prefab配置
 
@@ -33,8 +33,18 @@ public class DialogView : MonoBehaviour, IPointerClickHandler {
 
     private Tween m_tween;
 
-    public void Hide() {
-        gameObject.SetActive(false);
+    public void Hide(string side) {
+        switch (side) {
+            case "left":
+                leftImage.DOFade(0, showTime);
+                break;
+            case "right":
+                rightImage.DOFade(0, showTime);
+                break;
+            default:
+                gameObject.SetActive(false);
+                break;
+        }
     }
 
     public IEnumerator Say(string character, string text) {
@@ -44,8 +54,8 @@ public class DialogView : MonoBehaviour, IPointerClickHandler {
         return (m_tween = content.DOText(text, showTime)).Wait().Lock(m_locker);
     }
 
-    public IEnumerator Show(string texture, string pos) {
-        var image = pos == "left" ? leftImage : rightImage;
+    public IEnumerator Show(string texture, string side) {
+        var image = side == "left" ? leftImage : rightImage;
         yield return image.DOColor(new Color(1, 1, 1, 0), showTime / 2).Wait().Lock(m_locker);
         var path = "Textures/Characters/" + texture;
         image.sprite = Resources.Load<Sprite>(path);

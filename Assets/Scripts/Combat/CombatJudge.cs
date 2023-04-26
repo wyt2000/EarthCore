@@ -92,6 +92,7 @@ public class CombatJudge : MonoBehaviour {
     // 切换回合
     private void SwitchTurn() {
         m_round++;
+        m_iter = null;
     }
 
     // 回合开始事件
