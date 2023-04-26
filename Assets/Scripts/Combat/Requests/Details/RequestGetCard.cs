@@ -20,7 +20,7 @@ public class RequestGetCard : CombatRequest {
 
     public override bool CanEnqueue() {
         return Require(
-            Causer != null && Count > 0,
+            Causer != null && Count >= 0,
             "无效的摸牌请求"
         );
     }
