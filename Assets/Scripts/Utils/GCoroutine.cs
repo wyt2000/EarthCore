@@ -112,6 +112,11 @@ public static class GCoroutine {
         return coroutines.GetEnumerator();
     }
 
+    // 栈协程
+    public static IEnumerator Stack(this IEnumerator coroutine) {
+        return new StackEnumerator(coroutine);
+    }
+
     // 带锁协程
     public static IEnumerator Lock(this IEnumerator coroutine, CoroutineLocker locker) {
         if (locker == null) {

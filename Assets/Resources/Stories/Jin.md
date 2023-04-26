@@ -1,7 +1,8 @@
 ﻿```text
 @say 到达金属性房间
+@show Chars/伊克斯 left
 @say 伊克斯:这是？
-@show 被污染的弗姆
+@show Chars/弗姆 right
 @say 伊克斯:弗姆？
 @say 伊克斯:你没事吧弗姆？
 @say 伊克斯:你怎么了？快醒醒！
@@ -38,11 +39,11 @@
 """
 @hide
 
-@wait player 火力压制
+@play 火力压制
 @next
-@wait enemy 试探
+@play 试探
+@wait
 
-@wait_end
 @say 弗姆:...
 @say 弗姆:...我这是...怎么了?
 @say 伊克斯:你醒了吗弗姆？
@@ -55,7 +56,6 @@
 @say 弗姆:...
 @say 弗姆:这是什么？
 @say 弗姆身后的墙上出现金色神秘文字
-@show 神秘文字
 @say 神秘文字 """
 *%￥#）@(^#@$*^驭素*#$(@^))%*@……
 （%￥&（￥）%元素……#

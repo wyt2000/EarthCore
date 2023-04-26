@@ -10,7 +10,6 @@ using GUIs.Audios;
 using GUIs.Cards;
 using GUIs.Effects;
 using GUIs.States;
-using Stores.Details;
 using UnityEngine;
 using Utils;
 
@@ -43,9 +42,20 @@ public class CombatantComponent : MonoBehaviour {
 
     public CardHeap Heap => State.Heap;
 
-    private void Start() {
-        StoreCombatant store = isOtherPlayer ? new StoreMonster() : new StorePlayer();
-        store.InitState(this);
+    public void InitState(CombatState state) {
+        gameObject.SetActive(true);
+
+        state.Health = state.HealthMax;
+        state.Mana   = state.ManaMax;
+
+        state.ElementAttach += state.ElementMaxAttach;
+
+        State = state;
+
+        // 加载固有buff
+        foreach (var effect in EffectFixed.GetAll(this)) {
+            AddBuff(effect);
+        }
 
         stateBar.Init();
 
@@ -55,6 +65,10 @@ public class CombatantComponent : MonoBehaviour {
         };
 
         FreshHeap();
+    }
+
+    private void Start() {
+        gameObject.SetActive(false);
     }
 
     public void FreshHeap() {
@@ -114,6 +128,11 @@ public class CombatantComponent : MonoBehaviour {
         request.Target = Opponent;
         request.IsHeal = false;
         Judge.Requests.Add(request);
+    }
+
+    // 出选中的牌
+    public void PlaySelectedCard() {
+        PlayCard(Cards.Where(c => c.IsSelected));
     }
 
     // 对敌人出牌

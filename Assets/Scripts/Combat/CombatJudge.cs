@@ -1,15 +1,22 @@
 ﻿using System.Collections;
 using Combat.Requests;
 using Combat.Requests.Details;
+using Combat.Story;
 using Controllers;
 using GUIs;
+using GUIs.Animations;
+using GUIs.Dialogs;
 using UnityEngine;
+using Utils;
 
 namespace Combat {
 // 对局裁判,管理各种请求
 public class CombatJudge : MonoBehaviour {
     // 日志
     public JudgeLogView logger;
+
+    // 对话框 
+    public DialogView dialog;
 
     // 先手
     [SerializeField]
@@ -53,17 +60,15 @@ public class CombatJudge : MonoBehaviour {
         m_round = 0;
     }
 
-    private const int InitCardCount = 5;
-
     // 战斗开始事件
-    private IEnumerator CombatStart() {
+    public IEnumerator CombatStart() {
         logger.AddLog("游戏准备中...");
 
         m_round = 0;
         m_start = true;
 
         // Todo 开始动画
-        yield return new WaitForSeconds(1);
+        yield return GAnimation.Wait(1);
 
         logger.AddLog("游戏开始");
 
@@ -75,9 +80,11 @@ public class CombatJudge : MonoBehaviour {
     }
 
     // 战斗终止事件
-    private IEnumerator CombatEnd() {
+    public IEnumerator CombatEnd() {
+        m_start = false;
+
         // Todo 结束动画
-        yield return new WaitForSeconds(1);
+        yield return GAnimation.Wait(1);
 
         logger.AddLog("游戏结束");
     }
@@ -122,6 +129,8 @@ public class CombatJudge : MonoBehaviour {
 #region 脚本逻辑
 
     private IEnumerator Start() {
+        Script = new StoryScript("Jin");
+
         // 检查ab
         if (playerA == null || playerB == null) {
             Debug.LogError("PlayerA or PlayerB not set");
@@ -129,31 +138,27 @@ public class CombatJudge : MonoBehaviour {
         }
 
         Init(playerA, playerB);
-
-        yield return CombatStart();
     }
 
     private IEnumerator m_iter;
     private bool        m_iterFinish = true;
 
+    // 当前剧本
+    public StoryScript Script;
+
     private void Update() {
-        if (!m_start || Requests.Running) return;
-        if (CurrentComp.State.IsDead || NextComp.State.IsDead) {
-            m_start = false;
-            StartCoroutine(CombatEnd());
-            return;
-        }
+        if (Requests.Running) return;
         if (m_iterFinish) {
             m_iterFinish = false;
 
-            m_iter = CurrentComp.GetComponent<CombatController>()?.OnUserInput();
+            m_iter = CurrentComp.GetComponent<CombatController>()?.OnDoAction()?.Stack();
         }
         if (m_iter == null || !m_iter.MoveNext()) {
             m_iterFinish = true;
 
             m_iter = null;
         }
-        if (Requests.Count > 0) DealAllTask();
+        if (m_start && Requests.Count > 0) DealAllTask();
     }
 
 #endregion
