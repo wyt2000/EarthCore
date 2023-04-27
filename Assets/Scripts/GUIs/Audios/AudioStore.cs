@@ -1,8 +1,15 @@
 ﻿using UnityEngine;
 
 namespace GUIs.Audios {
+// Todo! 接入新增音效
 public class AudioStore : MonoBehaviour {
 #region prefab配置
+
+    // 战斗bgm
+    public AudioClip battleBGM;
+
+    // 按钮点击
+    public AudioClip buttonClick;
 
     // 不可选&出牌
     public AudioClip invalidCard;

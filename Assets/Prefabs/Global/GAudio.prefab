@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e908d435a904401ca1811089e44266d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battleBGM: {fileID: 8300000, guid: c9b23fb2482a4f2ebf3272360801b298, type: 3}
+  buttonClick: {fileID: 8300000, guid: 64b30f4821734c929e01472f4d046669, type: 3}
   invalidCard: {fileID: 8300000, guid: 83cc73cae17307c42b1d83a30afbfe86, type: 3}
   selectCard: {fileID: 8300000, guid: fd95168bde7f1eb4a999550fd5827f63, type: 3}
   playCard: {fileID: 8300000, guid: 3660a770ab3bc0e47b90941621cefe6b, type: 3}
