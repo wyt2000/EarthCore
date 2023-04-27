@@ -15,6 +15,7 @@ public abstract class StoryAction {
         { "wait", typeof(ActionWait) },
         { "play", typeof(ActionPlay) },
         { "next", typeof(ActionNext) },
+        { "help", typeof(ActionHelp) },
     };
 
     public static StoryAction GetAction(string command) {

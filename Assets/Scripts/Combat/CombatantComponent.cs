@@ -6,6 +6,7 @@ using Combat.Effects;
 using Combat.Enums;
 using Combat.Requests.Details;
 using Combat.States;
+using Controllers;
 using GUIs.Audios;
 using GUIs.Cards;
 using GUIs.Effects;
@@ -15,6 +16,7 @@ using Utils;
 
 namespace Combat {
 // 最基础的战斗对象组件
+[RequireComponent(typeof(CombatController))]
 public class CombatantComponent : MonoBehaviour {
 #region prefab配置
 
@@ -41,6 +43,9 @@ public class CombatantComponent : MonoBehaviour {
     public List<Card> Cards => State.Cards;
 
     public CardHeap Heap => State.Heap;
+
+    [NonSerialized]
+    public CombatController Controller;
 
     public void InitState(CombatState state) {
         gameObject.SetActive(true);
@@ -69,6 +74,7 @@ public class CombatantComponent : MonoBehaviour {
 
     private void Start() {
         gameObject.SetActive(false);
+        Controller = GetComponent<CombatController>();
     }
 
     public void FreshHeap() {

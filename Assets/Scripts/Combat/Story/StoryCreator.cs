@@ -43,6 +43,7 @@ public static class StoryCreator {
         return ret.Where(c => c != null);
     }
 
+    // Todo! 测试所有剧本的流程正确性
     public static StoryAction[] Load(string name) {
         try {
             return Parser(Resources.Load<TextAsset>($"Stories/{name}").text).ToArray();

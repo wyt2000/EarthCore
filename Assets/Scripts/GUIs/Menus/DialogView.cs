@@ -33,7 +33,7 @@ public class DialogView : MonoBehaviour, IPointerClickHandler {
 
     private Tween m_tween;
 
-    public void Hide(string side) {
+    public void Hide(string side = "") {
         switch (side) {
             case "left":
                 leftImage.DOFade(0, showTime);

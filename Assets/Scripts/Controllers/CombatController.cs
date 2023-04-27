@@ -11,15 +11,17 @@ public abstract class CombatController : MonoBehaviour {
 
 #endregion
 
-    // Todo! 测试使用剧本的流程正确性,修复剧本异常bug
+    private void Finish() {
+        combatant.Judge.Script?.Finish();
+    }
+
     public IEnumerator OnDoAction() {
         var current = combatant.Judge.Script?.Current;
         var iter = current?.Execute(this);
         if (current != null) {
-            combatant.Judge.Script?.Finish();
             yield return iter;
-        }
-        else {
+            Finish();
+        } else {
             yield return OnUserInput();
         }
     }

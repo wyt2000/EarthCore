@@ -2,7 +2,6 @@
 using Combat.Requests;
 using Combat.Requests.Details;
 using Combat.Story;
-using Controllers;
 using GUIs;
 using GUIs.Animations;
 using GUIs.Menus;
@@ -17,6 +16,9 @@ public class CombatJudge : MonoBehaviour {
 
     // 对话框 
     public DialogView dialog;
+
+    // 帮助框
+    public HelpView help;
 
     // 先手
     [SerializeField]
@@ -38,7 +40,7 @@ public class CombatJudge : MonoBehaviour {
     // 战斗双方
     public readonly CombatantComponent[] Players = new CombatantComponent[2];
 
-    private CombatantComponent CurrentComp => Players[m_round % 2];
+    public CombatantComponent CurrentComp => Players[m_round % 2];
 
     private CombatantComponent NextComp => Players[(m_round + 1) % 2];
 
@@ -92,7 +94,6 @@ public class CombatJudge : MonoBehaviour {
     // 切换回合
     private void SwitchTurn() {
         m_round++;
-        m_iter = null;
     }
 
     // 回合开始事件
@@ -142,7 +143,8 @@ public class CombatJudge : MonoBehaviour {
     }
 
     private IEnumerator m_iter;
-    private bool        m_iterFinish = true;
+
+    private bool m_iterFinish = true;
 
     // 当前剧本
     public StoryScript Script;
@@ -152,7 +154,7 @@ public class CombatJudge : MonoBehaviour {
         if (m_iterFinish) {
             m_iterFinish = false;
 
-            m_iter = CurrentComp.GetComponent<CombatController>()?.OnDoAction()?.Stack();
+            m_iter = CurrentComp.Controller.OnDoAction()?.Stack();
         }
         if (m_iter == null || !m_iter.MoveNext()) {
             m_iterFinish = true;

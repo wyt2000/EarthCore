@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Controllers;
+using UnityEngine;
 
 namespace Combat.Story.Actions {
 /*
@@ -36,7 +37,8 @@ public class ActionSay : StoryAction {
     public override IEnumerator Execute(CombatController controller) {
         var combatant = controller.combatant;
         var dialog = combatant.Judge.dialog;
-        return dialog.Say(m_character, m_content);
+        yield return dialog.Say(m_character, m_content);
+        while (!Input.GetMouseButtonDown(0)) yield return null;
     }
 
     protected override string ToDescription() {

@@ -14,8 +14,9 @@ public class ActionWait : StoryAction {
     public override IEnumerator Execute(CombatController controller) {
         var a = controller.combatant;
         var b = a.Opponent;
+        var judge = a.Judge;
         while (!(a.State.IsDead || b.State.IsDead)) {
-            yield return controller.OnUserInput();
+            yield return judge.CurrentComp.Controller.OnUserInput();
         }
         yield return a.Judge.CombatEnd();
     }
