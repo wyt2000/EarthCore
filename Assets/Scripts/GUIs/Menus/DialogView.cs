@@ -8,7 +8,6 @@ using UnityEngine.UI;
 using Utils;
 
 namespace GUIs.Menus {
-// Todo! 完善ui,加全屏遮罩
 public class DialogView : MonoBehaviour, IPointerClickHandler {
 #region prefab配置
 
@@ -25,7 +24,10 @@ public class DialogView : MonoBehaviour, IPointerClickHandler {
     private Image rightImage;
 
     [SerializeField]
-    private float showTime = 0.5f;
+    private float saySpeed = 10;
+
+    [SerializeField]
+    private float showTime = 1f;
 
 #endregion
 
@@ -42,6 +44,8 @@ public class DialogView : MonoBehaviour, IPointerClickHandler {
                 rightImage.DOFade(0, showTime);
                 break;
             default:
+                Hide("left");
+                Hide("right");
                 gameObject.SetActive(false);
                 break;
         }
@@ -51,15 +55,15 @@ public class DialogView : MonoBehaviour, IPointerClickHandler {
         gameObject.SetActive(true);
         title.text   = character;
         content.text = "";
-        return (m_tween = content.DOText(text, showTime)).Wait().Lock(m_locker);
+        return (m_tween = content.DOText(text, text.Length / saySpeed)).Wait().Lock(m_locker);
     }
 
     public IEnumerator Show(string texture, string side) {
         var image = side == "left" ? leftImage : rightImage;
-        yield return image.DOColor(new Color(1, 1, 1, 0), showTime / 2).Wait().Lock(m_locker);
+        yield return image.DOColor(new Color(1, 1, 1, 0), showTime).Wait().Lock(m_locker);
         var path = "Textures/Characters/" + texture;
         image.sprite = Resources.Load<Sprite>(path);
-        yield return image.DOColor(new Color(1, 1, 1, 1), showTime / 2).Wait().Lock(m_locker);
+        yield return image.DOColor(new Color(1, 1, 1, 1), showTime).Wait().Lock(m_locker);
     }
 
     public void OnPointerClick(PointerEventData eventData) {

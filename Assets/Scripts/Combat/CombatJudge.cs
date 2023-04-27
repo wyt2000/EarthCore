@@ -162,6 +162,9 @@ public class CombatJudge : MonoBehaviour {
             m_iter = null;
         }
         if (m_start && Requests.Count > 0) DealAllTask();
+        if (!m_start && m_iterFinish) {
+            // Todo! 返回选关场景
+        }
     }
 
 #endregion

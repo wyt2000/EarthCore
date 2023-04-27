@@ -19,11 +19,8 @@ public class ActionHelp : StoryAction {
     }
 
     public override IEnumerator Execute(CombatController controller) {
-        // Todo! 改成helpView
-        var help = controller.combatant.Judge.dialog;
-        yield return help.Say("教程", m_msg);
-        while (!Input.GetMouseButtonDown(0)) yield return null;
-        help.Hide();
+        var help = controller.combatant.Judge.help;
+        yield return help.Show(m_msg);
     }
 
     protected override string ToDescription() {

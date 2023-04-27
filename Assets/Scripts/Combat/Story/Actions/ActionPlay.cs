@@ -28,7 +28,7 @@ public class ActionPlay : StoryAction {
         var needs = new HashSet<Card>();
 
         if (!combatant.isOtherPlayer) {
-            combatant.Judge.logger.AddLog($"请出牌:{string.Join(",", m_cards)}");
+            yield return combatant.Judge.help.Show($"请出牌:{string.Join(",", m_cards)}");
         }
         m_cards.ForEach(c =>
         {
