@@ -4,6 +4,7 @@ using Combat.Requests.Details;
 using Combat.Story;
 using GUIs;
 using GUIs.Animations;
+using GUIs.Audios;
 using GUIs.Menus;
 using UnityEngine;
 using Utils;
@@ -11,6 +12,10 @@ using Utils;
 namespace Combat {
 // 对局裁判,管理各种请求
 public class CombatJudge : MonoBehaviour {
+    [SerializeField]
+    // 所有战斗场景
+    private GameObject combat;
+
     // 日志
     public JudgeLogView logger;
 
@@ -64,6 +69,9 @@ public class CombatJudge : MonoBehaviour {
 
     // 战斗开始事件
     public IEnumerator CombatStart() {
+        GAudio.StartBattleBGM();
+        combat.SetActive(true);
+
         logger.AddLog("游戏准备中...");
 
         m_round = 0;
@@ -89,6 +97,9 @@ public class CombatJudge : MonoBehaviour {
         yield return GAnimation.Wait(1);
 
         logger.AddLog("游戏结束");
+
+        combat.SetActive(true);
+        GAudio.StopBattleBGM();
     }
 
     // 切换回合

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 namespace GUIs.Audios {
-// Todo! 接入新增音效
 public class AudioStore : MonoBehaviour {
 #region prefab配置
 

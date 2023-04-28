@@ -20,6 +20,19 @@ public static class GAudio {
 
 #region 静态函数
 
+    public static void StartBattleBGM() {
+        AudioStore.Instance.player.clip = AudioStore.Instance.battleBGM;
+        AudioStore.Instance.player.Play();
+    }
+
+    public static void StopBattleBGM() {
+        AudioStore.Instance.player.Stop();
+    }
+
+    public static void PlayButtonClick() {
+        AudioStore.Instance.buttonClick.Play();
+    }
+
     public static void PlayInvalidCard() {
         AudioStore.Instance.invalidCard.Play();
     }
