@@ -1,8 +1,8 @@
 ﻿```text
 @say 到达金属性房间
-@show Chars/伊克斯 left
+@show 伊克斯 left
 @say 伊克斯:这是？
-@show Chars/弗姆 right
+@show 弗姆 right
 @say 伊克斯:弗姆？
 @say 伊克斯:你没事吧弗姆？
 @say 伊克斯:你怎么了？快醒醒！

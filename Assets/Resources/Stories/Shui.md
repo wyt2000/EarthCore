@@ -7,6 +7,8 @@
 @say ...
 @show 波顿 right
 
+@hide
+
 @comment
 @init player """
 生命值=90;
@@ -66,4 +68,5 @@
 @say 波顿:古籍中的文字和这里的极为相似
 @say 波顿:看来这里藏着很多不为人知的古老秘密
 @say ...
+@say 前往最终房间
 ```
