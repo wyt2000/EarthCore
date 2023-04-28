@@ -2,9 +2,9 @@
 using Combat.Requests;
 using Combat.Requests.Details;
 using Combat.Story;
-using GUIs;
 using GUIs.Animations;
 using GUIs.Audios;
+using GUIs.Else;
 using GUIs.Globals;
 using UnityEngine;
 using Utils;
@@ -141,13 +141,13 @@ public class CombatJudge : MonoBehaviour {
 
 #region 脚本逻辑
 
-    private IEnumerator Start() {
+    private void Start() {
         Script = new StoryScript("Jin");
 
         // 检查ab
         if (playerA == null || playerB == null) {
             Debug.LogError("PlayerA or PlayerB not set");
-            yield break;
+            return;
         }
 
         Init(playerA, playerB);

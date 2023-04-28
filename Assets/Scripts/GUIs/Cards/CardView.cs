@@ -166,7 +166,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
     public IEnumerator MoveToHeap(float index, float duration) {
         Style = CardStyle.Played;
         FreshUI();
-        var heap = Container.combatant.cardHeap;
+        var heap = Container.combatant.view.cardHeap;
         var trans = GetComponent<RectTransform>();
         var mid = new Vector2(0.5f, 0.5f);
         var first = trans.GetPosition(mid, heap.center.position + Vector3.right * (trans.lossyScale.x * index * rect.rect.width));
@@ -201,7 +201,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler {
         }
         GAudio.PlaySelectCard();
         Data.IsSelected ^= true;
-        Container.combatant.stateBar.FreshSync();
+        Container.combatant.view.stateBar.FreshSync();
         // 取消选择出牌时,智能反选
         if (!Data.IsSelected && Data.Owner.PreviewBatch.EvaluateState() == BatchCardState.CannotSelect) {
             Data.Owner.Cards.ForEach(card => card.IsSelected = false);

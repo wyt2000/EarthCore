@@ -84,7 +84,7 @@ public class CombatRequestList {
             yield return task.Execute();
             Judge.Players.ForEach(p => p.State.EndRecord());
         }
-        yield return Judge.Players.Select(p => p.cardSlot.FreshUI());
+        yield return Judge.Players.Select(p => p.view.cardSlot.FreshUI());
         Running = false;
     }
 }

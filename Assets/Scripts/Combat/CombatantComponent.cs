@@ -7,10 +7,8 @@ using Combat.Enums;
 using Combat.Requests.Details;
 using Combat.States;
 using Controllers;
+using GUIs;
 using GUIs.Audios;
-using GUIs.Cards;
-using GUIs.Effects;
-using GUIs.States;
 using UnityEngine;
 using Utils;
 
@@ -20,10 +18,7 @@ namespace Combat {
 public class CombatantComponent : MonoBehaviour {
 #region prefab配置
 
-    public CardSlotView   cardSlot;   // 卡槽
-    public CardHeapView   cardHeap;   // 卡堆
-    public StateBarView   stateBar;   // 状态栏
-    public EffectListView effectList; // 效果列表
+    public PlayerView view;
 
     // 是否为对面的玩家
     public bool isOtherPlayer;
@@ -62,26 +57,28 @@ public class CombatantComponent : MonoBehaviour {
             AddBuff(effect);
         }
 
-        stateBar.Init();
+        view.stateBar.Init();
 
         State.OnStateChange += (_, _, delta) =>
         {
             BoardCast(effect => effect.AfterStateChange(delta));
         };
 
+        view.painting.FreshUI(State);
         FreshHeap();
     }
 
     private void Start() {
+        view.Init(this);
         gameObject.SetActive(false);
         Controller = GetComponent<CombatController>();
     }
 
     public void FreshHeap() {
-        var view = cardHeap;
-        view.Count    = Heap.AllCards.Count;
-        view.DisCount = Heap.DiscardCount;
-        view.FreshUI();
+        var heap = view.cardHeap;
+        heap.Count = Heap.AllCards.Count;
+        heap.DisCount = Heap.DiscardCount;
+        heap.FreshUI();
     }
 
 #region 发起快捷请求
@@ -192,7 +189,7 @@ public class CombatantComponent : MonoBehaviour {
         GAudio.PlayDiscardCard();
         Judge.Requests.Add(new RequestAnimation {
             Causer = this,
-            Anim   = () => cardSlot.Discards(card)
+            Anim   = () => view.cardSlot.Discards(card)
         });
         AddPost(() => Judge.NextTurn());
     }

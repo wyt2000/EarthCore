@@ -2,7 +2,7 @@
 using GUIs.Cards;
 using UnityEngine;
 
-namespace GUIs {
+namespace GUIs.Else {
 public class Star5View : MonoBehaviour {
 #region prefab配置
 

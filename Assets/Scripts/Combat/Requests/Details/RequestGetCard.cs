@@ -28,7 +28,7 @@ public class RequestGetCard : CombatRequest {
     public override IEnumerator Execute() {
         var cards = Causer.Heap.GetCards(this);
         Causer.Cards.AddRange(cards);
-        return Causer.cardSlot.AddCards(cards);
+        return Causer.view.cardSlot.AddCards(cards);
     }
 
     public override string Description() {

@@ -3,7 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-namespace GUIs {
+namespace GUIs.Else {
 // 对局日志
 public class JudgeLogView : MonoBehaviour {
     [SerializeField]

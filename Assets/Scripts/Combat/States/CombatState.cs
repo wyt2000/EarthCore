@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Combat.Cards;
 using Combat.Effects;
+using Combat.Enums;
 
 namespace Combat.States {
 // 所有的战斗属性
@@ -52,6 +53,12 @@ public class CombatState : CombatAddableState {
 
     // 玩家的牌堆
     public readonly CardHeap Heap;
+    
+    // 玩家立绘资源路径
+    public string SpritePath;
+    
+    // 玩家立绘背景色调
+    public ElementType? SpriteColor;
 
 #endregion
 

@@ -67,7 +67,7 @@ public class CardSlotView : MonoBehaviour {
 
             m_cards.Add(card);
 
-            card.transform.position = combatant.cardHeap.transform.position;
+            card.transform.position = combatant.view.cardHeap.transform.position;
         });
 
         return FreshUI();
@@ -102,7 +102,7 @@ public class CardSlotView : MonoBehaviour {
     public IEnumerator Discards(IEnumerable<Card> cards) {
         var set = cards.ToHashSet();
         set.ForEach(c => c.IsSelected = false);
-        combatant.stateBar.FreshSync();
+        combatant.view.stateBar.FreshSync();
         var remove = m_cards.Extract(card => set.Contains(card.Data));
         var sub = (remove.Count - 1) / 2.0f;
         combatant.Heap.RecycleCard(set);

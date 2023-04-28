@@ -11,6 +11,8 @@ namespace Combat.Story.Actions {
 /*
 // 设置初始状态,设置牌堆可以在顶部额外放置指定的牌
 @init {player|enemy} """
+名字={value};
+主属性={value};
 生命值={value};
 法力值={value};
 初始手牌={value};
@@ -27,13 +29,26 @@ public class ActionInit : StoryAction {
         CombatState state = new();
         var lines = args[1].Split(';');
         foreach (var line in lines) {
-            var assignment = line.Split('=');
+            var assignment = line.Trim().Split('=');
             if (assignment.Length != 2) {
                 continue;
             }
             var attr = assignment[0];
             var value = assignment[1];
             switch (attr) {
+                case "名字":
+                    state.SpritePath = $"Textures/Chars/{value}";
+                    break;
+                case "主属性":
+                    state.SpriteColor = value[0] switch {
+                        '金' => ElementType.Jin,
+                        '木' => ElementType.Mu,
+                        '水' => ElementType.Shui,
+                        '火' => ElementType.Huo,
+                        '土' => ElementType.Tu,
+                        _   => null
+                    };
+                    break;
                 case "生命值":
                     state.HealthMaxBase = float.Parse(value);
                     break;

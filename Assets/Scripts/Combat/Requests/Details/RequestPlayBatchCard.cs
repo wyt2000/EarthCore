@@ -113,7 +113,7 @@ public class RequestPlayBatchCard : CombatRequest {
 
         // 出牌动画
         Add(new RequestAnimation {
-            Anim = () => Causer.cardSlot.Discards(Cards)
+            Anim = () => Causer.view.cardSlot.Discards(Cards)
         });
 
         // 计算元素联动
