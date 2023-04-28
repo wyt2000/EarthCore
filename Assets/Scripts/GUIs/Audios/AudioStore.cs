@@ -55,7 +55,6 @@ public class AudioStore : MonoBehaviour {
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 }
 }
