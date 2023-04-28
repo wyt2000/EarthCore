@@ -18,6 +18,9 @@ public class MainView : MonoBehaviour {
     private PageController page;
 
     [SerializeField]
+    private GameObject main;
+
+    [SerializeField]
     private Image fadeMask;
 
     [SerializeField]
@@ -35,7 +38,15 @@ public class MainView : MonoBehaviour {
         游戏设置,
     }
 
+    private static MainView ms_instance;
+
     private void Start() {
+        if (ms_instance != null) {
+            Destroy(gameObject);
+            ms_instance.main.SetActive(true);
+            return;
+        }
+        ms_instance = this;
         DontDestroyOnLoad(transform.parent);
         // 加载当前存档
         StoreManager.All(10).ForEach(AddSaveButton);
@@ -46,6 +57,18 @@ public class MainView : MonoBehaviour {
         button.onClick.AddListener(() => OnSaveTo(index));
         button.GetComponentInChildren<TextMeshProUGUI>().text = $"存档{index + 1}";
         button.transform.SetAsFirstSibling();
+    }
+
+    private IEnumerator ImpSwitchScene(string sceneName) {
+        const float duration = 2.0f;
+        yield return fadeMask.DOFade(1.0f, duration).WaitForCompletion();
+        main.SetActive(false);
+        SceneManager.LoadScene(sceneName);
+        yield return fadeMask.DOFade(0.0f, duration).WaitForCompletion();
+    }
+
+    public static void SwitchScene(string sceneName) {
+        ms_instance.StartCoroutine(ms_instance.ImpSwitchScene(sceneName));
     }
 
 #region 入口按钮
@@ -80,16 +103,8 @@ public class MainView : MonoBehaviour {
 #region 模式选择
 
     // Todo 给场景传参
-    private IEnumerator ImpEnterGameWith(GameModeType mode) {
-        const float duration = 2.0f;
-        yield return fadeMask.DOFade(1.0f, duration).WaitForCompletion();
-        gameObject.SetActive(false);
-        SceneManager.LoadScene("Scenes/CombatScene");
-        yield return fadeMask.DOFade(0.0f, duration).WaitForCompletion();
-    }
-
-    private void EnterGameWith(GameModeType mode) {
-        StartCoroutine(ImpEnterGameWith(mode));
+    private static void EnterGameWith(GameModeType mode) {
+        SwitchScene("Scenes/CombatScene");
     }
 
     // 开始教学模式

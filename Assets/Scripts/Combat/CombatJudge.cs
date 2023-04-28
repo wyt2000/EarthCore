@@ -98,7 +98,7 @@ public class CombatJudge : MonoBehaviour {
 
         logger.AddLog("游戏结束");
 
-        combat.SetActive(true);
+        combat.SetActive(false);
         GAudio.StopBattleBGM();
     }
 
@@ -142,6 +142,7 @@ public class CombatJudge : MonoBehaviour {
 #region 脚本逻辑
 
     private void Start() {
+        // Todo! 根据游戏进度加载脚本
         Script = new StoryScript("Jin");
 
         // 检查ab
@@ -160,7 +161,16 @@ public class CombatJudge : MonoBehaviour {
     // 当前剧本
     public StoryScript Script;
 
+    private bool m_finish;
+
     private void Update() {
+        if (m_finish) return;
+        // Todo! 剧本跑完后保存进度,自动进入下一关或返回主场景
+        if (Script.Current == null) {
+            m_finish = true;
+            MainView.SwitchScene("Scenes/EntryScene");
+            return;
+        }
         if (Requests.Running) return;
         if (m_iterFinish) {
             m_iterFinish = false;
@@ -173,9 +183,6 @@ public class CombatJudge : MonoBehaviour {
             m_iter = null;
         }
         if (m_start && Requests.Count > 0) DealAllTask();
-        if (!m_start && m_iterFinish) {
-            // Todo! 返回选关场景
-        }
     }
 
 #endregion

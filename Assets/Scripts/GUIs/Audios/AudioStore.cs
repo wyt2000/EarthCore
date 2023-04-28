@@ -50,6 +50,10 @@ public class AudioStore : MonoBehaviour {
     public static AudioStore Instance { get; private set; }
 
     private void Start() {
+        if (Instance != null) {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
