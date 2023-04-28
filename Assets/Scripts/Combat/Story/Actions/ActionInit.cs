@@ -40,12 +40,12 @@ public class ActionInit : StoryAction {
                     state.SpritePath = $"Textures/Chars/{value}";
                     break;
                 case "主属性":
-                    state.SpriteColor = value[0] switch {
-                        '金' => ElementType.Jin,
-                        '木' => ElementType.Mu,
-                        '水' => ElementType.Shui,
-                        '火' => ElementType.Huo,
-                        '土' => ElementType.Tu,
+                    state.SpriteColor = value  switch {
+                        "金" => ElementType.Jin,
+                        "木" => ElementType.Mu,
+                        "水" => ElementType.Shui,
+                        "火" => ElementType.Huo,
+                        "土" => ElementType.Tu,
                         _   => null
                     };
                     break;
