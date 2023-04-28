@@ -50,6 +50,7 @@
 
 @wait
 
+@show 波顿 right
 @say 波顿:...
 @show 伊克斯 left
 @say 伊克斯:波顿先生！
@@ -80,4 +81,5 @@
 @say 波顿:看来这里藏着很多不为人知的古老秘密
 @say ...
 @say 前往最终房间
+@hide
 ```

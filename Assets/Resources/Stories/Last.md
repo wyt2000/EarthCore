@@ -75,7 +75,6 @@
 @say 波顿:...
 @show 莫西 left
 @say 莫西:快看！
-@show 神秘文字 right
 @show 弗姆 left
 @say 弗姆:又出现了？
 @show 波顿 left

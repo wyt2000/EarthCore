@@ -15,6 +15,7 @@
 @say 莫西:...！
 @show 伊克斯 left
 @say 伊克斯:小心！
+@hide
 
 @comment
 @init player """
@@ -43,8 +44,6 @@
 
 @start
 
-@hide
-
 @play 火力压制
 
 @help """
@@ -59,6 +58,7 @@
 
 @wait
 
+@show 莫西 right
 @say 莫西:...
 @show 伊克斯 left
 @say 伊克斯:莫西！！！
@@ -92,4 +92,5 @@
 @say 莫西:伊克斯你给我回来！！！
 @say 莫西:真是的！！！
 @say 莫西:等等我！！！
+@hide
 ```
