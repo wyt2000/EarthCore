@@ -1,9 +1,13 @@
 ﻿```text
+@show 伊克斯 left
 @say 伊克斯、弗姆、莫西:...
+@show 克莱姆 left
 @say 克莱姆:哎呦
 @say 克莱姆:哎呦等等我哎呦
+@show 弗姆 left
 @say 弗姆:嘘
 @say 弗姆:安静！
+@hide left
 @say ...
 @show 波顿 right
 
@@ -47,12 +51,15 @@
 @wait
 
 @say 波顿:...
+@show 伊克斯 left
 @say 伊克斯:波顿先生！
 @say 伊克斯:您还好吗！
 @say 波顿:传说...
 @say 波顿:果然是真的...
+@show 弗姆 left
 @say 弗姆:什么传说？
 @say 波顿:元素诅咒...
+@show 伊克斯 left
 @say 伊克斯、莫西、克莱姆:元素诅咒？
 @say 波顿:一种古老而神秘的力量
 @say 波顿:能够控制人的心智

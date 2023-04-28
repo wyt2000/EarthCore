@@ -1,14 +1,19 @@
 ﻿```text
 @say 到达木属性房间
+@show 伊克斯 left
 @say 伊克斯:这是...
+@show 弗姆 left
 @say 弗姆:...
 @say 弗姆:什么人！？
 @show 莫西 right
+@show 伊克斯 left
 @say 伊克斯:莫西！
 @say 莫西:...
 @say 伊克斯:这....
+@show 弗姆 left
 @say 弗姆:她看上去好像不太对劲
 @say 莫西:...！
+@show 伊克斯 left
 @say 伊克斯:小心！
 
 @comment
@@ -55,12 +60,17 @@
 @wait
 
 @say 莫西:...
+@show 伊克斯 left
 @say 伊克斯:莫西！！！
 @say 伊克斯:你没事吧？
 @say 莫西:头...头好晕...
+@hide right
+@show 弗姆 left
 @say 弗姆:...
 @say 弗姆:！！！
 @say 弗姆:快看！
+@show 伊克斯 left
+@show 莫西 right
 @say 伊克斯、莫西:嗯？
 @say 莫西身后的墙上出现绿色神秘文字
 @say 神秘文字 """
@@ -69,8 +79,11 @@
 @！%#￥@%……等级(*&^%$%)
 %#@%@^异化!@%#^@%&$*42
 """
+@show 弗姆 right
 @say 伊克斯、弗姆:这...
 @say 伊克斯、弗姆:和之前墙壁上的字...
+@hide left
+@show 莫西 right
 @say 莫西:之前？...墙壁？...字？
 @say 莫西:你们在说什么呀？
 @say 弗姆身后的墙消失，变为通往下一场景的通道
