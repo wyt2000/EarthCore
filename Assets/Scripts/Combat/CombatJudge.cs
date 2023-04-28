@@ -5,7 +5,7 @@ using Combat.Story;
 using GUIs;
 using GUIs.Animations;
 using GUIs.Audios;
-using GUIs.Menus;
+using GUIs.Globals;
 using UnityEngine;
 using Utils;
 
