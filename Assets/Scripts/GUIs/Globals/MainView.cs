@@ -68,6 +68,7 @@ public class MainView : MonoBehaviour {
     }
 
     public static void SwitchScene(string sceneName) {
+        if (ms_instance == null) return;
         ms_instance.StartCoroutine(ms_instance.ImpSwitchScene(sceneName));
     }
 
