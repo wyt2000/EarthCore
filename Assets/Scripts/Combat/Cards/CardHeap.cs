@@ -13,7 +13,7 @@ public class CardHeap {
 
     public int DiscardCount => m_discards.Count;
 
-    // Todo! 修改牌堆初始化的流程
+    // Todo 优化牌堆初始化的流程
     public CardHeap() {
         for (var i = 0; i < 1; ++i) {
             AllCards.AddRange(CardDetails.CloneAll());
