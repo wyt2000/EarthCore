@@ -489,7 +489,7 @@ public static class EffectFixed {
     // 回复法力25%
     private static Effect HuiFuFaLi() => new() {
         UiHidde             = true,
-        OnImpAfterTurnStart = self => self.Target.State.Mana += self.Target.State.ManaMax * 0.25f
+        OnImpAfterTurnStart = self => self.Target.State.Mana = self.Target.State.ManaMax
     };
 
     // 护甲
