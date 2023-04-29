@@ -146,7 +146,7 @@ public class CombatJudge : MonoBehaviour {
         "Huo", "Jin", "Mu", "Shui", "Tu", "Last"
     };
 
-    private static int ms_roleIndex = 5;
+    private static int ms_roleIndex = 0;
 
     private void Start() {
         // Todo 根据游戏进度加载脚本
