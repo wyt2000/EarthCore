@@ -4,7 +4,7 @@ using Utils;
 
 namespace Controllers {
 public class EnemyController : CombatController {
-    // Todo! 完善敌人AI
+    // Todo 完善敌人AI
     public override IEnumerator OnUserInput() {
         var enemy = combatant;
         // 随机尝试出5次牌 

@@ -141,9 +141,16 @@ public class CombatJudge : MonoBehaviour {
 
 #region 脚本逻辑
 
+    // Todo 改成外部传参进来
+    private static readonly string[] Roles = {
+        "Huo", "Jin", "Mu", "Shui", "Tu", "Last"
+    };
+
+    private static int ms_roleIndex = 5;
+
     private void Start() {
-        // Todo! 根据游戏进度加载脚本
-        Script = new StoryScript("Jin");
+        // Todo 根据游戏进度加载脚本
+        Script = new StoryScript(Roles[ms_roleIndex++]);
 
         // 检查ab
         if (playerA == null || playerB == null) {
@@ -165,10 +172,12 @@ public class CombatJudge : MonoBehaviour {
 
     private void Update() {
         if (m_finish) return;
-        // Todo! 剧本跑完后保存进度,自动进入下一关或返回主场景
+        // Todo 剧本跑完后保存进度,自动进入下一关或返回主场景
         if (Script.Current == null) {
             m_finish = true;
-            MainView.SwitchScene("Scenes/EntryScene");
+            MainView.SwitchScene(ms_roleIndex >= Roles.Length
+                ? "Scenes/EntryScene"
+                : "Scenes/CombatScene");
             return;
         }
         if (Requests.Running) return;
