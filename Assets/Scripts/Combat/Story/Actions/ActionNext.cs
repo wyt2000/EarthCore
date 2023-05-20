@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Controllers;
 using UnityEngine;
 
@@ -53,19 +54,19 @@ public class ActionNext : StoryAction {
                 });
 
                 var validDiscardOperation = new Func<bool>(() => {
-                    if (clickedCommitButton || Input.GetKeyDown(KeyCode.Space)) {
-                        return true;
+                    int clickedCardCount = combatant.Cards.Count(c => c.IsSelected);
+                    if (combatant.Cards.Count - clickedCardCount <= combatant.State.MaxCardCnt) {
+                        if (clickedCommitButton || Input.GetKeyDown(KeyCode.Space)) {
+                            return true;
+                        }
                     }
                     clickedCommitButton = false;
                     return false;
                 });
 
                 combatant.Controller.isDiscardStage = true;
-                while (combatant.Cards.Count > combatant.State.MaxCardCnt) {
-                    clickedCommitButton = false;
-                    while (!validDiscardOperation()) yield return null;
-                    combatant.Discard();
-                }
+                while (!validDiscardOperation()) yield return null;
+                combatant.Discard();
                 
                 clickedEndTurnButton = false;
                 while (!validEndOperation()) yield return null;
