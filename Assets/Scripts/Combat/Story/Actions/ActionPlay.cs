@@ -5,7 +5,6 @@ using System.Linq;
 using Combat.Cards;
 using Controllers;
 using GUIs.Animations;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 using Debug = System.Diagnostics.Debug;
