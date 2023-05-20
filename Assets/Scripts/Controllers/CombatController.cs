@@ -14,16 +14,13 @@ public abstract class CombatController : MonoBehaviour {
 
 #endregion
 
-    private void Finish() {
-        combatant.Judge.Script?.Finish();
-    }
 
-    public IEnumerator OnDoAction() {
+    public virtual IEnumerator OnDoAction() {
         var current = combatant.Judge.Script?.Current;
         var iter = current?.Execute(this);
         if (current != null) {
             yield return iter;
-            Finish();
+            combatant.Judge.Script?.Finish();
         } else {
             yield return OnUserInput();
         }
@@ -31,5 +28,6 @@ public abstract class CombatController : MonoBehaviour {
 
     // 返回null表示当前线程直接执行
     public abstract IEnumerator OnUserInput();
+    
 }
 }

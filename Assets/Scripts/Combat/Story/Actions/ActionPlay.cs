@@ -1,11 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Combat.Cards;
 using Controllers;
 using GUIs.Animations;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
+using Debug = System.Diagnostics.Debug;
 
 namespace Combat.Story.Actions {
 /*
@@ -22,7 +25,7 @@ public class ActionPlay : StoryAction {
     public override StoryAction Build(IReadOnlyList<string> args) {
         return Build(args[0].Split(','));
     }
-
+    
     public override IEnumerator Execute(CombatController controller) {
         var combatant = controller.combatant;
         var needs = new HashSet<Card>();
@@ -40,8 +43,35 @@ public class ActionPlay : StoryAction {
             combatant.PlayCard(needs);
         }
         else {
-            while (!(Input.GetKeyDown(KeyCode.Space) && combatant.Cards.All(c => c.IsSelected == needs.Contains(c)))) yield return null;
+            // 清除出牌按钮上绑定的出牌事件
+            var playController = controller as PlayerController;
+            Debug.Assert(playController != null, nameof(playController) + " != null");
+            playController.commitButton.onClick.RemoveAllListeners();
+            playController.commitButton.interactable = true;
+
+            bool clickedCommitButton = false;
+            playController.commitButton.onClick.AddListener(() => {
+                clickedCommitButton = true;
+            });
+            
+            // 当玩家操作合法时，触发出牌事件
+            var validOperation = new Func<bool>(() => {
+                if (combatant.Cards.All(c => c.IsSelected == needs.Contains(c)))
+                {
+                    if (clickedCommitButton || Input.GetKeyDown(KeyCode.Space)) {
+                        return true;
+                    }
+                }
+                clickedCommitButton = false;
+                return false;
+            });
+            while (!validOperation()) yield return null;
             combatant.PlayCard(needs);
+            
+            // 恢复出牌按钮功能
+            playController.commitButton.interactable = false;
+            playController.commitButton.onClick.RemoveAllListeners();
+            playController.commitButton.onClick.AddListener(playController.CommitAction);
         }
     }
 

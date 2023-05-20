@@ -13,7 +13,7 @@ public class ActionNext : StoryAction {
 
     public override IEnumerator Execute(CombatController controller) {
         var combatant = controller.combatant;
-        combatant.Discard();
+        combatant.EndTurn();
         return null;
     }
 
