@@ -143,7 +143,7 @@ public class CombatJudge : MonoBehaviour {
 
     // Todo 改成外部传参进来
     private static readonly string[] Roles = {
-        "Huo", "Jin", "Mu", "Tu", "Shui", "Last"
+        "Last", "Huo", "Jin", "Mu", "Tu", "Shui"
     };
 
     private static int ms_roleIndex = 0;

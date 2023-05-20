@@ -325,6 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatant: {fileID: 129446149}
+  isDiscardStage: 0
 --- !u!114 &129446149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2262,6 +2263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatant: {fileID: 692444185}
+  isDiscardStage: 0
   buttons: {fileID: 0}
 --- !u!114 &692444185
 MonoBehaviour:

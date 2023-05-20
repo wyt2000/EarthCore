@@ -21,8 +21,8 @@ public class EnemyController : CombatController {
             enemy.PlayCard(card);
             yield return GAnimation.Wait(1.0f);
         }
-
-        enemy.Discard();
+        enemy.Discard(isForce:true);
+        enemy.EndTurn();
     }
 }
 }

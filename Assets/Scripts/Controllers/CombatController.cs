@@ -8,6 +8,9 @@ public abstract class CombatController : MonoBehaviour {
 
     // 战斗对象
     public CombatantComponent combatant;
+    
+    // 是否为弃牌阶段
+    public bool isDiscardStage = false;
 
 #endregion
 

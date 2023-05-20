@@ -174,24 +174,36 @@ public class CombatantComponent : MonoBehaviour {
 
     // 能否选择一张牌预备出牌
     public bool CanSelectCardToPlay(Card card) {
+        // 弃牌阶段所有牌都可选
+        if (Controller.isDiscardStage) {
+            return true;
+        }
         card.IsSelected = true;
         var ret = PreviewBatch.EvaluateState();
         card.IsSelected = false;
         return ret != BatchCardState.CannotSelect;
     }
 
+    // 回合结束
+    public void EndTurn() {
+        Judge.Requests.Add(new RequestEndTurn {
+            Causer = this
+        });
+    }
+    
     // 弃牌
-    public void Discard() {
+    public void Discard(bool isForce = false) {
         // 选中的弃掉
         var card = Cards.Extract(c => c.IsSelected);
-        // 超过上限的也弃掉
-        card.AddRange(Cards.Extract((_, i) => i >= State.MaxCardCnt));
+        // 强制弃牌到最大牌数
+        if (isForce) {
+            card.AddRange(Cards.Extract((_, i) => i >= State.MaxCardCnt));
+        }
         GAudio.PlayDiscardCard();
         Judge.Requests.Add(new RequestAnimation {
             Causer = this,
             Anim   = () => view.cardSlot.Discards(card)
         });
-        AddPost(() => Judge.NextTurn());
     }
 
     // 尝试施加元素击碎

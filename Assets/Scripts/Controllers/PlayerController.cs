@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Controllers {
 public class PlayerController : CombatController {
     public PlayerButton buttons;
-
     // 用户输入
     public override IEnumerator OnUserInput() {
     #if UNITY_EDITOR
@@ -18,11 +17,16 @@ public class PlayerController : CombatController {
         // Todo 改成按钮
         // 出牌
         if (Input.GetKeyDown(KeyCode.Space)) {
-            combatant.PlaySelectedCard();
+            if (isDiscardStage) {
+                combatant.Discard();
+            }
+            else {
+                combatant.PlaySelectedCard();
+            }
         }
-        // 弃牌
+        // 回合结束
         if (Input.GetKeyDown(KeyCode.Q)) {
-            combatant.Discard();
+            combatant.EndTurn();
         }
 
         return null;
