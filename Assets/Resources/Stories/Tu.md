@@ -54,6 +54,8 @@
 
 @play 汲取,熔铁之刃
 
+@play 火力压制
+
 @wait
 
 @show 克莱姆 right
