@@ -25,13 +25,13 @@ public class PlayerController : CombatController {
     // 用户输入
     public override IEnumerator OnUserInput() {
     #if UNITY_EDITOR
-        EnableButtons();
         // GM摸牌
         if (Input.GetKeyDown(KeyCode.G)) {
             combatant.GetCard(1);
         }
 
     #endif
+        EnableButtons();
         // 出牌
         if (Input.GetKeyDown(KeyCode.Space)) {
             CommitAction();
