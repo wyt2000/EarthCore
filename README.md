@@ -1,3 +1,5 @@
+
+
 ﻿# 地心之子
 
 ![](Docs/Images/封面.png)
@@ -138,7 +140,7 @@
   - Prefabs     # 预制体资源,程序和美术配合上传
   - Scripts     # 脚本资源,程序负责上传
   - Designs     # 策划文档,策划负责上传
-  - ThirdParty  # 第三方库(程序负责上传)
+  - Plugins     # 第三方库(程序负责上传)
     - TMPro     # 中文字体库
 - README.md     # 项目说明文档
 - .gitignore    # git忽略文件列表
